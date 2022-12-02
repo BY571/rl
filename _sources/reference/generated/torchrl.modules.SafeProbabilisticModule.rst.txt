@@ -1,0 +1,8 @@
+﻿.. currentmodule:: torchrl.modules
+
+
+SafeProbabilisticModule
+=======================
+
+.. autoclass:: SafeProbabilisticModule
+    :members:

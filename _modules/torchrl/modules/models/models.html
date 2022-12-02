@@ -1,0 +1,1781 @@
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>torchrl.modules.models.models &mdash; torchrl main documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!-- <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" /> -->
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/sg_gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/sg_gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/sg_gallery-dataframe.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/sg_gallery-rendered-html.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+  <!-- Google Analytics -->
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-117752657-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-117752657-2');
+    </script>
+  
+  <!-- End Google Analytics -->
+  
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+  <!-- Preload the theme fonts -->
+
+<link rel="preload" href="../../../../_static/fonts/FreightSans/freight-sans-book.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../../_static/fonts/FreightSans/freight-sans-medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../../_static/fonts/IBMPlexMono/IBMPlexMono-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../../_static/fonts/FreightSans/freight-sans-bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../../_static/fonts/FreightSans/freight-sans-medium-italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../../_static/fonts/IBMPlexMono/IBMPlexMono-SemiBold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+
+<!-- Preload the katex fonts -->
+
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Math-Italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Main-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Main-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size1-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size4-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size2-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size3-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Caligraphic-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css" integrity="sha384-vSIIfh2YWi9wW0r9iZe7RJPrKwp6bG+s9QZMoITbCckVJqGCCRhc+ccxNcdpHuYu" crossorigin="anonymous">
+</head>
+
+<div class="container-fluid header-holder tutorials-header" id="header-holder">
+  <div class="container">
+    <div class="header-container">
+      <a class="header-logo" href="https://pytorch.org/" aria-label="PyTorch"></a>
+
+      <div class="main-menu">
+        <ul>
+          <li>
+            <a href="https://pytorch.org/get-started">Get Started</a>
+          </li>
+
+          <li>
+            <a href="https://pytorch.org/ecosystem">Ecosystem</a>
+          </li>
+
+          <li>
+            <a href="https://pytorch.org/mobile">Mobile</a>
+          </li>
+
+          <li>
+            <a href="https://pytorch.org/blog/">Blog</a>
+          </li>
+
+          <li>
+            <a href="https://pytorch.org/tutorials">Tutorials</a>
+          </li>
+
+          <li>
+            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="resource-option with-down-orange-arrow">
+                Docs
+              </a>
+              <div class="resources-dropdown-menu">
+                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/docs/stable/index.html">
+                  <span class="dropdown-title">PyTorch</span>
+                  <p></p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/audio/stable/index.html">
+                  <span class="dropdown-title">torchaudio</span>
+                  <p></p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/text/stable/index.html">
+                  <span class="dropdown-title">torchtext</span>
+                  <p></p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/vision/stable/index.html">
+                  <span class="dropdown-title">torchvision</span>
+                  <p></p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/torcharrow">
+                  <span class="dropdown-title">torcharrow</span>
+                  <p></p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/data">
+                  <span class="dropdown-title">TorchData</span>
+                  <p></p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/torchrec">
+                  <span class="dropdown-title">TorchRec</span>
+                  <p></p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/serve/">
+                  <span class="dropdown-title">TorchServe</span>
+                  <p></p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/torchx/">
+                  <span class="dropdown-title">TorchX</span>
+                  <p></p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/xla">
+                  <span class="dropdown-title">PyTorch on XLA Devices</span>
+                  <p></p>
+                </a>
+            </div>
+          </li>
+
+          <li>
+            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="resource-option with-down-arrow">
+                Resources
+              </a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/features">
+                  <span class="dropdown-title">About</span>
+                  <p>Learn about PyTorch’s features and capabilities</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/foundation">
+                  <span class="dropdown-title">PyTorch Foundation</span>
+                  <p>Learn about the PyTorch foundation</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/#community-module">
+                  <span class="dropdown-title">Community</span>
+                  <p>Join the PyTorch developer community to contribute, learn, and get your questions answered.</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/community-stories">
+                  <span class="dropdown-title">Community Stories</span>
+                  <p>Learn how our community solves real, everyday machine learning problems with PyTorch.</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/resources">
+                  <span class="dropdown-title">Developer Resources</span>
+                  <p>Find resources and get questions answered</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/events">
+                  <span class="dropdown-title">Events</span>
+                  <p>Find events, webinars, and podcasts</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://discuss.pytorch.org/" target="_blank">
+                  <span class="dropdown-title">Forums</span>
+                  <p>A place to discuss PyTorch code, issues, install, research</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/hub">
+                  <span class="dropdown-title">Models (Beta)</span>
+                  <p>Discover, publish, and reuse pre-trained models</p>
+                </a>
+              </div>
+            </div>
+          </li>
+
+          <li>
+            <a href="https://github.com/pytorch/pytorch">GitHub</a>
+          </li>
+        </ul>
+      </div>
+
+      <a class="main-menu-open-button" href="#" data-behavior="open-mobile-menu"></a>
+    </div>
+  </div>
+</div>
+
+<body class="pytorch-body">
+
+   
+
+    
+
+    <div class="table-of-contents-link-wrapper">
+      <span>Table of Contents</span>
+      <a href="#" class="toggle-table-of-contents" data-behavior="toggle-table-of-contents"></a>
+    </div>
+
+    <nav data-toggle="wy-nav-shift" class="pytorch-left-menu" id="pytorch-left-menu">
+      <div class="pytorch-side-scroll">
+        <div class="pytorch-menu pytorch-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          <div class="pytorch-left-menu-search">
+            
+
+            
+              
+              
+                <div class="version">
+                  main (None )
+                </div>
+              
+            
+
+            
+
+
+  
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search Docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+            
+          </div>
+
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/torchrl_demo.html">Introduction to TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tensordict_tutorial.html">TensorDict</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tensordict_module.html">TensorDictModule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/torch_envs.html">TorchRL envs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/multi_task.html">Task-specific policy in multi-task environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/coding_ddpg.html">Coding DDPG using TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/coding_dqn.html">Coding a pixel-based DQN using TorchRL</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">References:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../reference/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../reference/knowledge_base.html">Knowledge Base</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <div class="pytorch-container">
+      <div class="pytorch-page-level-bar" id="pytorch-page-level-bar">
+        <div class="pytorch-breadcrumbs-wrapper">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="pytorch-breadcrumbs">
+    
+      <li>
+        <a href="../../../../index.html">
+          
+            Docs
+          
+        </a> &gt;
+      </li>
+
+        
+          <li><a href="../../../index.html">Module code</a> &gt;</li>
+        
+      <li>torchrl.modules.models.models</li>
+    
+    
+      <li class="pytorch-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+</div>
+        </div>
+
+        <div class="pytorch-shortcuts-wrapper" id="pytorch-shortcuts-wrapper">
+          Shortcuts
+        </div>
+      </div>
+
+      <section data-toggle="wy-nav-shift" id="pytorch-content-wrap" class="pytorch-content-wrap">
+        <div class="pytorch-content-left">
+
+        
+          <div class="pytorch-call-to-action-links">
+            <div id="tutorial-type">_modules/torchrl/modules/models/models</div>
+
+            <div id="google-colab-link">
+              <img class="call-to-action-img" src="../../../../_static/images/pytorch-colab.svg"/>
+              <div class="call-to-action-desktop-view">Run in Google Colab</div>
+              <div class="call-to-action-mobile-view">Colab</div>
+            </div>
+            <div id="download-notebook-link">
+              <img class="call-to-action-notebook-img" src="../../../../_static/images/pytorch-download.svg"/>
+              <div class="call-to-action-desktop-view">Download Notebook</div>
+              <div class="call-to-action-mobile-view">Notebook</div>
+            </div>
+            <div id="github-view-link">
+              <img class="call-to-action-img" src="../../../../_static/images/pytorch-github.svg"/>
+              <div class="call-to-action-desktop-view">View on GitHub</div>
+              <div class="call-to-action-mobile-view">GitHub</div>
+            </div>
+          </div>
+
+        
+          
+          <div class="rst-content">
+          
+            <div role="main" class="main-content" itemscope="itemscope" itemtype="http://schema.org/Article">
+             <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
+              
+  <h1>Source code for torchrl.modules.models.models</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) Meta Platforms, Inc. and affiliates.</span>
+<span class="c1">#</span>
+<span class="c1"># This source code is licensed under the MIT license found in the</span>
+<span class="c1"># LICENSE file in the root directory of this source tree.</span>
+
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">torch.nn</span> <span class="kn">import</span> <span class="n">functional</span> <span class="k">as</span> <span class="n">F</span>
+
+<span class="kn">from</span> <span class="nn">torchrl._utils</span> <span class="kn">import</span> <span class="n">prod</span>
+<span class="kn">from</span> <span class="nn">torchrl.data.utils</span> <span class="kn">import</span> <span class="n">DEVICE_TYPING</span>
+<span class="kn">from</span> <span class="nn">torchrl.modules.models.utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_find_depth</span><span class="p">,</span>
+    <span class="n">create_on_device</span><span class="p">,</span>
+    <span class="n">LazyMapping</span><span class="p">,</span>
+    <span class="n">SquashDims</span><span class="p">,</span>
+    <span class="n">Squeeze2dLayer</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="MLP"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.MLP.html#torchrl.modules.MLP">[docs]</a><span class="k">class</span> <span class="nc">MLP</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A multi-layer perceptron.</span>
+
+<span class="sd">    If MLP receives more than one input, it concatenates them all along the last dimension before passing the</span>
+<span class="sd">    resulting tensor through the network. This is aimed at allowing for a seamless interface with calls of the type of</span>
+
+<span class="sd">        &gt;&gt;&gt; model(state, action)  # compute state-action value</span>
+
+<span class="sd">    In the future, this feature may be moved to the ProbabilisticTDModule, though it would require it to handle</span>
+<span class="sd">    different cases (vectors, images, ...)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        in_features (int, optional): number of input features;</span>
+<span class="sd">        out_features (int, list of int): number of output features. If iterable of integers, the output is reshaped to</span>
+<span class="sd">            the desired shape;</span>
+<span class="sd">        depth (int, optional): depth of the network. A depth of 0 will produce a single linear layer network with the</span>
+<span class="sd">            desired input and output size. A length of 1 will create 2 linear layers etc. If no depth is indicated,</span>
+<span class="sd">            the depth information should be contained in the num_cells argument (see below). If num_cells is an</span>
+<span class="sd">            iterable and depth is indicated, both should match: len(num_cells) must be equal to depth.</span>
+<span class="sd">        num_cells (int or Sequence[int], optional): number of cells of every layer in between the input and output. If</span>
+<span class="sd">            an integer is provided, every layer will have the same number of cells. If an iterable is provided,</span>
+<span class="sd">            the linear layers out_features will match the content of num_cells.</span>
+<span class="sd">            default: 32;</span>
+<span class="sd">        activation_class (Type[nn.Module]): activation class to be used.</span>
+<span class="sd">            default: nn.Tanh</span>
+<span class="sd">        activation_kwargs (dict, optional): kwargs to be used with the activation class;</span>
+<span class="sd">        norm_class (Type, optional): normalization class, if any.</span>
+<span class="sd">        norm_kwargs (dict, optional): kwargs to be used with the normalization layers;</span>
+<span class="sd">        bias_last_layer (bool): if True, the last Linear layer will have a bias parameter.</span>
+<span class="sd">            default: True;</span>
+<span class="sd">        single_bias_last_layer (bool): if True, the last dimension of the bias of the last layer will be a singleton</span>
+<span class="sd">            dimension.</span>
+<span class="sd">            default: True;</span>
+<span class="sd">        layer_class (Type[nn.Module]): class to be used for the linear layers;</span>
+<span class="sd">        layer_kwargs (dict, optional): kwargs for the linear layers;</span>
+<span class="sd">        activate_last_layer (bool): whether the MLP output should be activated. This is useful when the MLP output</span>
+<span class="sd">            is used as the input for another module.</span>
+<span class="sd">            default: False.</span>
+<span class="sd">        device (Optional[DEVICE_TYPING]): device to create the module on.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; # All of the following examples provide valid, working MLPs</span>
+<span class="sd">        &gt;&gt;&gt; mlp = MLP(in_features=3, out_features=6, depth=0) # MLP consisting of a single 3 x 6 linear layer</span>
+<span class="sd">        &gt;&gt;&gt; print(mlp)</span>
+<span class="sd">        MLP(</span>
+<span class="sd">          (0): Linear(in_features=3, out_features=6, bias=True)</span>
+<span class="sd">        )</span>
+<span class="sd">        &gt;&gt;&gt; mlp = MLP(in_features=3, out_features=6, depth=4, num_cells=32)</span>
+<span class="sd">        &gt;&gt;&gt; print(mlp)</span>
+<span class="sd">        MLP(</span>
+<span class="sd">          (0): Linear(in_features=3, out_features=32, bias=True)</span>
+<span class="sd">          (1): Tanh()</span>
+<span class="sd">          (2): Linear(in_features=32, out_features=32, bias=True)</span>
+<span class="sd">          (3): Tanh()</span>
+<span class="sd">          (4): Linear(in_features=32, out_features=32, bias=True)</span>
+<span class="sd">          (5): Tanh()</span>
+<span class="sd">          (6): Linear(in_features=32, out_features=32, bias=True)</span>
+<span class="sd">          (7): Tanh()</span>
+<span class="sd">          (8): Linear(in_features=32, out_features=6, bias=True)</span>
+<span class="sd">        )</span>
+<span class="sd">        &gt;&gt;&gt; mlp = MLP(out_features=6, depth=4, num_cells=32)  # LazyLinear for the first layer</span>
+<span class="sd">        &gt;&gt;&gt; print(mlp)</span>
+<span class="sd">        MLP(</span>
+<span class="sd">          (0): LazyLinear(in_features=0, out_features=32, bias=True)</span>
+<span class="sd">          (1): Tanh()</span>
+<span class="sd">          (2): Linear(in_features=32, out_features=32, bias=True)</span>
+<span class="sd">          (3): Tanh()</span>
+<span class="sd">          (4): Linear(in_features=32, out_features=32, bias=True)</span>
+<span class="sd">          (5): Tanh()</span>
+<span class="sd">          (6): Linear(in_features=32, out_features=32, bias=True)</span>
+<span class="sd">          (7): Tanh()</span>
+<span class="sd">          (8): Linear(in_features=32, out_features=6, bias=True)</span>
+<span class="sd">        )</span>
+<span class="sd">        &gt;&gt;&gt; mlp = MLP(out_features=6, num_cells=[32, 33, 34, 35])  # defines the depth by the num_cells arg</span>
+<span class="sd">        &gt;&gt;&gt; print(mlp)</span>
+<span class="sd">        MLP(</span>
+<span class="sd">          (0): LazyLinear(in_features=0, out_features=32, bias=True)</span>
+<span class="sd">          (1): Tanh()</span>
+<span class="sd">          (2): Linear(in_features=32, out_features=33, bias=True)</span>
+<span class="sd">          (3): Tanh()</span>
+<span class="sd">          (4): Linear(in_features=33, out_features=34, bias=True)</span>
+<span class="sd">          (5): Tanh()</span>
+<span class="sd">          (6): Linear(in_features=34, out_features=35, bias=True)</span>
+<span class="sd">          (7): Tanh()</span>
+<span class="sd">          (8): Linear(in_features=35, out_features=6, bias=True)</span>
+<span class="sd">        )</span>
+<span class="sd">        &gt;&gt;&gt; mlp = MLP(out_features=(6, 7), num_cells=[32, 33, 34, 35])  # returns a view of the output tensor with shape [*, 6, 7]</span>
+<span class="sd">        &gt;&gt;&gt; print(mlp)</span>
+<span class="sd">        MLP(</span>
+<span class="sd">          (0): LazyLinear(in_features=0, out_features=32, bias=True)</span>
+<span class="sd">          (1): Tanh()</span>
+<span class="sd">          (2): Linear(in_features=32, out_features=33, bias=True)</span>
+<span class="sd">          (3): Tanh()</span>
+<span class="sd">          (4): Linear(in_features=33, out_features=34, bias=True)</span>
+<span class="sd">          (5): Tanh()</span>
+<span class="sd">          (6): Linear(in_features=34, out_features=35, bias=True)</span>
+<span class="sd">          (7): Tanh()</span>
+<span class="sd">          (8): Linear(in_features=35, out_features=42, bias=True)</span>
+<span class="sd">        )</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.modules import NoisyLinear</span>
+<span class="sd">        &gt;&gt;&gt; mlp = MLP(out_features=(6, 7), num_cells=[32, 33, 34, 35], layer_class=NoisyLinear)  # uses NoisyLinear layers</span>
+<span class="sd">        &gt;&gt;&gt; print(mlp)</span>
+<span class="sd">        MLP(</span>
+<span class="sd">          (0): NoisyLazyLinear(in_features=0, out_features=32, bias=False)</span>
+<span class="sd">          (1): Tanh()</span>
+<span class="sd">          (2): NoisyLinear(in_features=32, out_features=33, bias=True)</span>
+<span class="sd">          (3): Tanh()</span>
+<span class="sd">          (4): NoisyLinear(in_features=33, out_features=34, bias=True)</span>
+<span class="sd">          (5): Tanh()</span>
+<span class="sd">          (6): NoisyLinear(in_features=34, out_features=35, bias=True)</span>
+<span class="sd">          (7): Tanh()</span>
+<span class="sd">          (8): NoisyLinear(in_features=35, out_features=42, bias=True)</span>
+<span class="sd">        )</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">in_features</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">out_features</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">depth</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">num_cells</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">activation_class</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Tanh</span><span class="p">,</span>
+        <span class="n">activation_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">norm_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">norm_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">bias_last_layer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">single_bias_last_layer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">layer_class</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">,</span>
+        <span class="n">layer_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">activate_last_layer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DEVICE_TYPING</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">out_features</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;out_features must be specified for MLP.&quot;</span><span class="p">)</span>
+
+        <span class="n">default_num_cells</span> <span class="o">=</span> <span class="mi">32</span>
+        <span class="k">if</span> <span class="n">num_cells</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">depth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">num_cells</span> <span class="o">=</span> <span class="p">[</span><span class="n">default_num_cells</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span>
+                <span class="n">depth</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">num_cells</span> <span class="o">=</span> <span class="p">[</span><span class="n">default_num_cells</span><span class="p">]</span> <span class="o">*</span> <span class="n">depth</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_features</span> <span class="o">=</span> <span class="n">in_features</span>
+
+        <span class="n">_out_features_num</span> <span class="o">=</span> <span class="n">out_features</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">out_features</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span>
+            <span class="n">_out_features_num</span> <span class="o">=</span> <span class="n">prod</span><span class="p">(</span><span class="n">out_features</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_features</span> <span class="o">=</span> <span class="n">out_features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_out_features_num</span> <span class="o">=</span> <span class="n">_out_features_num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">activation_class</span> <span class="o">=</span> <span class="n">activation_class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">activation_kwargs</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">activation_kwargs</span> <span class="k">if</span> <span class="n">activation_kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm_class</span> <span class="o">=</span> <span class="n">norm_class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm_kwargs</span> <span class="o">=</span> <span class="n">norm_kwargs</span> <span class="k">if</span> <span class="n">norm_kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bias_last_layer</span> <span class="o">=</span> <span class="n">bias_last_layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">single_bias_last_layer</span> <span class="o">=</span> <span class="n">single_bias_last_layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer_class</span> <span class="o">=</span> <span class="n">layer_class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer_kwargs</span> <span class="o">=</span> <span class="n">layer_kwargs</span> <span class="k">if</span> <span class="n">layer_kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">activate_last_layer</span> <span class="o">=</span> <span class="n">activate_last_layer</span>
+        <span class="k">if</span> <span class="n">single_bias_last_layer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">num_cells</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">)</span> <span class="ow">or</span> <span class="n">depth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;If num_cells is provided as an integer, </span><span class="se">\</span>
+<span class="s2">            depth must be provided too.&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_cells</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">list</span><span class="p">(</span><span class="n">num_cells</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_cells</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">num_cells</span><span class="p">]</span> <span class="o">*</span> <span class="n">depth</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="n">depth</span> <span class="k">if</span> <span class="n">depth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_cells</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_cells</span><span class="p">)</span> <span class="o">==</span> <span class="n">depth</span> <span class="ow">or</span> <span class="n">depth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;depth and num_cells length conflict, </span><span class="se">\</span>
+<span class="s2">            consider matching or specifying a constan num_cells argument together with a a desired depth&quot;</span>
+            <span class="p">)</span>
+        <span class="n">layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_net</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">layers</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_make_net</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DEVICE_TYPING</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]:</span>
+        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">in_features</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">in_features</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_cells</span>
+        <span class="n">out_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_cells</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_out_features_num</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">_in</span><span class="p">,</span> <span class="n">_out</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">in_features</span><span class="p">,</span> <span class="n">out_features</span><span class="p">)):</span>
+            <span class="n">_bias</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias_last_layer</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="k">else</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">_in</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">create_on_device</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">layer_class</span><span class="p">,</span>
+                        <span class="n">device</span><span class="p">,</span>
+                        <span class="n">_in</span><span class="p">,</span>
+                        <span class="n">_out</span><span class="p">,</span>
+                        <span class="n">bias</span><span class="o">=</span><span class="n">_bias</span><span class="p">,</span>
+                        <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">layer_kwargs</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">lazy_version</span> <span class="o">=</span> <span class="n">LazyMapping</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">layer_class</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;The lazy version of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">layer_class</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> is not implemented yet. &quot;</span>
+                        <span class="s2">&quot;Consider providing the input feature dimensions explicitely when creating an MLP module&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">create_on_device</span><span class="p">(</span>
+                        <span class="n">lazy_version</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">_out</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">_bias</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">layer_kwargs</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">activate_last_layer</span><span class="p">:</span>
+                <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">create_on_device</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">activation_class</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">activation_kwargs</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm_class</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">create_on_device</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">norm_class</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">norm_kwargs</span><span class="p">)</span>
+                    <span class="p">)</span>
+        <span class="k">return</span> <span class="n">layers</span>
+
+<div class="viewcode-block" id="MLP.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.MLP.html#torchrl.modules.MLP.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="o">*</span><span class="n">inputs</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">),)</span>
+
+        <span class="n">out</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_features</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">out</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">out_features</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span></div></div>
+
+
+<div class="viewcode-block" id="ConvNet"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.ConvNet.html#torchrl.modules.ConvNet">[docs]</a><span class="k">class</span> <span class="nc">ConvNet</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A convolutional neural network.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        in_features (int, optional): number of input features;</span>
+<span class="sd">        depth (int, optional): depth of the network. A depth of 1 will produce a single linear layer network with the</span>
+<span class="sd">            desired input size, and with an output size equal to the last element of the num_cells argument.</span>
+<span class="sd">            If no depth is indicated, the depth information should be contained in the num_cells argument (see below).</span>
+<span class="sd">            If num_cells is an iterable and depth is indicated, both should match: len(num_cells) must be equal to</span>
+<span class="sd">            the depth.</span>
+<span class="sd">        num_cells (int or Sequence[int], optional): number of cells of every layer in between the input and output. If</span>
+<span class="sd">            an integer is provided, every layer will have the same number of cells. If an iterable is provided,</span>
+<span class="sd">            the linear layers out_features will match the content of num_cells.</span>
+<span class="sd">            default: [32, 32, 32];</span>
+<span class="sd">        kernel_sizes (int, Sequence[Union[int, Sequence[int]]]): Kernel size(s) of the conv network. If iterable, the length must match the</span>
+<span class="sd">            depth, defined by the num_cells or depth arguments.</span>
+<span class="sd">        strides (int or Sequence[int]): Stride(s) of the conv network. If iterable, the length must match the</span>
+<span class="sd">            depth, defined by the num_cells or depth arguments.</span>
+<span class="sd">        activation_class (Type[nn.Module]): activation class to be used.</span>
+<span class="sd">            default: nn.Tanh</span>
+<span class="sd">        activation_kwargs (dict, optional): kwargs to be used with the activation class;</span>
+<span class="sd">        norm_class (Type, optional): normalization class, if any;</span>
+<span class="sd">        norm_kwargs (dict, optional): kwargs to be used with the normalization layers;</span>
+<span class="sd">        bias_last_layer (bool): if True, the last Linear layer will have a bias parameter.</span>
+<span class="sd">            default: True;</span>
+<span class="sd">        aggregator_class (Type[nn.Module]): aggregator to use at the end of the chain.</span>
+<span class="sd">            default:  SquashDims;</span>
+<span class="sd">        aggregator_kwargs (dict, optional): kwargs for the aggregator_class;</span>
+<span class="sd">        squeeze_output (bool): whether the output should be squeezed of its singleton dimensions.</span>
+<span class="sd">            default: True.</span>
+<span class="sd">        device (Optional[DEVICE_TYPING]): device to create the module on.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; # All of the following examples provide valid, working MLPs</span>
+<span class="sd">        &gt;&gt;&gt; cnet = ConvNet(in_features=3, depth=1, num_cells=[32,]) # MLP consisting of a single 3 x 6 linear layer</span>
+<span class="sd">        &gt;&gt;&gt; print(cnet)</span>
+<span class="sd">        ConvNet(</span>
+<span class="sd">          (0): Conv2d(3, 32, kernel_size=(3, 3), stride=(1, 1))</span>
+<span class="sd">          (1): ELU(alpha=1.0)</span>
+<span class="sd">          (2): SquashDims()</span>
+<span class="sd">        )</span>
+<span class="sd">        &gt;&gt;&gt; cnet = ConvNet(in_features=3, depth=4, num_cells=32)</span>
+<span class="sd">        &gt;&gt;&gt; print(cnet)</span>
+<span class="sd">        ConvNet(</span>
+<span class="sd">          (0): Conv2d(3, 32, kernel_size=(3, 3), stride=(1, 1))</span>
+<span class="sd">          (1): ELU(alpha=1.0)</span>
+<span class="sd">          (2): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1))</span>
+<span class="sd">          (3): ELU(alpha=1.0)</span>
+<span class="sd">          (4): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1))</span>
+<span class="sd">          (5): ELU(alpha=1.0)</span>
+<span class="sd">          (6): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1))</span>
+<span class="sd">          (7): ELU(alpha=1.0)</span>
+<span class="sd">          (8): SquashDims()</span>
+<span class="sd">        )</span>
+<span class="sd">        &gt;&gt;&gt; cnet = ConvNet(in_features=3, num_cells=[32, 33, 34, 35])  # defines the depth by the num_cells arg</span>
+<span class="sd">        &gt;&gt;&gt; print(cnet)</span>
+<span class="sd">        ConvNet(</span>
+<span class="sd">          (0): Conv2d(3, 32, kernel_size=(3, 3), stride=(1, 1))</span>
+<span class="sd">          (1): ELU(alpha=1.0)</span>
+<span class="sd">          (2): Conv2d(32, 33, kernel_size=(3, 3), stride=(1, 1))</span>
+<span class="sd">          (3): ELU(alpha=1.0)</span>
+<span class="sd">          (4): Conv2d(33, 34, kernel_size=(3, 3), stride=(1, 1))</span>
+<span class="sd">          (5): ELU(alpha=1.0)</span>
+<span class="sd">          (6): Conv2d(34, 35, kernel_size=(3, 3), stride=(1, 1))</span>
+<span class="sd">          (7): ELU(alpha=1.0)</span>
+<span class="sd">          (8): SquashDims()</span>
+<span class="sd">        )</span>
+<span class="sd">        &gt;&gt;&gt; cnet = ConvNet(in_features=3, num_cells=[32, 33, 34, 35], kernel_sizes=[3, 4, 5, (2, 3)])  # defines kernels, possibly rectangular</span>
+<span class="sd">        &gt;&gt;&gt; print(cnet)</span>
+<span class="sd">        ConvNet(</span>
+<span class="sd">          (0): Conv2d(3, 32, kernel_size=(3, 3), stride=(1, 1))</span>
+<span class="sd">          (1): ELU(alpha=1.0)</span>
+<span class="sd">          (2): Conv2d(32, 33, kernel_size=(4, 4), stride=(1, 1))</span>
+<span class="sd">          (3): ELU(alpha=1.0)</span>
+<span class="sd">          (4): Conv2d(33, 34, kernel_size=(5, 5), stride=(1, 1))</span>
+<span class="sd">          (5): ELU(alpha=1.0)</span>
+<span class="sd">          (6): Conv2d(34, 35, kernel_size=(2, 3), stride=(1, 1))</span>
+<span class="sd">          (7): ELU(alpha=1.0)</span>
+<span class="sd">          (8): SquashDims()</span>
+<span class="sd">        )</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">in_features</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">depth</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">num_cells</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">kernel_sizes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]],</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">paddings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">activation_class</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ELU</span><span class="p">,</span>
+        <span class="n">activation_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">norm_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">norm_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">bias_last_layer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">aggregator_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]]</span> <span class="o">=</span> <span class="n">SquashDims</span><span class="p">,</span>
+        <span class="n">aggregator_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">squeeze_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DEVICE_TYPING</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">num_cells</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">num_cells</span> <span class="o">=</span> <span class="p">[</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_features</span> <span class="o">=</span> <span class="n">in_features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">activation_class</span> <span class="o">=</span> <span class="n">activation_class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">activation_kwargs</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">activation_kwargs</span> <span class="k">if</span> <span class="n">activation_kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm_class</span> <span class="o">=</span> <span class="n">norm_class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm_kwargs</span> <span class="o">=</span> <span class="n">norm_kwargs</span> <span class="k">if</span> <span class="n">norm_kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bias_last_layer</span> <span class="o">=</span> <span class="n">bias_last_layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aggregator_class</span> <span class="o">=</span> <span class="n">aggregator_class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aggregator_kwargs</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">aggregator_kwargs</span> <span class="k">if</span> <span class="n">aggregator_kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{</span><span class="s2">&quot;ndims_in&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">squeeze_output</span> <span class="o">=</span> <span class="n">squeeze_output</span>
+        <span class="c1"># self.single_bias_last_layer = single_bias_last_layer</span>
+
+        <span class="n">depth</span> <span class="o">=</span> <span class="n">_find_depth</span><span class="p">(</span><span class="n">depth</span><span class="p">,</span> <span class="n">num_cells</span><span class="p">,</span> <span class="n">kernel_sizes</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">paddings</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="n">depth</span>
+        <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Null depth is not permitted with ConvNet.&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">_field</span><span class="p">,</span> <span class="n">_value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;num_cells&quot;</span><span class="p">,</span> <span class="s2">&quot;kernel_sizes&quot;</span><span class="p">,</span> <span class="s2">&quot;strides&quot;</span><span class="p">,</span> <span class="s2">&quot;paddings&quot;</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">num_cells</span><span class="p">,</span> <span class="n">kernel_sizes</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">paddings</span><span class="p">],</span>
+        <span class="p">):</span>
+            <span class="n">_depth</span> <span class="o">=</span> <span class="n">depth</span>
+            <span class="nb">setattr</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">_field</span><span class="p">,</span>
+                <span class="p">(</span><span class="n">_value</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_value</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">_value</span><span class="p">]</span> <span class="o">*</span> <span class="n">_depth</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">_value</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_depth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;If </span><span class="si">{</span><span class="n">_field</span><span class="si">}</span><span class="s2"> is provided as an integer, &quot;</span>
+                    <span class="s2">&quot;depth must be provided too.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_field</span><span class="p">))</span> <span class="o">==</span> <span class="n">_depth</span> <span class="ow">or</span> <span class="n">_depth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;depth=</span><span class="si">{</span><span class="n">depth</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">_field</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_field</span><span class="p">))</span><span class="si">}</span><span class="s2"> length conflict, &quot;</span>
+                    <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;consider matching or specifying a constan </span><span class="si">{</span><span class="n">_field</span><span class="si">}</span><span class="s2"> argument together with a a desired depth&quot;</span>
+                <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_cells</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_sizes</span><span class="p">)</span>
+        <span class="n">layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_net</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">layers</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_make_net</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DEVICE_TYPING</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">:</span>
+        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">in_features</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">in_features</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_cells</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span><span class="p">]</span>
+        <span class="n">out_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_cells</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">out_features</span><span class="p">]</span>
+        <span class="n">kernel_sizes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernel_sizes</span>
+        <span class="n">strides</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">strides</span>
+        <span class="n">paddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">paddings</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">_in</span><span class="p">,</span> <span class="n">_out</span><span class="p">,</span> <span class="n">_kernel</span><span class="p">,</span> <span class="n">_stride</span><span class="p">,</span> <span class="n">_padding</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+            <span class="nb">zip</span><span class="p">(</span><span class="n">in_features</span><span class="p">,</span> <span class="n">out_features</span><span class="p">,</span> <span class="n">kernel_sizes</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">paddings</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">_bias</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">in_features</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias_last_layer</span>
+            <span class="k">if</span> <span class="n">_in</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span>
+                        <span class="n">_in</span><span class="p">,</span>
+                        <span class="n">_out</span><span class="p">,</span>
+                        <span class="n">kernel_size</span><span class="o">=</span><span class="n">_kernel</span><span class="p">,</span>
+                        <span class="n">stride</span><span class="o">=</span><span class="n">_stride</span><span class="p">,</span>
+                        <span class="n">bias</span><span class="o">=</span><span class="n">_bias</span><span class="p">,</span>
+                        <span class="n">padding</span><span class="o">=</span><span class="n">_padding</span><span class="p">,</span>
+                        <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">LazyConv2d</span><span class="p">(</span>
+                        <span class="n">_out</span><span class="p">,</span>
+                        <span class="n">kernel_size</span><span class="o">=</span><span class="n">_kernel</span><span class="p">,</span>
+                        <span class="n">stride</span><span class="o">=</span><span class="n">_stride</span><span class="p">,</span>
+                        <span class="n">bias</span><span class="o">=</span><span class="n">_bias</span><span class="p">,</span>
+                        <span class="n">padding</span><span class="o">=</span><span class="n">_padding</span><span class="p">,</span>
+                        <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">create_on_device</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">activation_class</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">activation_kwargs</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm_class</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">create_on_device</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">norm_class</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">norm_kwargs</span><span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">aggregator_class</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">create_on_device</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">aggregator_class</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">aggregator_kwargs</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">squeeze_output</span><span class="p">:</span>
+            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Squeeze2dLayer</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">layers</span>
+
+<div class="viewcode-block" id="ConvNet.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.ConvNet.html#torchrl.modules.ConvNet.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="o">*</span><span class="n">batch</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">W</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ConvNet</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">unflatten</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">batch</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">DuelingMlpDQNet</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates a Dueling MLP Q-network.</span>
+
+<span class="sd">    Presented in https://arxiv.org/abs/1511.06581</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        out_features (int): number of features for the advantage network</span>
+<span class="sd">        out_features_value (int): number of features for the value network</span>
+<span class="sd">        mlp_kwargs_feature (dict, optional): kwargs for the feature network.</span>
+<span class="sd">            Default is</span>
+
+<span class="sd">            &gt;&gt;&gt; mlp_kwargs_feature = {</span>
+<span class="sd">            ...     &#39;num_cells&#39;: [256, 256],</span>
+<span class="sd">            ...     &#39;activation_class&#39;: nn.ELU,</span>
+<span class="sd">            ...     &#39;out_features&#39;: 256,</span>
+<span class="sd">            ...     &#39;activate_last_layer&#39;: True,</span>
+<span class="sd">            ... }</span>
+
+<span class="sd">        mlp_kwargs_output (dict, optional): kwargs for the advantage and</span>
+<span class="sd">            value networks.</span>
+<span class="sd">            Default is</span>
+
+<span class="sd">            &gt;&gt;&gt; mlp_kwargs_output = {</span>
+<span class="sd">            ...     &quot;depth&quot;: 1,</span>
+<span class="sd">            ...     &quot;activation_class&quot;: nn.ELU,</span>
+<span class="sd">            ...     &quot;num_cells&quot;: 512,</span>
+<span class="sd">            ...     &quot;bias_last_layer&quot;: True,</span>
+<span class="sd">            ... }</span>
+
+<span class="sd">        device (Optional[DEVICE_TYPING]): device to create the module on.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">out_features</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">out_features_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">mlp_kwargs_feature</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mlp_kwargs_output</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DEVICE_TYPING</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="n">mlp_kwargs_feature</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">mlp_kwargs_feature</span> <span class="k">if</span> <span class="n">mlp_kwargs_feature</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="p">)</span>
+        <span class="n">_mlp_kwargs_feature</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;num_cells&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">256</span><span class="p">,</span> <span class="mi">256</span><span class="p">],</span>
+            <span class="s2">&quot;out_features&quot;</span><span class="p">:</span> <span class="mi">256</span><span class="p">,</span>
+            <span class="s2">&quot;activation_class&quot;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">ELU</span><span class="p">,</span>
+            <span class="s2">&quot;activate_last_layer&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">_mlp_kwargs_feature</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">mlp_kwargs_feature</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="n">_mlp_kwargs_feature</span><span class="p">)</span>
+
+        <span class="n">_mlp_kwargs_output</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;depth&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;activation_class&quot;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">ELU</span><span class="p">,</span>
+            <span class="s2">&quot;num_cells&quot;</span><span class="p">:</span> <span class="mi">512</span><span class="p">,</span>
+            <span class="s2">&quot;bias_last_layer&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">mlp_kwargs_output</span> <span class="o">=</span> <span class="n">mlp_kwargs_output</span> <span class="k">if</span> <span class="n">mlp_kwargs_output</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">_mlp_kwargs_output</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">mlp_kwargs_output</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_features</span> <span class="o">=</span> <span class="n">out_features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_features_value</span> <span class="o">=</span> <span class="n">out_features_value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">advantage</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span>
+            <span class="n">out_features</span><span class="o">=</span><span class="n">out_features</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="n">_mlp_kwargs_output</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span>
+            <span class="n">out_features</span><span class="o">=</span><span class="n">out_features_value</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="n">_mlp_kwargs_output</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">modules</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
+                <span class="n">layer</span><span class="o">.</span><span class="n">bias</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
+            <span class="p">):</span>
+                <span class="n">layer</span><span class="o">.</span><span class="n">bias</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">advantage</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">advantage</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span> <span class="o">+</span> <span class="n">advantage</span> <span class="o">-</span> <span class="n">advantage</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="DuelingCnnDQNet"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.DuelingCnnDQNet.html#torchrl.modules.DuelingCnnDQNet">[docs]</a><span class="k">class</span> <span class="nc">DuelingCnnDQNet</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Dueling CNN Q-network.</span>
+
+<span class="sd">    Presented in https://arxiv.org/abs/1511.06581</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        out_features (int): number of features for the advantage network</span>
+<span class="sd">        out_features_value (int): number of features for the value network</span>
+<span class="sd">        cnn_kwargs (dict, optional): kwargs for the feature network.</span>
+<span class="sd">            Default is</span>
+
+<span class="sd">            &gt;&gt;&gt; cnn_kwargs = {</span>
+<span class="sd">            ...     &#39;num_cells&#39;: [32, 64, 64],</span>
+<span class="sd">            ...     &#39;strides&#39;: [4, 2, 1],</span>
+<span class="sd">            ...     &#39;kernels&#39;: [8, 4, 3],</span>
+<span class="sd">            ... }</span>
+
+<span class="sd">        mlp_kwargs (dict, optional): kwargs for the advantage and value network.</span>
+<span class="sd">            Default is</span>
+
+<span class="sd">            &gt;&gt;&gt; mlp_kwargs = {</span>
+<span class="sd">            ...     &quot;depth&quot;: 1,</span>
+<span class="sd">            ...     &quot;activation_class&quot;: nn.ELU,</span>
+<span class="sd">            ...     &quot;num_cells&quot;: 512,</span>
+<span class="sd">            ...     &quot;bias_last_layer&quot;: True,</span>
+<span class="sd">            ... }</span>
+
+<span class="sd">        device (Optional[DEVICE_TYPING]): device to create the module on.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">out_features</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">out_features_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">cnn_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mlp_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DEVICE_TYPING</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="n">cnn_kwargs</span> <span class="o">=</span> <span class="n">cnn_kwargs</span> <span class="k">if</span> <span class="n">cnn_kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">_cnn_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;num_cells&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">32</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">],</span>
+            <span class="s2">&quot;strides&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="s2">&quot;kernel_sizes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+        <span class="p">}</span>
+        <span class="n">_cnn_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">cnn_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">ConvNet</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="n">_cnn_kwargs</span><span class="p">)</span>
+
+        <span class="n">_mlp_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;depth&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;activation_class&quot;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">ELU</span><span class="p">,</span>
+            <span class="s2">&quot;num_cells&quot;</span><span class="p">:</span> <span class="mi">512</span><span class="p">,</span>
+            <span class="s2">&quot;bias_last_layer&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">mlp_kwargs</span> <span class="o">=</span> <span class="n">mlp_kwargs</span> <span class="k">if</span> <span class="n">mlp_kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">_mlp_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">mlp_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_features</span> <span class="o">=</span> <span class="n">out_features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_features_value</span> <span class="o">=</span> <span class="n">out_features_value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">advantage</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="n">out_features</span><span class="o">=</span><span class="n">out_features</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="n">_mlp_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="n">out_features</span><span class="o">=</span><span class="n">out_features_value</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="n">_mlp_kwargs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">modules</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
+                <span class="n">layer</span><span class="o">.</span><span class="n">bias</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
+            <span class="p">):</span>
+                <span class="n">layer</span><span class="o">.</span><span class="n">bias</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+
+<div class="viewcode-block" id="DuelingCnnDQNet.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.DuelingCnnDQNet.html#torchrl.modules.DuelingCnnDQNet.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">advantage</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">advantage</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span> <span class="o">+</span> <span class="n">advantage</span> <span class="o">-</span> <span class="n">advantage</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="DistributionalDQNnet"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.DistributionalDQNnet.html#torchrl.modules.DistributionalDQNnet">[docs]</a><span class="k">class</span> <span class="nc">DistributionalDQNnet</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Distributional Deep Q-Network.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        DQNet (nn.Module): Q-Network with output length equal to the number of atoms:</span>
+<span class="sd">            output.shape = [*batch, atoms, actions].</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_wrong_out_feature_dims_error</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;DistributionalDQNnet requires dqn output to be at least &quot;</span>
+        <span class="s2">&quot;2-dimensional, with dimensions *Batch x #Atoms x #Actions. Got </span><span class="si">{0}</span><span class="s2"> &quot;</span>
+        <span class="s2">&quot;instead.&quot;</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DQNet</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">DQNet</span><span class="o">.</span><span class="n">out_features</span><span class="p">,</span> <span class="n">Number</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">DQNet</span><span class="o">.</span><span class="n">out_features</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wrong_out_feature_dims_error</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dqn</span> <span class="o">=</span> <span class="n">DQNet</span>
+
+<div class="viewcode-block" id="DistributionalDQNnet.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.DistributionalDQNnet.html#torchrl.modules.DistributionalDQNnet.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">q_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dqn</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">q_values</span><span class="o">.</span><span class="n">ndimension</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_wrong_out_feature_dims_error</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">q_values</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">q_values</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span></div></div>
+
+
+<span class="k">def</span> <span class="nf">ddpg_init_last_layer</span><span class="p">(</span>
+    <span class="n">last_layer</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+    <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">6e-4</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DEVICE_TYPING</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Initializer for the last layer of DDPG.</span>
+
+<span class="sd">    Presented in &quot;CONTINUOUS CONTROL WITH DEEP REINFORCEMENT LEARNING&quot;,</span>
+<span class="sd">    https://arxiv.org/pdf/1509.02971.pdf</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">last_layer</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy_</span><span class="p">(</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">rand_like</span><span class="p">(</span><span class="n">last_layer</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale</span> <span class="o">-</span> <span class="n">scale</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">last_layer</span><span class="o">.</span><span class="n">bias</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">last_layer</span><span class="o">.</span><span class="n">bias</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy_</span><span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">rand_like</span><span class="p">(</span><span class="n">last_layer</span><span class="o">.</span><span class="n">bias</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale</span> <span class="o">-</span> <span class="n">scale</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="p">)</span>
+
+
+<div class="viewcode-block" id="DdpgCnnActor"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.DdpgCnnActor.html#torchrl.modules.DdpgCnnActor">[docs]</a><span class="k">class</span> <span class="nc">DdpgCnnActor</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;DDPG Convolutional Actor class.</span>
+
+<span class="sd">    Presented in &quot;CONTINUOUS CONTROL WITH DEEP REINFORCEMENT LEARNING&quot;,</span>
+<span class="sd">    https://arxiv.org/pdf/1509.02971.pdf</span>
+
+<span class="sd">    The DDPG Convolutional Actor takes as input an observation (some simple transformation of the observed pixels) and</span>
+<span class="sd">    returns an action vector from it.</span>
+<span class="sd">    It is trained to maximise the value returned by the DDPG Q Value network.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        action_dim (int): length of the action vector.</span>
+<span class="sd">        conv_net_kwargs (dict, optional): kwargs for the ConvNet.</span>
+<span class="sd">            default: {</span>
+<span class="sd">            &#39;in_features&#39;: None,</span>
+<span class="sd">            &quot;num_cells&quot;: [32, 64, 64],</span>
+<span class="sd">            &quot;kernel_sizes&quot;: [8, 4, 3],</span>
+<span class="sd">            &quot;strides&quot;: [4, 2, 1],</span>
+<span class="sd">            &quot;paddings&quot;: [0, 0, 1],</span>
+<span class="sd">            &#39;activation_class&#39;: nn.ELU,</span>
+<span class="sd">            &#39;norm_class&#39;: None,</span>
+<span class="sd">            &#39;aggregator_class&#39;: SquashDims,</span>
+<span class="sd">            &#39;aggregator_kwargs&#39;: {&quot;ndims_in&quot;: 3},</span>
+<span class="sd">            &#39;squeeze_output&#39;: True,</span>
+<span class="sd">        }</span>
+<span class="sd">        mlp_net_kwargs: kwargs for MLP.</span>
+<span class="sd">            Default: {</span>
+<span class="sd">            &#39;in_features&#39;: None,</span>
+<span class="sd">            &#39;out_features&#39;: action_dim,</span>
+<span class="sd">            &#39;depth&#39;: 2,</span>
+<span class="sd">            &#39;num_cells&#39;: 200,</span>
+<span class="sd">            &#39;activation_class&#39;: nn.ELU,</span>
+<span class="sd">            &#39;bias_last_layer&#39;: True,</span>
+<span class="sd">        }</span>
+<span class="sd">        use_avg_pooling (bool, optional): if True, a nn.AvgPooling layer is</span>
+<span class="sd">            used to aggregate the output. Default is :obj:`False`.</span>
+<span class="sd">        device (Optional[DEVICE_TYPING]): device to create the module on.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">action_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">conv_net_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mlp_net_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_avg_pooling</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DEVICE_TYPING</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">conv_net_default_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;in_features&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;num_cells&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">32</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">],</span>
+            <span class="s2">&quot;kernel_sizes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+            <span class="s2">&quot;strides&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="s2">&quot;paddings&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="s2">&quot;activation_class&quot;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">ELU</span><span class="p">,</span>
+            <span class="s2">&quot;norm_class&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;aggregator_class&quot;</span><span class="p">:</span> <span class="n">SquashDims</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">use_avg_pooling</span>
+            <span class="k">else</span> <span class="n">nn</span><span class="o">.</span><span class="n">AdaptiveAvgPool2d</span><span class="p">,</span>
+            <span class="s2">&quot;aggregator_kwargs&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;ndims_in&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">use_avg_pooling</span>
+            <span class="k">else</span> <span class="p">{</span><span class="s2">&quot;output_size&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)},</span>
+            <span class="s2">&quot;squeeze_output&quot;</span><span class="p">:</span> <span class="n">use_avg_pooling</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">conv_net_kwargs</span> <span class="o">=</span> <span class="n">conv_net_kwargs</span> <span class="k">if</span> <span class="n">conv_net_kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">conv_net_default_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">conv_net_kwargs</span><span class="p">)</span>
+        <span class="n">mlp_net_default_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;in_features&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;out_features&quot;</span><span class="p">:</span> <span class="n">action_dim</span><span class="p">,</span>
+            <span class="s2">&quot;depth&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s2">&quot;num_cells&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+            <span class="s2">&quot;activation_class&quot;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">ELU</span><span class="p">,</span>
+            <span class="s2">&quot;bias_last_layer&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">mlp_net_kwargs</span> <span class="o">=</span> <span class="n">mlp_net_kwargs</span> <span class="k">if</span> <span class="n">mlp_net_kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">mlp_net_default_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">mlp_net_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convnet</span> <span class="o">=</span> <span class="n">ConvNet</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="n">conv_net_default_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="n">mlp_net_default_kwargs</span><span class="p">)</span>
+        <span class="n">ddpg_init_last_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mlp</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mf">6e-4</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DdpgCnnActor.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.DdpgCnnActor.html#torchrl.modules.DdpgCnnActor.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+        <span class="n">hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convnet</span><span class="p">(</span><span class="n">observation</span><span class="p">)</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span><span class="p">(</span><span class="n">hidden</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">action</span><span class="p">,</span> <span class="n">hidden</span></div></div>
+
+
+<div class="viewcode-block" id="DdpgMlpActor"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.DdpgMlpActor.html#torchrl.modules.DdpgMlpActor">[docs]</a><span class="k">class</span> <span class="nc">DdpgMlpActor</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;DDPG Actor class.</span>
+
+<span class="sd">    Presented in &quot;CONTINUOUS CONTROL WITH DEEP REINFORCEMENT LEARNING&quot;,</span>
+<span class="sd">    https://arxiv.org/pdf/1509.02971.pdf</span>
+
+<span class="sd">    The DDPG Actor takes as input an observation vector and returns an action from it.</span>
+<span class="sd">    It is trained to maximise the value returned by the DDPG Q Value network.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        action_dim (int): length of the action vector</span>
+<span class="sd">        mlp_net_kwargs (dict, optional): kwargs for MLP.</span>
+<span class="sd">            Default: {</span>
+<span class="sd">            &#39;in_features&#39;: None,</span>
+<span class="sd">            &#39;out_features&#39;: action_dim,</span>
+<span class="sd">            &#39;depth&#39;: 2,</span>
+<span class="sd">            &#39;num_cells&#39;: [400, 300],</span>
+<span class="sd">            &#39;activation_class&#39;: nn.ELU,</span>
+<span class="sd">            &#39;bias_last_layer&#39;: True,</span>
+<span class="sd">        }</span>
+<span class="sd">        device (Optional[DEVICE_TYPING]): device to create the module on.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">action_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">mlp_net_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DEVICE_TYPING</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">mlp_net_default_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;in_features&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;out_features&quot;</span><span class="p">:</span> <span class="n">action_dim</span><span class="p">,</span>
+            <span class="s2">&quot;depth&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s2">&quot;num_cells&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">400</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span>
+            <span class="s2">&quot;activation_class&quot;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">ELU</span><span class="p">,</span>
+            <span class="s2">&quot;bias_last_layer&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">mlp_net_kwargs</span> <span class="o">=</span> <span class="n">mlp_net_kwargs</span> <span class="k">if</span> <span class="n">mlp_net_kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">mlp_net_default_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">mlp_net_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="n">mlp_net_default_kwargs</span><span class="p">)</span>
+        <span class="n">ddpg_init_last_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mlp</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mf">6e-3</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DdpgMlpActor.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.DdpgMlpActor.html#torchrl.modules.DdpgMlpActor.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span><span class="p">(</span><span class="n">observation</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">action</span></div></div>
+
+
+<div class="viewcode-block" id="DdpgCnnQNet"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.DdpgCnnQNet.html#torchrl.modules.DdpgCnnQNet">[docs]</a><span class="k">class</span> <span class="nc">DdpgCnnQNet</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;DDPG Convolutional Q-value class.</span>
+
+<span class="sd">    Presented in &quot;CONTINUOUS CONTROL WITH DEEP REINFORCEMENT LEARNING&quot;,</span>
+<span class="sd">    https://arxiv.org/pdf/1509.02971.pdf</span>
+
+<span class="sd">    The DDPG Q-value network takes as input an observation and an action, and returns a scalar from it.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        conv_net_kwargs (dict, optional): kwargs for the convolutional network.</span>
+<span class="sd">            default: {</span>
+<span class="sd">            &#39;in_features&#39;: None,</span>
+<span class="sd">            &quot;num_cells&quot;: [32, 64, 128],</span>
+<span class="sd">            &quot;kernel_sizes&quot;: [8, 4, 3],</span>
+<span class="sd">            &quot;strides&quot;: [4, 2, 1],</span>
+<span class="sd">            &quot;paddings&quot;: [0, 0, 1],</span>
+<span class="sd">            &#39;activation_class&#39;: nn.ELU,</span>
+<span class="sd">            &#39;norm_class&#39;: None,</span>
+<span class="sd">            &#39;aggregator_class&#39;: nn.AdaptiveAvgPool2d,</span>
+<span class="sd">            &#39;aggregator_kwargs&#39;: {},</span>
+<span class="sd">            &#39;squeeze_output&#39;: True,</span>
+<span class="sd">        }</span>
+<span class="sd">        mlp_net_kwargs (dict, optional): kwargs for MLP.</span>
+<span class="sd">            Default: {</span>
+<span class="sd">            &#39;in_features&#39;: None,</span>
+<span class="sd">            &#39;out_features&#39;: 1,</span>
+<span class="sd">            &#39;depth&#39;: 2,</span>
+<span class="sd">            &#39;num_cells&#39;: 200,</span>
+<span class="sd">            &#39;activation_class&#39;: nn.ELU,</span>
+<span class="sd">            &#39;bias_last_layer&#39;: True,</span>
+<span class="sd">        }</span>
+<span class="sd">        use_avg_pooling (bool, optional): if True, a nn.AvgPooling layer is</span>
+<span class="sd">            used to aggregate the output. Default is :obj:`True`.</span>
+<span class="sd">        device (Optional[DEVICE_TYPING]): device to create the module on.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">conv_net_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mlp_net_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_avg_pooling</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DEVICE_TYPING</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">conv_net_default_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;in_features&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;num_cells&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">32</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">128</span><span class="p">],</span>
+            <span class="s2">&quot;kernel_sizes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+            <span class="s2">&quot;strides&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="s2">&quot;paddings&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="s2">&quot;activation_class&quot;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">ELU</span><span class="p">,</span>
+            <span class="s2">&quot;norm_class&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;aggregator_class&quot;</span><span class="p">:</span> <span class="n">SquashDims</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">use_avg_pooling</span>
+            <span class="k">else</span> <span class="n">nn</span><span class="o">.</span><span class="n">AdaptiveAvgPool2d</span><span class="p">,</span>
+            <span class="s2">&quot;aggregator_kwargs&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;ndims_in&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">use_avg_pooling</span>
+            <span class="k">else</span> <span class="p">{</span><span class="s2">&quot;output_size&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)},</span>
+            <span class="s2">&quot;squeeze_output&quot;</span><span class="p">:</span> <span class="n">use_avg_pooling</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">conv_net_kwargs</span> <span class="o">=</span> <span class="n">conv_net_kwargs</span> <span class="k">if</span> <span class="n">conv_net_kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">conv_net_default_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">conv_net_kwargs</span><span class="p">)</span>
+        <span class="n">mlp_net_default_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;in_features&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;out_features&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;depth&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s2">&quot;num_cells&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+            <span class="s2">&quot;activation_class&quot;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">ELU</span><span class="p">,</span>
+            <span class="s2">&quot;bias_last_layer&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">mlp_net_kwargs</span> <span class="o">=</span> <span class="n">mlp_net_kwargs</span> <span class="k">if</span> <span class="n">mlp_net_kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">mlp_net_default_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">mlp_net_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convnet</span> <span class="o">=</span> <span class="n">ConvNet</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="n">conv_net_default_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="n">mlp_net_default_kwargs</span><span class="p">)</span>
+        <span class="n">ddpg_init_last_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mlp</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mf">6e-4</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DdpgCnnQNet.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.DdpgCnnQNet.html#torchrl.modules.DdpgCnnQNet.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">hidden</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">convnet</span><span class="p">(</span><span class="n">observation</span><span class="p">),</span> <span class="n">action</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span><span class="p">(</span><span class="n">hidden</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span></div></div>
+
+
+<div class="viewcode-block" id="DdpgMlpQNet"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.DdpgMlpQNet.html#torchrl.modules.DdpgMlpQNet">[docs]</a><span class="k">class</span> <span class="nc">DdpgMlpQNet</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;DDPG Q-value MLP class.</span>
+
+<span class="sd">    Presented in &quot;CONTINUOUS CONTROL WITH DEEP REINFORCEMENT LEARNING&quot;,</span>
+<span class="sd">    https://arxiv.org/pdf/1509.02971.pdf</span>
+
+<span class="sd">    The DDPG Q-value network takes as input an observation and an action, and returns a scalar from it.</span>
+<span class="sd">    Because actions are integrated later than observations, two networks are created.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        mlp_net_kwargs_net1 (dict, optional): kwargs for MLP.</span>
+<span class="sd">            Default: {</span>
+<span class="sd">            &#39;in_features&#39;: None,</span>
+<span class="sd">            &#39;out_features&#39;: 400,</span>
+<span class="sd">            &#39;depth&#39;: 0,</span>
+<span class="sd">            &#39;num_cells&#39;: [],</span>
+<span class="sd">            &#39;activation_class&#39;: nn.ELU,</span>
+<span class="sd">            &#39;bias_last_layer&#39;: True,</span>
+<span class="sd">            &#39;activate_last_layer&#39;: True,</span>
+<span class="sd">        }</span>
+<span class="sd">        mlp_net_kwargs_net2</span>
+<span class="sd">            Default: {</span>
+<span class="sd">            &#39;in_features&#39;: None,</span>
+<span class="sd">            &#39;out_features&#39;: 1,</span>
+<span class="sd">            &#39;depth&#39;: 1,</span>
+<span class="sd">            &#39;num_cells&#39;: [300, ],</span>
+<span class="sd">            &#39;activation_class&#39;: nn.ELU,</span>
+<span class="sd">            &#39;bias_last_layer&#39;: True,</span>
+<span class="sd">        }</span>
+<span class="sd">        device (Optional[DEVICE_TYPING]): device to create the module on.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">mlp_net_kwargs_net1</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mlp_net_kwargs_net2</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DEVICE_TYPING</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">mlp1_net_default_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;in_features&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;out_features&quot;</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span>
+            <span class="s2">&quot;depth&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;num_cells&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;activation_class&quot;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">ELU</span><span class="p">,</span>
+            <span class="s2">&quot;bias_last_layer&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;activate_last_layer&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">mlp_net_kwargs_net1</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">mlp_net_kwargs_net1</span> <span class="k">if</span> <span class="n">mlp_net_kwargs_net1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="p">)</span>
+        <span class="n">mlp1_net_default_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">mlp_net_kwargs_net1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mlp1</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="n">mlp1_net_default_kwargs</span><span class="p">)</span>
+
+        <span class="n">mlp2_net_default_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;in_features&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;out_features&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;num_cells&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="mi">300</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;activation_class&quot;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">ELU</span><span class="p">,</span>
+            <span class="s2">&quot;bias_last_layer&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">mlp_net_kwargs_net2</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">mlp_net_kwargs_net2</span> <span class="k">if</span> <span class="n">mlp_net_kwargs_net2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="p">)</span>
+        <span class="n">mlp2_net_default_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">mlp_net_kwargs_net2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mlp2</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="n">mlp2_net_default_kwargs</span><span class="p">)</span>
+        <span class="n">ddpg_init_last_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mlp2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mf">6e-3</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DdpgMlpQNet.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.DdpgMlpQNet.html#torchrl.modules.DdpgMlpQNet.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlp2</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">mlp1</span><span class="p">(</span><span class="n">observation</span><span class="p">),</span> <span class="n">action</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">value</span></div></div>
+
+
+<div class="viewcode-block" id="LSTMNet"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.LSTMNet.html#torchrl.modules.LSTMNet">[docs]</a><span class="k">class</span> <span class="nc">LSTMNet</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An embedder for an LSTM preceded by an MLP.</span>
+
+<span class="sd">    The forward method returns the hidden states of the current state (input hidden states) and the output, as</span>
+<span class="sd">    the environment returns the &#39;observation&#39; and &#39;next_observation&#39;.</span>
+
+<span class="sd">    Because the LSTM kernel only returns the last hidden state, hidden states</span>
+<span class="sd">    are padded with zeros such that they have the right size to be stored in a</span>
+<span class="sd">    TensorDict of size [batch x time_steps].</span>
+
+<span class="sd">    If a 2D tensor is provided as input, it is assumed that it is a batch of data</span>
+<span class="sd">    with only one time step. This means that we explicitely assume that users will</span>
+<span class="sd">    unsqueeze inputs of a single batch with multiple time steps.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; batch = 7</span>
+<span class="sd">        &gt;&gt;&gt; time_steps = 6</span>
+<span class="sd">        &gt;&gt;&gt; in_features = 4</span>
+<span class="sd">        &gt;&gt;&gt; net = LSTMNet(</span>
+<span class="sd">        ...     out_features,</span>
+<span class="sd">        ...     {&quot;input_size&quot;: hidden_size, &quot;hidden_size&quot;: hidden_size},</span>
+<span class="sd">        ...     {&quot;out_features&quot;: hidden_size},</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; # test single step vs multi-step</span>
+<span class="sd">        &gt;&gt;&gt; x = torch.randn(batch, time_steps, in_features)</span>
+<span class="sd">        &gt;&gt;&gt; y, hidden0_in, hidden1_in, hidden0_out, hidden1_out = net(x)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">out_features</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">lstm_kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+        <span class="n">mlp_kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DEVICE_TYPING</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">lstm_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;batch_first&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="n">mlp_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="n">lstm_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LazyLinear</span><span class="p">(</span><span class="n">out_features</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_lstm</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">hidden0_in</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">hidden1_in</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+        <span class="n">squeeze0</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">squeeze1</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="nb">input</span><span class="o">.</span><span class="n">ndimension</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">squeeze0</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="nb">input</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">input</span><span class="o">.</span><span class="n">ndimension</span><span class="p">()</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">squeeze1</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="nb">input</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
+        <span class="n">batch</span><span class="p">,</span> <span class="n">steps</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">hidden1_in</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">hidden0_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">steps</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">squeeze1</span> <span class="k">else</span> <span class="p">(</span><span class="n">batch</span><span class="p">,)</span>
+            <span class="n">hidden0_in</span><span class="p">,</span> <span class="n">hidden1_in</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                    <span class="o">*</span><span class="n">shape</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span><span class="o">.</span><span class="n">num_layers</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span>
+                    <span class="n">device</span><span class="o">=</span><span class="nb">input</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+                    <span class="n">dtype</span><span class="o">=</span><span class="nb">input</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="k">elif</span> <span class="n">hidden1_in</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">hidden0_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;got type(hidden0)=</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">hidden0_in</span><span class="p">)</span><span class="si">}</span><span class="s2"> and type(hidden1)=</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">hidden1_in</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">squeeze0</span><span class="p">:</span>
+            <span class="n">hidden0_in</span> <span class="o">=</span> <span class="n">hidden0_in</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">hidden1_in</span> <span class="o">=</span> <span class="n">hidden1_in</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># we only need the first hidden state</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">squeeze1</span><span class="p">:</span>
+            <span class="n">_hidden0_in</span> <span class="o">=</span> <span class="n">hidden0_in</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">_hidden1_in</span> <span class="o">=</span> <span class="n">hidden1_in</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_hidden0_in</span> <span class="o">=</span> <span class="n">hidden0_in</span>
+            <span class="n">_hidden1_in</span> <span class="o">=</span> <span class="n">hidden1_in</span>
+        <span class="n">hidden</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">_hidden0_in</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">contiguous</span><span class="p">(),</span>
+            <span class="n">_hidden1_in</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">contiguous</span><span class="p">(),</span>
+        <span class="p">)</span>
+
+        <span class="n">y0</span><span class="p">,</span> <span class="n">hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">hidden</span><span class="p">)</span>
+        <span class="c1"># dim 0 in hidden is num_layers, but that will conflict with tensordict</span>
+        <span class="n">hidden</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">_h</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">_h</span> <span class="ow">in</span> <span class="n">hidden</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">y0</span><span class="p">)</span>
+
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">hidden0_in</span><span class="p">,</span> <span class="n">hidden1_in</span><span class="p">,</span> <span class="o">*</span><span class="n">hidden</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">squeeze1</span><span class="p">:</span>
+            <span class="c1"># squeezes time</span>
+            <span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">squeeze1</span><span class="p">:</span>
+            <span class="c1"># we pad the hidden states with zero to make tensordict happy</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+                <span class="n">out</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
+                    <span class="o">+</span> <span class="p">[</span><span class="n">out</span><span class="p">[</span><span class="n">i</span><span class="p">]],</span>
+                    <span class="mi">1</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="k">if</span> <span class="n">squeeze0</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="n">_out</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">_out</span> <span class="ow">in</span> <span class="n">out</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LSTMNet.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.LSTMNet.html#torchrl.modules.LSTMNet.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">hidden0_in</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">hidden1_in</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+
+        <span class="nb">input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lstm</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">hidden0_in</span><span class="p">,</span> <span class="n">hidden1_in</span><span class="p">)</span></div></div>
+</pre></div>
+
+             </article>
+             
+            </div>
+            <footer>
+  
+
+  
+
+    <hr>
+
+  
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2022, Meta.
+
+    </p>
+  </div>
+    
+      <div>
+        Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+      </div>
+     
+
+</footer>
+
+          </div>
+        </div>
+
+        <div class="pytorch-content-right" id="pytorch-content-right">
+          <div class="pytorch-right-menu" id="pytorch-right-menu">
+            <div class="pytorch-side-scroll" id="pytorch-side-scroll-right">
+              
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  
+
+
+  
+
+     
+       <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+         <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+         <script src="../../../../_static/jquery.js"></script>
+         <script src="../../../../_static/underscore.js"></script>
+         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+         <script src="../../../../_static/doctools.js"></script>
+         <script src="../../../../_static/sphinx_highlight.js"></script>
+     
+
+  
+
+  <script type="text/javascript" src="../../../../_static/js/vendor/popper.min.js"></script>
+  <script type="text/javascript" src="../../../../_static/js/vendor/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+  <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+  <!-- Begin Footer -->
+
+  <div class="container-fluid docs-tutorials-resources" id="docs-tutorials-resources">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 text-center">
+          <h2>Docs</h2>
+          <p>Access comprehensive developer documentation for PyTorch</p>
+          <a class="with-right-arrow" href="https://pytorch.org/docs/stable/index.html">View Docs</a>
+        </div>
+
+        <div class="col-md-4 text-center">
+          <h2>Tutorials</h2>
+          <p>Get in-depth tutorials for beginners and advanced developers</p>
+          <a class="with-right-arrow" href="https://pytorch.org/tutorials">View Tutorials</a>
+        </div>
+
+        <div class="col-md-4 text-center">
+          <h2>Resources</h2>
+          <p>Find development resources and get your questions answered</p>
+          <a class="with-right-arrow" href="https://pytorch.org/resources">View Resources</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-logo-wrapper">
+        <a href="https://pytorch.org/" class="footer-logo"></a>
+      </div>
+
+      <div class="footer-links-wrapper">
+        <div class="footer-links-col">
+          <ul>
+            <li class="list-title"><a href="https://pytorch.org/">PyTorch</a></li>
+            <li><a href="https://pytorch.org/get-started">Get Started</a></li>
+            <li><a href="https://pytorch.org/features">Features</a></li>
+            <li><a href="https://pytorch.org/ecosystem">Ecosystem</a></li>
+            <li><a href="https://pytorch.org/blog/">Blog</a></li>
+            <li><a href="https://github.com/pytorch/pytorch/blob/master/CONTRIBUTING.md">Contributing</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <ul>
+            <li class="list-title"><a href="https://pytorch.org/resources">Resources</a></li>
+            <li><a href="https://pytorch.org/tutorials">Tutorials</a></li>
+            <li><a href="https://pytorch.org/docs/stable/index.html">Docs</a></li>
+            <li><a href="https://discuss.pytorch.org" target="_blank">Discuss</a></li>
+            <li><a href="https://github.com/pytorch/pytorch/issues" target="_blank">Github Issues</a></li>
+            <li><a href="https://pytorch.org/assets/brand-guidelines/PyTorch-Brand-Guidelines.pdf" target="_blank">Brand Guidelines</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <ul>
+            <li class="list-title">Stay up to date</li>
+            <li><a href="https://www.facebook.com/pytorch" target="_blank">Facebook</a></li>
+            <li><a href="https://twitter.com/pytorch" target="_blank">Twitter</a></li>
+            <li><a href="https://www.youtube.com/pytorch" target="_blank">YouTube</a></li>
+            <li><a href="https://www.linkedin.com/company/pytorch" target="_blank">LinkedIn</a></li>
+          </ul>
+          </div>
+
+        <div class="footer-links-col">
+          <ul>
+            <li class="list-title">PyTorch Podcasts</li>
+            <li><a href="https://open.spotify.com/show/6UzHKeiy368jKfQMKKvJY5" target="_blank">Spotify</a></li>
+            <li><a href="https://podcasts.apple.com/us/podcast/pytorch-developer-podcast/id1566080008" target="_blank">Apple</a></li>
+            <li><a href="https://www.google.com/podcasts?feed=aHR0cHM6Ly9mZWVkcy5zaW1wbGVjYXN0LmNvbS9PQjVGa0lsOA%3D%3D" target="_blank">Google</a></li>
+            <li><a href="https://music.amazon.com/podcasts/7a4e6f0e-26c2-49e9-a478-41bd244197d0/PyTorch-Developer-Podcast?" target="_blank">Amazon</a></li>
+          </ul>
+         </div>
+        </div>
+
+        <div class="privacy-policy">
+          <ul>
+            <li class="privacy-policy-links"><a href="https://www.linuxfoundation.org/terms/" target="_blank">Terms</a></li>
+            <li class="privacy-policy-links">|</li>
+            <li class="privacy-policy-links"><a href="https://www.linuxfoundation.org/privacy-policy/" target="_blank">Privacy</a></li>
+          </ul>
+        </div>
+        <div class="copyright">
+        <p>© Copyright The Linux Foundation. The PyTorch Foundation is a project of The Linux Foundation.
+          For web site terms of use, trademark policy and other policies applicable to The PyTorch Foundation please see
+          <a href="www.linuxfoundation.org/policies/">www.linuxfoundation.org/policies/</a>. The PyTorch Foundation supports the PyTorch open source
+          project, which has been established as PyTorch Project a Series of LF Projects, LLC. For policies applicable to the PyTorch Project a Series of LF Projects, LLC,
+          please see <a href="www.lfprojects.org/policies/">www.lfprojects.org/policies/</a>.</p>
+      </div>
+     </div>
+
+  </footer>
+
+  <div class="cookie-banner-wrapper">
+  <div class="container">
+    <p class="gdpr-notice">To analyze traffic and optimize your experience, we serve cookies on this site. By clicking or navigating, you agree to allow our usage of cookies. As the current maintainers of this site, Facebook’s Cookies Policy applies. Learn more, including about available controls: <a href="https://www.facebook.com/policies/cookies/">Cookies Policy</a>.</p>
+    <img class="close-button" src="../../../../_static/images/pytorch-x.svg">
+  </div>
+</div>
+
+  <!-- End Footer -->
+
+  <!-- Begin Mobile Menu -->
+
+  <div class="mobile-main-menu">
+    <div class="container-fluid">
+      <div class="container">
+        <div class="mobile-main-menu-header-container">
+          <a class="header-logo" href="https://pytorch.org/" aria-label="PyTorch"></a>
+          <a class="main-menu-close-button" href="#" data-behavior="close-mobile-menu"></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mobile-main-menu-links-container">
+      <div class="main-menu">
+        <ul>
+          <li>
+            <a href="https://pytorch.org/get-started">Get Started</a>
+          </li>
+
+          <li>
+            <a href="https://pytorch.org/ecosystem">Ecosystem</a>
+          </li>
+
+          <li>
+            <a href="https://pytorch.org/mobile">Mobile</a>
+          </li>
+
+          <li>
+            <a href="https://pytorch.org/blog/">Blog</a>
+          </li>
+
+          <li>
+            <a href="https://pytorch.org/tutorials">Tutorials</a>
+          </li>
+
+          <li class="resources-mobile-menu-title">
+            Docs
+          </li>
+
+          <ul class="resources-mobile-menu-items">
+            <li>
+              <a href="https://pytorch.org/docs/stable/index.html">PyTorch</a>
+            </li>
+
+            <li>
+              <a href="https://pytorch.org/audio/stable/index.html">torchaudio</a>
+            </li>
+
+            <li>
+              <a href="https://pytorch.org/text/stable/index.html">torchtext</a>
+            </li>
+
+            <li>
+              <a href="https://pytorch.org/vision/stable/index.html">torchvision</a>
+            </li>
+
+            <li>
+              <a href="https://pytorch.org/torcharrow">torcharrow</a>
+            </li>
+
+            <li>
+              <a href="https://pytorch.org/data">TorchData</a>
+            </li>
+
+            <li>
+              <a href="https://pytorch.org/torchrec">TorchRec</a>
+            </li>
+
+            <li>
+              <a href="https://pytorch.org/serve/">TorchServe</a>
+            </li>
+
+            <li>
+              <a href="https://pytorch.org/torchx/">TorchX</a>
+            </li>
+
+            <li>
+              <a href="https://pytorch.org/xla">PyTorch on XLA Devices</a>
+            </li>
+          </ul>
+
+          <li class="resources-mobile-menu-title">
+            Resources
+          </li>
+
+           <ul class="resources-mobile-menu-items">
+
+            <li>
+              <a href="https://pytorch.org/features">About</a>
+            </li>
+
+            <li>
+              <a href="https://pytorch.org/foundation">PyTorch Foundation</a>
+            </li>
+
+            <li>
+              <a href="https://pytorch.org/#community-module">Community</a>
+            </li>
+
+            <li>
+              <a href="https://pytorch.org/community-stories">Community Stories</a>
+            </li>
+
+            <li>
+              <a href="https://pytorch.org/resources">Developer Resources</a>
+            </li>
+
+            <li>
+              <a href="https://pytorch.org/events">Events</a>
+            </li>
+
+            <li>
+              <a href="https://discuss.pytorch.org/">Forums</a>
+            </li>
+
+            <li>
+              <a href="https://pytorch.org/hub">Models (Beta)</a>
+            </li>
+          </ul>
+
+          <li>
+            <a href="https://github.com/pytorch/pytorch">Github</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- End Mobile Menu -->
+
+  <script type="text/javascript" src="../../../../_static/js/vendor/anchor.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      mobileMenu.bind();
+      mobileTOC.bind();
+      pytorchAnchors.bind();
+      sideMenus.bind();
+      scrollToAnchor.bind();
+      highlightNavigation.bind();
+      mainMenuDropdown.bind();
+      filterTags.bind();
+
+      // Add class to links that have code blocks, since we cannot create links in code blocks
+      $("article.pytorch-article a span.pre").each(function(e) {
+        $(this).closest("a").addClass("has-code");
+      });
+    })
+  </script>
+</body>
+</html>

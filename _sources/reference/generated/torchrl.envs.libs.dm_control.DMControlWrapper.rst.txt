@@ -1,0 +1,7 @@
+﻿.. currentmodule:: torchrl.envs.libs.dm_control
+
+
+DMControlWrapper
+================
+
+.. autofunction:: DMControlWrapper

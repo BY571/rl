@@ -1,0 +1,8 @@
+﻿.. currentmodule:: torchrl.modules.tensordict_module.common
+
+
+ensure_tensordict_compatible
+============================
+
+.. autoclass:: ensure_tensordict_compatible
+    :members:

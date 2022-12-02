@@ -1,0 +1,9 @@
+﻿.. currentmodule:: torchrl.data.replay_buffers.rb_prototype
+
+
+ReplayBuffer
+============
+
+.. autoclass:: ReplayBuffer
+    :members:
+    :inherited-members:

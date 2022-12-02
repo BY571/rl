@@ -1,0 +1,8 @@
+﻿.. currentmodule:: torchrl.modules.tensordict_module.actors
+
+
+DistributionalQValueHook
+========================
+
+.. autoclass:: DistributionalQValueHook
+    :members:

@@ -1,0 +1,7 @@
+﻿.. currentmodule:: torchrl.trainers.helpers
+
+
+make_ppo_model
+==============
+
+.. autofunction:: make_ppo_model

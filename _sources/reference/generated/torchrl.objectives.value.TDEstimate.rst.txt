@@ -1,0 +1,8 @@
+﻿.. currentmodule:: torchrl.objectives.value
+
+
+TDEstimate
+==========
+
+.. autoclass:: TDEstimate
+    :members:
