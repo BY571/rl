@@ -386,13 +386,17 @@ unsqueeze inputs of a single batch with multiple time steps.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">batch</span> <span class="o">=</span> <span class="mi">7</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">time_steps</span> <span class="o">=</span> <span class="mi">6</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">in_features</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out_features</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hidden_size</span> <span class="o">=</span> <span class="mi">5</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">LSTMNet</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">out_features</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="p">{</span><span class="s2">&quot;input_size&quot;</span><span class="p">:</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="s2">&quot;hidden_size&quot;</span><span class="p">:</span> <span class="n">hidden_size</span><span class="p">},</span>
 <span class="gp">... </span>    <span class="p">{</span><span class="s2">&quot;out_features&quot;</span><span class="p">:</span> <span class="n">hidden_size</span><span class="p">},</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># test single step vs multi-step</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">time_steps</span><span class="p">,</span> <span class="n">in_features</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">time_steps</span><span class="p">,</span> <span class="n">in_features</span><span class="p">)</span>  <span class="c1"># &gt;3 dims = multi-step</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span><span class="p">,</span> <span class="n">hidden0_in</span><span class="p">,</span> <span class="n">hidden1_in</span><span class="p">,</span> <span class="n">hidden0_out</span><span class="p">,</span> <span class="n">hidden1_out</span> <span class="o">=</span> <span class="n">net</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">in_features</span><span class="p">)</span>  <span class="c1"># 2 dims = single step</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span><span class="p">,</span> <span class="n">hidden0_in</span><span class="p">,</span> <span class="n">hidden1_in</span><span class="p">,</span> <span class="n">hidden0_out</span><span class="p">,</span> <span class="n">hidden1_out</span> <span class="o">=</span> <span class="n">net</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>

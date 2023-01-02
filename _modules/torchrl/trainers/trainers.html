@@ -423,7 +423,7 @@
 
 
 <span class="k">class</span> <span class="nc">TrainerHookBase</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;An abstract hooking class for torchrl Trainer class.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An abstract hooking class for torchrl Trainer class.&quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">state_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
@@ -439,7 +439,7 @@
 
 
 <div class="viewcode-block" id="Trainer"><a class="viewcode-back" href="../../../reference/generated/torchrl.trainers.Trainer.html#torchrl.trainers.Trainer">[docs]</a><span class="k">class</span> <span class="nc">Trainer</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A generic Trainer class.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A generic Trainer class.</span>
 
 <span class="sd">    A trainer is responsible for collecting data and training the model.</span>
 <span class="sd">    To keep the class as versatile as possible, Trainer does not construct any</span>
@@ -500,7 +500,7 @@
         <span class="n">total_frames</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">frame_skip</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">loss_module</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">LossModule</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">TensorDictBase</span><span class="p">],</span> <span class="n">TensorDictBase</span><span class="p">]],</span>
-        <span class="n">optimizer</span><span class="p">:</span> <span class="n">optim</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">,</span>
+        <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">optim</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">logger</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Logger</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">optim_steps_per_batch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
         <span class="n">clip_grad_norm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -870,7 +870,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_pbar</span><span class="o">.</span><span class="n">set_description</span><span class="p">(</span>
                 <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                     <span class="p">[</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_pbar_str</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="si">:{</span><span class="n">TYPE_DESCR</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pbar_str</span><span class="p">[</span><span class="n">key</span><span class="p">]),</span> <span class="s1">&#39;4.4f&#39;</span><span class="p">)</span><span class="si">}}</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_pbar_str</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="w"> </span><span class="si">:{</span><span class="n">TYPE_DESCR</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pbar_str</span><span class="p">[</span><span class="n">key</span><span class="p">]),</span><span class="w"> </span><span class="s1">&#39;4.4f&#39;</span><span class="p">)</span><span class="si">}}</span><span class="s2">&quot;</span>
                         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pbar_str</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
                     <span class="p">]</span>
                 <span class="p">)</span>
@@ -914,7 +914,7 @@
 
 
 <div class="viewcode-block" id="SelectKeys"><a class="viewcode-back" href="../../../reference/generated/torchrl.trainers.SelectKeys.html#torchrl.trainers.SelectKeys">[docs]</a><span class="k">class</span> <span class="nc">SelectKeys</span><span class="p">(</span><span class="n">TrainerHookBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Selects keys in a TensorDict batch.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Selects keys in a TensorDict batch.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        keys (iterable of strings): keys to be selected in the tensordict.</span>
@@ -959,7 +959,7 @@
 
 
 <span class="k">class</span> <span class="nc">ReplayBufferTrainer</span><span class="p">(</span><span class="n">TrainerHookBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Replay buffer hook provider.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Replay buffer hook provider.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        replay_buffer (ReplayBuffer): replay buffer to be used.</span>
@@ -1008,7 +1008,7 @@
     <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flatten_tensordicts</span><span class="p">:</span>
             <span class="k">if</span> <span class="s2">&quot;mask&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">batch</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+                <span class="n">batch</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">)]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">batch</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1053,8 +1053,8 @@
         <span class="n">trainer</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">OptimizerHook</span><span class="p">(</span><span class="n">TrainerHookBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Add an optimizer for one or more loss components.</span>
+<div class="viewcode-block" id="OptimizerHook"><a class="viewcode-back" href="../../../reference/generated/torchrl.trainers.OptimizerHook.html#torchrl.trainers.OptimizerHook">[docs]</a><span class="k">class</span> <span class="nc">OptimizerHook</span><span class="p">(</span><span class="n">TrainerHookBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add an optimizer for one or more loss components.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        optimizer (optim.Optimizer): An optimizer to apply to the loss_components.</span>
@@ -1129,11 +1129,11 @@
 
     <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trainer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;optimizer&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">trainer</span><span class="o">.</span><span class="n">register_op</span><span class="p">(</span><span class="s2">&quot;optimizer&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="n">trainer</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">trainer</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ClearCudaCache"><a class="viewcode-back" href="../../../reference/generated/torchrl.trainers.ClearCudaCache.html#torchrl.trainers.ClearCudaCache">[docs]</a><span class="k">class</span> <span class="nc">ClearCudaCache</span><span class="p">(</span><span class="n">TrainerHookBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Clears cuda cache at a given interval.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Clears cuda cache at a given interval.</span>
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; clear_cuda = ClearCudaCache(100)</span>
@@ -1152,7 +1152,7 @@
 
 
 <div class="viewcode-block" id="LogReward"><a class="viewcode-back" href="../../../reference/generated/torchrl.trainers.LogReward.html#torchrl.trainers.LogReward">[docs]</a><span class="k">class</span> <span class="nc">LogReward</span><span class="p">(</span><span class="n">TrainerHookBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Reward logger hook.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reward logger hook.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        logname (str, optional): name of the rewards to be logged. Default is :obj:`&quot;r_training&quot;`.</span>
@@ -1172,9 +1172,7 @@
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
         <span class="k">if</span> <span class="s2">&quot;mask&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">return</span> <span class="p">{</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logname</span><span class="p">:</span> <span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">)[</span><span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
-                <span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">item</span><span class="p">(),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logname</span><span class="p">:</span> <span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">)[</span><span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">)]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
                 <span class="s2">&quot;log_pbar&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_pbar</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="k">return</span> <span class="p">{</span>
@@ -1188,7 +1186,7 @@
 
 
 <div class="viewcode-block" id="RewardNormalizer"><a class="viewcode-back" href="../../../reference/generated/torchrl.trainers.RewardNormalizer.html#torchrl.trainers.RewardNormalizer">[docs]</a><span class="k">class</span> <span class="nc">RewardNormalizer</span><span class="p">(</span><span class="n">TrainerHookBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Reward normalizer hook.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reward normalizer hook.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        decay (float, optional): exponential moving average decay parameter.</span>
@@ -1219,7 +1217,7 @@
     <span class="k">def</span> <span class="nf">update_reward_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">reward</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="s2">&quot;mask&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span><span class="p">[</span><span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+            <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span><span class="p">[</span><span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">)]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_has_been_called</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize_has_been_called</span><span class="p">:</span>
             <span class="c1"># We&#39;d like to check that rewards are normalized. Problem is that the trainer can collect data without calling steps...</span>
             <span class="c1"># raise RuntimeError(</span>
@@ -1281,7 +1279,7 @@
 
 
 <span class="k">def</span> <span class="nf">mask_batch</span><span class="p">(</span><span class="n">batch</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Batch masking hook.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Batch masking hook.</span>
 
 <span class="sd">    If a tensordict contained padded trajectories but only single events are</span>
 <span class="sd">    needed, this hook can be used to select the valid events from the original</span>
@@ -1297,12 +1295,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="s2">&quot;mask&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">batch</span><span class="p">[</span><span class="n">mask</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">batch</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">batch</span>
 
 
 <div class="viewcode-block" id="BatchSubSampler"><a class="viewcode-back" href="../../../reference/generated/torchrl.trainers.BatchSubSampler.html#torchrl.trainers.BatchSubSampler">[docs]</a><span class="k">class</span> <span class="nc">BatchSubSampler</span><span class="p">(</span><span class="n">TrainerHookBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Data subsampler for online RL algorithms.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Data subsampler for online RL algorithms.</span>
 
 <span class="sd">    This class subsamples a part of a whole batch of data just collected from the</span>
 <span class="sd">    environment.</span>
@@ -1343,7 +1341,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">min_sub_traj_len</span> <span class="o">=</span> <span class="n">min_sub_traj_len</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Sub-sampled part of a batch randomly.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sub-sampled part of a batch randomly.</span>
 
 <span class="sd">        If the batch has one dimension, a random subsample of length</span>
 <span class="sd">        self.bach_size will be returned. If the batch has two or more</span>
@@ -1359,7 +1357,7 @@
         <span class="k">if</span> <span class="s2">&quot;mask&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="c1"># if a valid mask is present, it&#39;s important to sample only</span>
             <span class="c1"># valid steps</span>
-            <span class="n">traj_len</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+            <span class="n">traj_len</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">sub_traj_len</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">min_sub_traj_len</span><span class="p">,</span>
                 <span class="nb">min</span><span class="p">(</span><span class="n">sub_traj_len</span><span class="p">,</span> <span class="n">traj_len</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">int</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()),</span>
@@ -1370,7 +1368,7 @@
                 <span class="o">*</span> <span class="n">batch</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="p">)</span>
         <span class="n">len_mask</span> <span class="o">=</span> <span class="n">traj_len</span> <span class="o">&gt;=</span> <span class="n">sub_traj_len</span>
-        <span class="n">valid_trajectories</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">batch</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="n">len_mask</span><span class="p">]</span>
+        <span class="n">valid_trajectories</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">batch</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">batch</span><span class="o">.</span><span class="n">device</span><span class="p">)[</span><span class="n">len_mask</span><span class="p">]</span>
 
         <span class="n">batch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">//</span> <span class="n">sub_traj_len</span>
         <span class="k">if</span> <span class="n">batch_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -1430,7 +1428,7 @@
 
 
 <div class="viewcode-block" id="Recorder"><a class="viewcode-back" href="../../../reference/generated/torchrl.trainers.Recorder.html#torchrl.trainers.Recorder">[docs]</a><span class="k">class</span> <span class="nc">Recorder</span><span class="p">(</span><span class="n">TrainerHookBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Recorder hook for Trainer.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Recorder hook for Trainer.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        record_interval (int): total number of optimisation steps</span>
@@ -1553,7 +1551,7 @@
 
 
 <div class="viewcode-block" id="UpdateWeights"><a class="viewcode-back" href="../../../reference/generated/torchrl.trainers.UpdateWeights.html#torchrl.trainers.UpdateWeights">[docs]</a><span class="k">class</span> <span class="nc">UpdateWeights</span><span class="p">(</span><span class="n">TrainerHookBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A collector weights update hook class.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A collector weights update hook class.</span>
 
 <span class="sd">    This hook must be used whenever the collector policy weights sit on a</span>
 <span class="sd">    different device than the policy weights being trained by the Trainer.</span>
@@ -1597,7 +1595,7 @@
 
 
 <div class="viewcode-block" id="CountFramesLog"><a class="viewcode-back" href="../../../reference/generated/torchrl.trainers.CountFramesLog.html#torchrl.trainers.CountFramesLog">[docs]</a><span class="k">class</span> <span class="nc">CountFramesLog</span><span class="p">(</span><span class="n">TrainerHookBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A frame counter hook.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A frame counter hook.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        frame_skip (int): frame skip of the environment. This argument is</span>
@@ -1652,7 +1650,7 @@
 
 
 <span class="k">def</span> <span class="nf">flatten_dict</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Flattens a dictionary with sub-dictionaries accessed through point-separated (:obj:`&quot;var1.var2&quot;`) fields.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Flattens a dictionary with sub-dictionaries accessed through point-separated (:obj:`&quot;var1.var2&quot;`) fields.&quot;&quot;&quot;</span>
     <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>

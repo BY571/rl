@@ -376,18 +376,18 @@
 <ol class="arabic">
 <li><p><strong>Preparing conda env</strong></p>
 <p>Assuming you have <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/install/">conda</a> installed, let’s prepare a conda env:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda create -n habitat <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.7 <span class="nv">cmake</span><span class="o">=</span><span class="m">3</span>.14.0
-conda activate habitat
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>habitat<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.7<span class="w"> </span><span class="nv">cmake</span><span class="o">=</span><span class="m">3</span>.14.0
+conda<span class="w"> </span>activate<span class="w"> </span>habitat
 </pre></div>
 </div>
 </li>
 <li><p><strong>conda install habitat-sim</strong>
 To install habitat-sim with bullet physics and in headless mode (usually necessary to run habitat on a cluster)</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install habitat-sim withbullet headless -c conda-forge -c aihabitat-nightly -y
-pip install git+https://github.com/facebookresearch/habitat-lab.git#subdirectory<span class="o">=</span>habitat-lab
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>habitat-sim<span class="w"> </span>withbullet<span class="w"> </span>headless<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>-c<span class="w"> </span>aihabitat-nightly<span class="w"> </span>-y
+pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/facebookresearch/habitat-lab.git#subdirectory<span class="o">=</span>habitat-lab
 
 <span class="c1"># This is to reduce verbosity</span>
-<span class="nb">export</span> <span class="nv">MAGNUM_LOG</span><span class="o">=</span>quiet <span class="o">&amp;&amp;</span> <span class="nb">export</span> <span class="nv">HABITAT_SIM_LOG</span><span class="o">=</span>quiet
+<span class="nb">export</span><span class="w"> </span><span class="nv">MAGNUM_LOG</span><span class="o">=</span>quiet<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">HABITAT_SIM_LOG</span><span class="o">=</span>quiet
 </pre></div>
 </div>
 <p>If you don’t want to install it in headless mode, simply remove the <code class="docutils literal notranslate"><span class="pre">headless</span></code> package from the <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span></code> command.</p>
@@ -415,9 +415,9 @@ pip install git+https://github.com/facebookresearch/habitat-lab.git#subdirectory
 <li><p><code class="docutils literal notranslate"><span class="pre">ImportError:</span> <span class="pre">/usr/lib/x86_64-linux-gnu/libOpenGL.so.0:</span> <span class="pre">undefined</span> <span class="pre">symbol:</span> <span class="pre">_glapi_tls_Current</span></code>
 <strong>Solution</strong>: as in <span class="xref myst">MUJOCO</span> debug, Link conda to the right libOpenGL.so file (replace /path/to/conda and mujoco_env with the proper paths and names):</p></li>
 </ol>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>conda install -y -c conda-forge libglvnd-glx-cos7-x86_64 --force-reinstall
-conda install -y -c conda-forge xvfbwrapper --force-reinstall
-conda env config vars <span class="nb">set</span> <span class="nv">LD_PRELOAD</span><span class="o">=</span>/path/to/conda/envs/mujoco_env/x86_64-conda-linux-gnu/sysroot/usr/lib64/libGLdispatch.so.0
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>libglvnd-glx-cos7-x86_64<span class="w"> </span>--force-reinstall
+conda<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>xvfbwrapper<span class="w"> </span>--force-reinstall
+conda<span class="w"> </span>env<span class="w"> </span>config<span class="w"> </span>vars<span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="nv">LD_PRELOAD</span><span class="o">=</span>/path/to/conda/envs/mujoco_env/x86_64-conda-linux-gnu/sysroot/usr/lib64/libGLdispatch.so.0
 </pre></div>
 </div>
 </section>

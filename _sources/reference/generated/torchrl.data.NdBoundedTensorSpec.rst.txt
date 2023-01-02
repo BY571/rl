@@ -1,9 +1,0 @@
-﻿.. currentmodule:: torchrl.data
-
-
-NdBoundedTensorSpec
-===================
-
-.. autoclass:: NdBoundedTensorSpec
-    :members:
-    :inherited-members:

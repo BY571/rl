@@ -378,7 +378,7 @@
 
 
 <div class="viewcode-block" id="Sampler"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.samplers.Sampler.html#torchrl.data.replay_buffers.samplers.Sampler">[docs]</a><span class="k">class</span> <span class="nc">Sampler</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A generic sampler base class for composable Replay Buffers.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A generic sampler base class for composable Replay Buffers.&quot;&quot;&quot;</span>
 
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">:</span> <span class="n">Storage</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
@@ -404,15 +404,75 @@
 
 
 <div class="viewcode-block" id="RandomSampler"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.samplers.RandomSampler.html#torchrl.data.replay_buffers.samplers.RandomSampler">[docs]</a><span class="k">class</span> <span class="nc">RandomSampler</span><span class="p">(</span><span class="n">Sampler</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A uniformly random sampler for composable replay buffers.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A uniformly random sampler for composable replay buffers.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">:</span> <span class="n">Storage</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">storage</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">:</span> <span class="n">Storage</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">storage</span><span class="p">),</span> <span class="p">(</span><span class="n">batch_size</span><span class="p">,))</span>
         <span class="k">return</span> <span class="n">index</span><span class="p">,</span> <span class="p">{}</span></div>
 
 
+<span class="k">class</span> <span class="nc">SamplerWithoutReplacement</span><span class="p">(</span><span class="n">Sampler</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A data-consuming sampler that ensures that the same sample is not present in consecutive batches.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        drop_last (bool, optional): if True, the last incomplete sample (if any) will be dropped.</span>
+<span class="sd">            If False, this last sample will be kept and (unlike with torch dataloaders)</span>
+<span class="sd">            completed with other samples from a fresh indices permutation.</span>
+
+<span class="sd">    *Caution*: If the size of the storage changes in between two calls, the samples will be re-shuffled</span>
+<span class="sd">    (as we can&#39;t generally keep track of which samples have been sampled before and which haven&#39;t).</span>
+
+<span class="sd">    Similarly, it is expected that the storage content remains the same in between two calls,</span>
+<span class="sd">    but this is not enforced.</span>
+
+<span class="sd">    When the sampler reaches the end of the list of available indices, a new sample order</span>
+<span class="sd">    will be generated and the resulting indices will be completed with this new draw, which</span>
+<span class="sd">    can lead to duplicated indices, unless the :obj:`drop_last` argument is set to :obj:`True`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drop_last</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sample_list</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">len_storage</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drop_last</span> <span class="o">=</span> <span class="n">drop_last</span>
+
+    <span class="k">def</span> <span class="nf">_single_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">len_storage</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_list</span><span class="p">[:</span><span class="n">batch_size</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sample_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_list</span><span class="p">[</span><span class="n">batch_size</span><span class="p">:]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_list</span><span class="o">.</span><span class="n">numel</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sample_list</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span><span class="n">len_storage</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">index</span>
+
+    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">:</span> <span class="n">Storage</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
+        <span class="n">len_storage</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">storage</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">len_storage</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;An empty storage was passed&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">len_storage</span> <span class="o">!=</span> <span class="n">len_storage</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sample_list</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span><span class="n">len_storage</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">len_storage</span> <span class="o">&lt;</span> <span class="n">batch_size</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop_last</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The batch size (</span><span class="si">{</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">) is greater than the storage capacity (</span><span class="si">{</span><span class="n">len_storage</span><span class="si">}</span><span class="s2">). &quot;</span>
+                <span class="s2">&quot;This makes it impossible to return a sample without repeating indices. &quot;</span>
+                <span class="s2">&quot;Consider changing the sampler class or turn the &#39;drop_last&#39; argument to False.&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">len_storage</span> <span class="o">=</span> <span class="n">len_storage</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_single_sample</span><span class="p">(</span><span class="n">len_storage</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">index</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">batch_size</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop_last</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_single_sample</span><span class="p">(</span><span class="n">len_storage</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="n">index</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_single_sample</span><span class="p">(</span><span class="n">len_storage</span><span class="p">,</span> <span class="n">batch_size</span> <span class="o">-</span> <span class="n">index</span><span class="o">.</span><span class="n">numel</span><span class="p">()),</span>
+                    <span class="p">],</span>
+                    <span class="mi">0</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">index</span><span class="p">,</span> <span class="p">{}</span>
+
+
 <div class="viewcode-block" id="PrioritizedSampler"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.samplers.PrioritizedSampler.html#torchrl.data.replay_buffers.samplers.PrioritizedSampler">[docs]</a><span class="k">class</span> <span class="nc">PrioritizedSampler</span><span class="p">(</span><span class="n">Sampler</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Prioritized sampler for replay buffer.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Prioritized sampler for replay buffer.</span>
 
 <span class="sd">    Presented in &quot;Schaul, T.; Quan, J.; Antonoglou, I.; and Silver, D. 2015.</span>
 <span class="sd">        Prioritized experience replay.&quot;</span>
@@ -515,7 +575,7 @@
 <div class="viewcode-block" id="PrioritizedSampler.update_priority"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.samplers.PrioritizedSampler.html#torchrl.data.replay_buffers.samplers.PrioritizedSampler.update_priority">[docs]</a>    <span class="k">def</span> <span class="nf">update_priority</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">priority</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Updates the priority of the data pointed by the index.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Updates the priority of the data pointed by the index.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            index (int or torch.Tensor): indexes of the priorities to be</span>

@@ -38,7 +38,7 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Actor" href="torchrl.modules.Actor.html" />
+    <link rel="next" title="SafeProbabilisticSequential" href="torchrl.modules.SafeProbabilisticSequential.html" />
     <link rel="prev" title="SafeProbabilisticModule" href="torchrl.modules.SafeProbabilisticModule.html" />
   <!-- Google Analytics -->
   
@@ -396,11 +396,11 @@ looking for those that have the required keys, if any.</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict.nn.functional_modules</span> <span class="kn">import</span> <span class="n">make_functional</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">CompositeSpec</span><span class="p">,</span> <span class="n">NdUnboundedContinuousTensorSpec</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">CompositeSpec</span><span class="p">,</span> <span class="n">UnboundedContinuousTensorSpec</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="n">TanhNormal</span><span class="p">,</span> <span class="n">SafeSequential</span><span class="p">,</span> <span class="n">SafeModule</span><span class="p">,</span> <span class="n">NormalParamWrapper</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules.tensordict_module</span> <span class="kn">import</span> <span class="n">SafeProbabilisticModule</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({</span><span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)},</span> <span class="p">[</span><span class="mi">3</span><span class="p">,])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">spec1</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="n">NdUnboundedContinuousTensorSpec</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">spec1</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net1</span> <span class="o">=</span> <span class="n">NormalParamWrapper</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">module1</span> <span class="o">=</span> <span class="n">SafeModule</span><span class="p">(</span><span class="n">net1</span><span class="p">,</span> <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;input&quot;</span><span class="p">],</span> <span class="n">out_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;loc&quot;</span><span class="p">,</span> <span class="s2">&quot;scale&quot;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">td_module1</span> <span class="o">=</span> <span class="n">SafeProbabilisticModule</span><span class="p">(</span>
@@ -411,7 +411,7 @@ looking for those that have the required keys, if any.</p></li>
 <span class="gp">... </span>    <span class="n">distribution_class</span><span class="o">=</span><span class="n">TanhNormal</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">return_log_prob</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">spec2</span> <span class="o">=</span> <span class="n">NdUnboundedContinuousTensorSpec</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">spec2</span> <span class="o">=</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">module2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">td_module2</span> <span class="o">=</span> <span class="n">SafeModule</span><span class="p">(</span>
 <span class="gp">... </span>   <span class="n">module</span><span class="o">=</span><span class="n">module2</span><span class="p">,</span>
@@ -477,7 +477,7 @@ looking for those that have the required keys, if any.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="torchrl.modules.Actor.html" class="btn btn-neutral float-right" title="Actor" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
+        <a href="torchrl.modules.SafeProbabilisticSequential.html" class="btn btn-neutral float-right" title="SafeProbabilisticSequential" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
       
       
         <a href="torchrl.modules.SafeProbabilisticModule.html" class="btn btn-neutral" title="SafeProbabilisticModule" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>

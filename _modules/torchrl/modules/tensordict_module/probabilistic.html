@@ -365,140 +365,100 @@
 <span class="c1"># This source code is licensed under the MIT license found in the</span>
 <span class="c1"># LICENSE file in the root directory of this source tree.</span>
 
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="n">ProbabilisticTensorDictModule</span>
+<span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ProbabilisticTensorDictModule</span><span class="p">,</span>
+    <span class="n">ProbabilisticTensorDictSequential</span><span class="p">,</span>
+    <span class="n">TensorDictModule</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tensordict.tensordict</span> <span class="kn">import</span> <span class="n">TensorDictBase</span>
 
-<span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">TensorSpec</span>
+<span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">CompositeSpec</span><span class="p">,</span> <span class="n">TensorSpec</span>
 <span class="kn">from</span> <span class="nn">torchrl.modules.distributions</span> <span class="kn">import</span> <span class="n">Delta</span>
-<span class="kn">from</span> <span class="nn">torchrl.modules.tensordict_module.common</span> <span class="kn">import</span> <span class="n">SafeModule</span>
+<span class="kn">from</span> <span class="nn">torchrl.modules.tensordict_module.common</span> <span class="kn">import</span> <span class="n">_forward_hook_safe_action</span>
+<span class="kn">from</span> <span class="nn">torchrl.modules.tensordict_module.sequence</span> <span class="kn">import</span> <span class="n">SafeSequential</span>
 
 
-<div class="viewcode-block" id="SafeProbabilisticModule"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.SafeProbabilisticModule.html#torchrl.modules.SafeProbabilisticModule">[docs]</a><span class="k">class</span> <span class="nc">SafeProbabilisticModule</span><span class="p">(</span><span class="n">ProbabilisticTensorDictModule</span><span class="p">,</span> <span class="n">SafeModule</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A :obj:``SafeProbabilisticModule`` is an :obj:``tensordict.nn.ProbabilisticTensorDictModule`` subclass that accepts a :obj:``TensorSpec`` as argument to control the output domain.</span>
+<div class="viewcode-block" id="SafeProbabilisticModule"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.SafeProbabilisticModule.html#torchrl.modules.SafeProbabilisticModule">[docs]</a><span class="k">class</span> <span class="nc">SafeProbabilisticModule</span><span class="p">(</span><span class="n">ProbabilisticTensorDictModule</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A :obj:``SafeProbabilisticModule`` is an :obj:``tensordict.nn.ProbabilisticTensorDictModule`` subclass that accepts a :obj:``TensorSpec`` as argument to control the output domain.</span>
 
-<span class="sd">    It consists in a wrapper around another TDModule that returns a tensordict</span>
-<span class="sd">    updated with the distribution parameters. :obj:`SafeProbabilisticModule` is</span>
-<span class="sd">    responsible for constructing the distribution (through the :obj:`get_dist()` method)</span>
-<span class="sd">    and/or sampling from this distribution (through a regular :obj:`__call__()` to the</span>
-<span class="sd">    module).</span>
+<span class="sd">    `SafeProbabilisticModule` is a non-parametric module representing a</span>
+<span class="sd">    probability distribution. It reads the distribution parameters from an input</span>
+<span class="sd">    TensorDict using the specified `in_keys`. The output is sampled given some rule,</span>
+<span class="sd">    specified by the input :obj:`default_interaction_mode` argument and the</span>
+<span class="sd">    :obj:`interaction_mode()` global function.</span>
+
+<span class="sd">    :obj:`SafeProbabilisticModule` can be used to construct the distribution</span>
+<span class="sd">    (through the :obj:`get_dist()` method) and/or sampling from this distribution</span>
+<span class="sd">    (through a regular :obj:`__call__()` to the module).</span>
 
 <span class="sd">    A :obj:`SafeProbabilisticModule` instance has two main features:</span>
 <span class="sd">    - It reads and writes TensorDict objects</span>
 <span class="sd">    - It uses a real mapping R^n -&gt; R^m to create a distribution in R^d from</span>
 <span class="sd">    which values can be sampled or computed.</span>
-<span class="sd">    When the :obj:`__call__` / :obj:`forward` method is called, a distribution is created,</span>
-<span class="sd">    and a value computed (using the &#39;mean&#39;, &#39;mode&#39;, &#39;median&#39; attribute or</span>
-<span class="sd">    the &#39;rsample&#39;, &#39;sample&#39; method). The sampling step is skipped if the</span>
-<span class="sd">    inner TDModule has already created the desired key-value pair.</span>
+
+<span class="sd">    When the :obj:`__call__` / :obj:`forward` method is called, a distribution is</span>
+<span class="sd">    created, and a value computed (using the &#39;mean&#39;, &#39;mode&#39;, &#39;median&#39; attribute or</span>
+<span class="sd">    the &#39;rsample&#39;, &#39;sample&#39; method). The sampling step is skipped if the supplied</span>
+<span class="sd">    TensorDict has all of the desired key-value pairs already.</span>
 
 <span class="sd">    By default, SafeProbabilisticModule distribution class is a Delta</span>
 <span class="sd">    distribution, making SafeProbabilisticModule a simple wrapper around</span>
 <span class="sd">    a deterministic mapping function.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        module (nn.Module): a nn.Module used to map the input to the output parameter space. Can be a functional</span>
-<span class="sd">            module (FunctionalModule or FunctionalModuleWithBuffers), in which case the :obj:`forward` method will expect</span>
-<span class="sd">            the params (and possibly) buffers keyword arguments.</span>
-<span class="sd">        dist_in_keys (str or iterable of str or dict): key(s) that will be produced</span>
-<span class="sd">            by the inner TDModule and that will be used to build the distribution.</span>
-<span class="sd">            Importantly, if it&#39;s an iterable of string or a string, those keys must match the keywords used by the distribution</span>
-<span class="sd">            class of interest, e.g. :obj:`&quot;loc&quot;` and :obj:`&quot;scale&quot;` for the Normal distribution</span>
-<span class="sd">            and similar. If dist_in_keys is a dictionary,, the keys are the keys of the distribution and the values are the</span>
-<span class="sd">            keys in the tensordict that will get match to the corresponding distribution keys.</span>
-<span class="sd">        sample_out_key (str or iterable of str): keys where the sampled values will be</span>
-<span class="sd">            written. Importantly, if this key is part of the :obj:`out_keys` of the inner model,</span>
-<span class="sd">            the sampling step will be skipped.</span>
-<span class="sd">        spec (TensorSpec): specs of the first output tensor. Used when calling td_module.random() to generate random</span>
-<span class="sd">            values in the target space.</span>
-<span class="sd">        safe (bool, optional): if True, the value of the sample is checked against the input spec. Out-of-domain sampling can</span>
-<span class="sd">            occur because of exploration policies or numerical under/overflow issues. As for the :obj:`spec` argument,</span>
-<span class="sd">            this check will only occur for the distribution sample, but not the other tensors returned by the input</span>
-<span class="sd">            module. If the sample is out of bounds, it is projected back onto the desired space using the</span>
-<span class="sd">            `TensorSpec.project`</span>
-<span class="sd">            method.</span>
+<span class="sd">        in_keys (str or iterable of str or dict): key(s) that will be read from the</span>
+<span class="sd">            input TensorDict and used to build the distribution. Importantly, if it&#39;s an</span>
+<span class="sd">            iterable of string or a string, those keys must match the keywords used by</span>
+<span class="sd">            the distribution class of interest, e.g. :obj:`&quot;loc&quot;` and :obj:`&quot;scale&quot;` for</span>
+<span class="sd">            the Normal distribution and similar. If in_keys is a dictionary,, the keys</span>
+<span class="sd">            are the keys of the distribution and the values are the keys in the</span>
+<span class="sd">            tensordict that will get match to the corresponding distribution keys.</span>
+<span class="sd">        out_keys (str or iterable of str): keys where the sampled values will be</span>
+<span class="sd">            written. Importantly, if these keys are found in the input TensorDict, the</span>
+<span class="sd">            sampling step will be skipped.</span>
+<span class="sd">        spec (TensorSpec): specs of the first output tensor. Used when calling</span>
+<span class="sd">            td_module.random() to generate random values in the target space.</span>
+<span class="sd">        safe (bool, optional): if True, the value of the sample is checked against the</span>
+<span class="sd">            input spec. Out-of-domain sampling can occur because of exploration policies</span>
+<span class="sd">            or numerical under/overflow issues. As for the :obj:`spec` argument, this</span>
+<span class="sd">            check will only occur for the distribution sample, but not the other tensors</span>
+<span class="sd">            returned by the input module. If the sample is out of bounds, it is</span>
+<span class="sd">            projected back onto the desired space using the `TensorSpec.project` method.</span>
 <span class="sd">            Default is :obj:`False`.</span>
-<span class="sd">        default_interaction_mode (str, optional): default method to be used to retrieve the output value. Should be one of:</span>
-<span class="sd">            &#39;mode&#39;, &#39;median&#39;, &#39;mean&#39; or &#39;random&#39; (in which case the value is sampled randomly from the distribution).</span>
-<span class="sd">            Default is &#39;mode&#39;.</span>
-<span class="sd">            Note: When a sample is drawn, the :obj:`ProbabilisticTDModule` instance will fist look for the interaction mode</span>
-<span class="sd">            dictated by the `exploration_mode()` global function. If this returns `None` (its default value),</span>
-<span class="sd">            then the `default_interaction_mode` of the `ProbabilisticTDModule` instance will be used.</span>
-<span class="sd">            Note that DataCollector instances will use `set_exploration_mode` to `&quot;random&quot;` by default.</span>
-<span class="sd">        distribution_class (Type, optional): a torch.distributions.Distribution class to be used for sampling.</span>
-<span class="sd">            Default is Delta.</span>
+<span class="sd">        default_interaction_mode (str, optional): default method to be used to retrieve</span>
+<span class="sd">            the output value. Should be one of: &#39;mode&#39;, &#39;median&#39;, &#39;mean&#39; or &#39;random&#39;</span>
+<span class="sd">            (in which case the value is sampled randomly from the distribution). Default</span>
+<span class="sd">            is &#39;mode&#39;.</span>
+<span class="sd">            Note: When a sample is drawn, the :obj:`ProbabilisticTDModule` instance will</span>
+<span class="sd">            fist look for the interaction mode dictated by the `interaction_mode()`</span>
+<span class="sd">            global function. If this returns `None` (its default value), then the</span>
+<span class="sd">            `default_interaction_mode` of the `ProbabilisticTDModule` instance will be</span>
+<span class="sd">            used. Note that DataCollector instances will use `set_interaction_mode` to</span>
+<span class="sd">            `&quot;random&quot;` by default.</span>
+<span class="sd">        distribution_class (Type, optional): a torch.distributions.Distribution class to</span>
+<span class="sd">            be used for sampling. Default is Delta.</span>
 <span class="sd">        distribution_kwargs (dict, optional): kwargs to be passed to the distribution.</span>
-<span class="sd">        return_log_prob (bool, optional): if True, the log-probability of the distribution sample will be written in the</span>
-<span class="sd">            tensordict with the key `f&#39;{in_keys[0]}_log_prob&#39;`. Default is `False`.</span>
-<span class="sd">        cache_dist (bool, optional): EXPERIMENTAL: if True, the parameters of the distribution (i.e. the output of the module)</span>
-<span class="sd">            will be written to the tensordict along with the sample. Those parameters can be used to</span>
-<span class="sd">            re-compute the original distribution later on (e.g. to compute the divergence between the distribution</span>
-<span class="sd">            used to sample the action and the updated distribution in PPO).</span>
-<span class="sd">            Default is `False`.</span>
-<span class="sd">        n_empirical_estimate (int, optional): number of samples to compute the empirical mean when it is not available.</span>
-<span class="sd">            Default is 1000</span>
-
-<span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; import torch</span>
-<span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
-<span class="sd">        &gt;&gt;&gt; from tensordict.nn.functional_modules import make_functional</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import CompositeSpec, NdUnboundedContinuousTensorSpec</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.modules import (</span>
-<span class="sd">                NormalParamWrapper,</span>
-<span class="sd">                SafeModule,</span>
-<span class="sd">                SafeProbabilisticModule,</span>
-<span class="sd">                TanhNormal,</span>
-<span class="sd">            )</span>
-<span class="sd">        &gt;&gt;&gt; td = TensorDict({&quot;input&quot;: torch.randn(3, 4), &quot;hidden&quot;: torch.randn(3, 8)}, [3,])</span>
-<span class="sd">        &gt;&gt;&gt; spec = CompositeSpec(action=NdUnboundedContinuousTensorSpec(4), loc=None, scale=None)</span>
-<span class="sd">        &gt;&gt;&gt; net = NormalParamWrapper(torch.nn.GRUCell(4, 8))</span>
-<span class="sd">        &gt;&gt;&gt; module = SafeModule(net, in_keys=[&quot;input&quot;, &quot;hidden&quot;], out_keys=[&quot;loc&quot;, &quot;scale&quot;])</span>
-<span class="sd">        &gt;&gt;&gt; td_module = SafeProbabilisticModule(</span>
-<span class="sd">        ...     module=module,</span>
-<span class="sd">        ...     spec=spec,</span>
-<span class="sd">        ...     dist_in_keys=[&quot;loc&quot;, &quot;scale&quot;],</span>
-<span class="sd">        ...     sample_out_key=[&quot;action&quot;],</span>
-<span class="sd">        ...     distribution_class=TanhNormal,</span>
-<span class="sd">        ...     return_log_prob=True,</span>
-<span class="sd">        ... )</span>
-<span class="sd">        &gt;&gt;&gt; params = make_functional(td_module)</span>
-<span class="sd">        &gt;&gt;&gt; td_module(td, params=params)</span>
-<span class="sd">        &gt;&gt;&gt; print(td)</span>
-<span class="sd">        TensorDict(</span>
-<span class="sd">            fields={</span>
-<span class="sd">                action: Tensor(torch.Size([3, 4]), dtype=torch.float32),</span>
-<span class="sd">                hidden: Tensor(torch.Size([3, 8]), dtype=torch.float32),</span>
-<span class="sd">                input: Tensor(torch.Size([3, 4]), dtype=torch.float32),</span>
-<span class="sd">                loc: Tensor(torch.Size([3, 4]), dtype=torch.float32),</span>
-<span class="sd">                sample_log_prob: Tensor(torch.Size([3, 1]), dtype=torch.float32),</span>
-<span class="sd">                scale: Tensor(torch.Size([3, 4]), dtype=torch.float32)},</span>
-<span class="sd">            batch_size=torch.Size([3]),</span>
-<span class="sd">            device=None,</span>
-<span class="sd">            is_shared=False)</span>
-<span class="sd">        &gt;&gt;&gt; # In the vmap case, the tensordict is again expended to match the batch:</span>
-<span class="sd">        &gt;&gt;&gt; from functorch import vmap</span>
-<span class="sd">        &gt;&gt;&gt; params = params.expand(4, *params.shape)</span>
-<span class="sd">        &gt;&gt;&gt; td_vmap = vmap(td_module, (None, 0))(td, params)</span>
-<span class="sd">        &gt;&gt;&gt; print(td_vmap)</span>
-<span class="sd">        TensorDict(</span>
-<span class="sd">            fields={</span>
-<span class="sd">                action: Tensor(torch.Size([4, 3, 4]), dtype=torch.float32),</span>
-<span class="sd">                hidden: Tensor(torch.Size([4, 3, 8]), dtype=torch.float32),</span>
-<span class="sd">                input: Tensor(torch.Size([4, 3, 4]), dtype=torch.float32),</span>
-<span class="sd">                loc: Tensor(torch.Size([4, 3, 4]), dtype=torch.float32),</span>
-<span class="sd">                sample_log_prob: Tensor(torch.Size([4, 3, 1]), dtype=torch.float32),</span>
-<span class="sd">                scale: Tensor(torch.Size([4, 3, 4]), dtype=torch.float32)},</span>
-<span class="sd">            batch_size=torch.Size([4, 3]),</span>
-<span class="sd">            device=None,</span>
-<span class="sd">            is_shared=False)</span>
+<span class="sd">        return_log_prob (bool, optional): if True, the log-probability of the</span>
+<span class="sd">            distribution sample will be written in the tensordict with the key</span>
+<span class="sd">            `&#39;sample_log_prob&#39;`. Default is `False`.</span>
+<span class="sd">        cache_dist (bool, optional): EXPERIMENTAL: if True, the parameters of the</span>
+<span class="sd">            distribution (i.e. the output of the module) will be written to the</span>
+<span class="sd">            tensordict along with the sample. Those parameters can be used to re-compute</span>
+<span class="sd">            the original distribution later on (e.g. to compute the divergence between</span>
+<span class="sd">            the distribution used to sample the action and the updated distribution in</span>
+<span class="sd">            PPO). Default is `False`.</span>
+<span class="sd">        n_empirical_estimate (int, optional): number of samples to compute the empirical</span>
+<span class="sd">            mean when it is not available. Default is 1000</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">module</span><span class="p">:</span> <span class="n">SafeModule</span><span class="p">,</span>
-        <span class="n">dist_in_keys</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">dict</span><span class="p">],</span>
-        <span class="n">sample_out_key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+        <span class="n">in_keys</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">dict</span><span class="p">],</span>
+        <span class="n">out_keys</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
         <span class="n">spec</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TensorSpec</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">safe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">default_interaction_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mode&quot;</span><span class="p">,</span>
@@ -509,9 +469,8 @@
         <span class="n">n_empirical_estimate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">module</span><span class="o">=</span><span class="n">module</span><span class="p">,</span>
-            <span class="n">dist_in_keys</span><span class="o">=</span><span class="n">dist_in_keys</span><span class="p">,</span>
-            <span class="n">sample_out_key</span><span class="o">=</span><span class="n">sample_out_key</span><span class="p">,</span>
+            <span class="n">in_keys</span><span class="o">=</span><span class="n">in_keys</span><span class="p">,</span>
+            <span class="n">out_keys</span><span class="o">=</span><span class="n">out_keys</span><span class="p">,</span>
             <span class="n">default_interaction_mode</span><span class="o">=</span><span class="n">default_interaction_mode</span><span class="p">,</span>
             <span class="n">distribution_class</span><span class="o">=</span><span class="n">distribution_class</span><span class="p">,</span>
             <span class="n">distribution_kwargs</span><span class="o">=</span><span class="n">distribution_kwargs</span><span class="p">,</span>
@@ -519,12 +478,108 @@
             <span class="n">cache_dist</span><span class="o">=</span><span class="n">cache_dist</span><span class="p">,</span>
             <span class="n">n_empirical_estimate</span><span class="o">=</span><span class="n">n_empirical_estimate</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">ProbabilisticTensorDictModule</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">module</span><span class="o">=</span><span class="n">module</span><span class="p">,</span>
-            <span class="n">spec</span><span class="o">=</span><span class="n">spec</span><span class="p">,</span>
-            <span class="n">in_keys</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">,</span>
-            <span class="n">out_keys</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">,</span>
-            <span class="n">safe</span><span class="o">=</span><span class="n">safe</span><span class="p">,</span>
+
+        <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">TensorSpec</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;spec must be a TensorSpec subclass&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;got more than one out_key for the SafeModule: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2">but only one spec. &quot;</span>
+                    <span class="s2">&quot;Consider using a CompositeSpec object or no spec at all.&quot;</span>
+                <span class="p">)</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">spec</span><span class="p">})</span>
+        <span class="k">elif</span> <span class="n">spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s2">&quot;_&quot;</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;got a spec with key &quot;_&quot;: it will be ignored&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">!=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">):</span>
+            <span class="c1"># then assume that all the non indicated specs are None</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spec</span><span class="p">:</span>
+                    <span class="n">spec</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">!=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;spec keys and out_keys do not match, got: </span><span class="si">{</span><span class="nb">set</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">)</span><span class="si">}</span><span class="s2"> respectively&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="n">spec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">safe</span> <span class="o">=</span> <span class="n">safe</span>
+        <span class="k">if</span> <span class="n">safe</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">_spec</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">_spec</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;`SafeProbabilisticModule(spec=None, safe=True)` is not a valid configuration as the tensor &quot;</span>
+                    <span class="s2">&quot;specs are not specified&quot;</span>
+                <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">register_forward_hook</span><span class="p">(</span><span class="n">_forward_hook_safe_action</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span>
+
+    <span class="nd">@spec</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Trying to set an object of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span><span class="si">}</span><span class="s2"> as a tensorspec but expected a CompositeSpec instance.&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="n">spec</span>
+
+<div class="viewcode-block" id="SafeProbabilisticModule.random"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.SafeProbabilisticModule.html#torchrl.modules.SafeProbabilisticModule.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Samples a random element in the target space, irrespective of any input.</span>
+
+<span class="sd">        If multiple output keys are present, only the first will be written in the input :obj:`tensordict`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tensordict (TensorDictBase): tensordict where the output value should be written.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the original tensordict with a new/updated value for the output key.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">tensordict</span></div>
+
+<div class="viewcode-block" id="SafeProbabilisticModule.random_sample"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.SafeProbabilisticModule.html#torchrl.modules.SafeProbabilisticModule.random_sample">[docs]</a>    <span class="k">def</span> <span class="nf">random_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;See :obj:`SafeModule.random(...)`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="SafeProbabilisticSequential"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.SafeProbabilisticSequential.html#torchrl.modules.SafeProbabilisticSequential">[docs]</a><span class="k">class</span> <span class="nc">SafeProbabilisticSequential</span><span class="p">(</span><span class="n">ProbabilisticTensorDictSequential</span><span class="p">,</span> <span class="n">SafeSequential</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A :obj:``SafeProbabilisticSequential`` is an :obj:``tensordict.nn.ProbabilisticTensorDictSequential`` subclass that accepts a :obj:``TensorSpec`` as argument to control the output domain.</span>
+
+<span class="sd">    Similarly to :obj:`TensorDictSequential`, but enforces that the final module in the</span>
+<span class="sd">    sequence is an :obj:`ProbabilisticTensorDictModule` and also exposes ``get_dist``</span>
+<span class="sd">    method to recover the distribution object from the ``ProbabilisticTensorDictModule``</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">         modules (iterable of TensorDictModules): ordered sequence of TensorDictModule</span>
+<span class="sd">            instances, terminating in ProbabilisticTensorDictModule, to be run</span>
+<span class="sd">            sequentially.</span>
+<span class="sd">         partial_tolerant (bool, optional): if True, the input tensordict can miss some</span>
+<span class="sd">            of the input keys. If so, the only module that will be executed are those</span>
+<span class="sd">            who can be executed given the keys that are present. Also, if the input</span>
+<span class="sd">            tensordict is a lazy stack of tensordicts AND if partial_tolerant is</span>
+<span class="sd">            :obj:`True` AND if the stack does not have the required keys, then</span>
+<span class="sd">            TensorDictSequential will scan through the sub-tensordicts looking for those</span>
+<span class="sd">            that have the required keys, if any.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">modules</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">TensorDictModule</span><span class="p">,</span> <span class="n">ProbabilisticTensorDictModule</span><span class="p">],</span>
+        <span class="n">partial_tolerant</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">modules</span><span class="p">,</span> <span class="n">partial_tolerant</span><span class="o">=</span><span class="n">partial_tolerant</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ProbabilisticTensorDictSequential</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">modules</span><span class="p">,</span> <span class="n">partial_tolerant</span><span class="o">=</span><span class="n">partial_tolerant</span>
         <span class="p">)</span></div>
 </pre></div>
 

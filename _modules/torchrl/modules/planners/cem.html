@@ -373,7 +373,7 @@
 
 
 <div class="viewcode-block" id="CEMPlanner"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.CEMPlanner.html#torchrl.modules.CEMPlanner">[docs]</a><span class="k">class</span> <span class="nc">CEMPlanner</span><span class="p">(</span><span class="n">MPCPlannerBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;CEMPlanner Module.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;CEMPlanner Module.</span>
 
 <span class="sd">    Reference: The cross-entropy method for optimization, Botev et al. 2013</span>
 
@@ -407,20 +407,20 @@
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import CompositeSpec, NdUnboundedContinuousTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import CompositeSpec, UnboundedContinuousTensorSpec</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.envs.model_based import ModelBasedEnvBase</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules import SafeModule</span>
 <span class="sd">        &gt;&gt;&gt; class MyMBEnv(ModelBasedEnvBase):</span>
 <span class="sd">        ...     def __init__(self, world_model, device=&quot;cpu&quot;, dtype=None, batch_size=None):</span>
 <span class="sd">        ...         super().__init__(world_model, device=device, dtype=dtype, batch_size=batch_size)</span>
 <span class="sd">        ...         self.observation_spec = CompositeSpec(</span>
-<span class="sd">        ...             next_hidden_observation=NdUnboundedContinuousTensorSpec((4,))</span>
+<span class="sd">        ...             next_hidden_observation=UnboundedContinuousTensorSpec((4,))</span>
 <span class="sd">        ...         )</span>
 <span class="sd">        ...         self.input_spec = CompositeSpec(</span>
-<span class="sd">        ...             hidden_observation=NdUnboundedContinuousTensorSpec((4,)),</span>
-<span class="sd">        ...             action=NdUnboundedContinuousTensorSpec((1,)),</span>
+<span class="sd">        ...             hidden_observation=UnboundedContinuousTensorSpec((4,)),</span>
+<span class="sd">        ...             action=UnboundedContinuousTensorSpec((1,)),</span>
 <span class="sd">        ...         )</span>
-<span class="sd">        ...         self.reward_spec = NdUnboundedContinuousTensorSpec((1,))</span>
+<span class="sd">        ...         self.reward_spec = UnboundedContinuousTensorSpec((1,))</span>
 <span class="sd">        ...</span>
 <span class="sd">        ...     def _reset(self, tensordict: TensorDict) -&gt; TensorDict:</span>
 <span class="sd">        ...         tensordict = TensorDict({},</span>

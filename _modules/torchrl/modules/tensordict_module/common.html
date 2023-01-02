@@ -458,7 +458,7 @@
 
 
 <div class="viewcode-block" id="SafeModule"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.SafeModule.html#torchrl.modules.SafeModule">[docs]</a><span class="k">class</span> <span class="nc">SafeModule</span><span class="p">(</span><span class="n">TensorDictModule</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;An :obj:``SafeModule`` is a :obj:``tensordict.nn.TensorDictModule`` subclass that accepts a :obj:``TensorSpec`` as argument to control the output domain.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An :obj:``SafeModule`` is a :obj:``tensordict.nn.TensorDictModule`` subclass that accepts a :obj:``TensorSpec`` as argument to control the output domain.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        module (nn.Module): a nn.Module used to map the input to the output parameter space. Can be a functional</span>
@@ -483,10 +483,10 @@
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict.nn.functional_modules import make_functional</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import NdUnboundedContinuousTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import UnboundedContinuousTensorSpec</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules import SafeModule</span>
 <span class="sd">        &gt;&gt;&gt; td = TensorDict({&quot;input&quot;: torch.randn(3, 4), &quot;hidden&quot;: torch.randn(3, 8)}, [3,])</span>
-<span class="sd">        &gt;&gt;&gt; spec = NdUnboundedContinuousTensorSpec(8)</span>
+<span class="sd">        &gt;&gt;&gt; spec = UnboundedContinuousTensorSpec(8)</span>
 <span class="sd">        &gt;&gt;&gt; module = torch.nn.GRUCell(4, 8)</span>
 <span class="sd">        &gt;&gt;&gt; td_fmodule = SafeModule(</span>
 <span class="sd">        ...    module=module,</span>
@@ -606,7 +606,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="n">spec</span>
 
 <div class="viewcode-block" id="SafeModule.random"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.SafeModule.html#torchrl.modules.SafeModule.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Samples a random element in the target space, irrespective of any input.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Samples a random element in the target space, irrespective of any input.</span>
 
 <span class="sd">        If multiple output keys are present, only the first will be written in the input :obj:`tensordict`.</span>
 
@@ -622,7 +622,7 @@
         <span class="k">return</span> <span class="n">tensordict</span></div>
 
 <div class="viewcode-block" id="SafeModule.random_sample"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.SafeModule.html#torchrl.modules.SafeModule.random_sample">[docs]</a>    <span class="k">def</span> <span class="nf">random_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;See :obj:`SafeModule.random(...)`.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;See :obj:`SafeModule.random(...)`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SafeModule.to"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.SafeModule.html#torchrl.modules.SafeModule.to">[docs]</a>    <span class="k">def</span> <span class="nf">to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">DEVICE_TYPING</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">SafeModule</span><span class="p">:</span>
@@ -633,7 +633,7 @@
 
 
 <div class="viewcode-block" id="is_tensordict_compatible"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.common.is_tensordict_compatible.html#torchrl.modules.is_tensordict_compatible">[docs]</a><span class="k">def</span> <span class="nf">is_tensordict_compatible</span><span class="p">(</span><span class="n">module</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SafeModule</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]):</span>
-    <span class="sd">&quot;&quot;&quot;Returns `True` if a module can be used as a SafeModule, and False if it can&#39;t.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns `True` if a module can be used as a SafeModule, and False if it can&#39;t.</span>
 
 <span class="sd">    If the signature is misleading an error is raised.</span>
 
@@ -705,7 +705,7 @@
     <span class="n">safe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">wrapper_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">]</span> <span class="o">=</span> <span class="n">SafeModule</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Checks and ensures an object with forward method is TensorDict compatible.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks and ensures an object with forward method is TensorDict compatible.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">is_tensordict_compatible</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">in_keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">set</span><span class="p">(</span><span class="n">in_keys</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">set</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">in_keys</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>

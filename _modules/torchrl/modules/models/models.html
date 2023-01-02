@@ -384,7 +384,7 @@
 
 
 <div class="viewcode-block" id="MLP"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.MLP.html#torchrl.modules.MLP">[docs]</a><span class="k">class</span> <span class="nc">MLP</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A multi-layer perceptron.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A multi-layer perceptron.</span>
 
 <span class="sd">    If MLP receives more than one input, it concatenates them all along the last dimension before passing the</span>
 <span class="sd">    resulting tensor through the network. This is aimed at allowing for a seamless interface with calls of the type of</span>
@@ -619,7 +619,7 @@
 
 
 <div class="viewcode-block" id="ConvNet"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.ConvNet.html#torchrl.modules.ConvNet">[docs]</a><span class="k">class</span> <span class="nc">ConvNet</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A convolutional neural network.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A convolutional neural network.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        in_features (int, optional): number of input features;</span>
@@ -759,7 +759,7 @@
                 <span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_field</span><span class="p">))</span> <span class="o">==</span> <span class="n">_depth</span> <span class="ow">or</span> <span class="n">_depth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;depth=</span><span class="si">{</span><span class="n">depth</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">_field</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_field</span><span class="p">))</span><span class="si">}</span><span class="s2"> length conflict, &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;depth=</span><span class="si">{</span><span class="n">depth</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">_field</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">_field</span><span class="p">))</span><span class="si">}</span><span class="s2"> length conflict, &quot;</span>
                     <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;consider matching or specifying a constan </span><span class="si">{</span><span class="n">_field</span><span class="si">}</span><span class="s2"> argument together with a a desired depth&quot;</span>
                 <span class="p">)</span>
 
@@ -836,7 +836,7 @@
 
 
 <span class="k">class</span> <span class="nc">DuelingMlpDQNet</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Creates a Dueling MLP Q-network.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a Dueling MLP Q-network.</span>
 
 <span class="sd">    Presented in https://arxiv.org/abs/1511.06581</span>
 
@@ -919,7 +919,7 @@
 
 
 <div class="viewcode-block" id="DuelingCnnDQNet"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.DuelingCnnDQNet.html#torchrl.modules.DuelingCnnDQNet">[docs]</a><span class="k">class</span> <span class="nc">DuelingCnnDQNet</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Dueling CNN Q-network.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dueling CNN Q-network.</span>
 
 <span class="sd">    Presented in https://arxiv.org/abs/1511.06581</span>
 
@@ -993,7 +993,7 @@
 
 
 <div class="viewcode-block" id="DistributionalDQNnet"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.DistributionalDQNnet.html#torchrl.modules.DistributionalDQNnet">[docs]</a><span class="k">class</span> <span class="nc">DistributionalDQNnet</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Distributional Deep Q-Network.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Distributional Deep Q-Network.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        DQNet (nn.Module): Q-Network with output length equal to the number of atoms:</span>
@@ -1029,7 +1029,7 @@
     <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">6e-4</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DEVICE_TYPING</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Initializer for the last layer of DDPG.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initializer for the last layer of DDPG.</span>
 
 <span class="sd">    Presented in &quot;CONTINUOUS CONTROL WITH DEEP REINFORCEMENT LEARNING&quot;,</span>
 <span class="sd">    https://arxiv.org/pdf/1509.02971.pdf</span>
@@ -1045,7 +1045,7 @@
 
 
 <div class="viewcode-block" id="DdpgCnnActor"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.DdpgCnnActor.html#torchrl.modules.DdpgCnnActor">[docs]</a><span class="k">class</span> <span class="nc">DdpgCnnActor</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;DDPG Convolutional Actor class.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;DDPG Convolutional Actor class.</span>
 
 <span class="sd">    Presented in &quot;CONTINUOUS CONTROL WITH DEEP REINFORCEMENT LEARNING&quot;,</span>
 <span class="sd">    https://arxiv.org/pdf/1509.02971.pdf</span>
@@ -1131,7 +1131,7 @@
 
 
 <div class="viewcode-block" id="DdpgMlpActor"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.DdpgMlpActor.html#torchrl.modules.DdpgMlpActor">[docs]</a><span class="k">class</span> <span class="nc">DdpgMlpActor</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;DDPG Actor class.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;DDPG Actor class.</span>
 
 <span class="sd">    Presented in &quot;CONTINUOUS CONTROL WITH DEEP REINFORCEMENT LEARNING&quot;,</span>
 <span class="sd">    https://arxiv.org/pdf/1509.02971.pdf</span>
@@ -1179,7 +1179,7 @@
 
 
 <div class="viewcode-block" id="DdpgCnnQNet"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.DdpgCnnQNet.html#torchrl.modules.DdpgCnnQNet">[docs]</a><span class="k">class</span> <span class="nc">DdpgCnnQNet</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;DDPG Convolutional Q-value class.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;DDPG Convolutional Q-value class.</span>
 
 <span class="sd">    Presented in &quot;CONTINUOUS CONTROL WITH DEEP REINFORCEMENT LEARNING&quot;,</span>
 <span class="sd">    https://arxiv.org/pdf/1509.02971.pdf</span>
@@ -1261,7 +1261,7 @@
 
 
 <div class="viewcode-block" id="DdpgMlpQNet"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.DdpgMlpQNet.html#torchrl.modules.DdpgMlpQNet">[docs]</a><span class="k">class</span> <span class="nc">DdpgMlpQNet</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;DDPG Q-value MLP class.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;DDPG Q-value MLP class.</span>
 
 <span class="sd">    Presented in &quot;CONTINUOUS CONTROL WITH DEEP REINFORCEMENT LEARNING&quot;,</span>
 <span class="sd">    https://arxiv.org/pdf/1509.02971.pdf</span>
@@ -1336,7 +1336,7 @@
 
 
 <div class="viewcode-block" id="LSTMNet"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.LSTMNet.html#torchrl.modules.LSTMNet">[docs]</a><span class="k">class</span> <span class="nc">LSTMNet</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;An embedder for an LSTM preceded by an MLP.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An embedder for an LSTM preceded by an MLP.</span>
 
 <span class="sd">    The forward method returns the hidden states of the current state (input hidden states) and the output, as</span>
 <span class="sd">    the environment returns the &#39;observation&#39; and &#39;next_observation&#39;.</span>
@@ -1353,13 +1353,17 @@
 <span class="sd">        &gt;&gt;&gt; batch = 7</span>
 <span class="sd">        &gt;&gt;&gt; time_steps = 6</span>
 <span class="sd">        &gt;&gt;&gt; in_features = 4</span>
+<span class="sd">        &gt;&gt;&gt; out_features = 10</span>
+<span class="sd">        &gt;&gt;&gt; hidden_size = 5</span>
 <span class="sd">        &gt;&gt;&gt; net = LSTMNet(</span>
 <span class="sd">        ...     out_features,</span>
 <span class="sd">        ...     {&quot;input_size&quot;: hidden_size, &quot;hidden_size&quot;: hidden_size},</span>
 <span class="sd">        ...     {&quot;out_features&quot;: hidden_size},</span>
 <span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; # test single step vs multi-step</span>
-<span class="sd">        &gt;&gt;&gt; x = torch.randn(batch, time_steps, in_features)</span>
+<span class="sd">        &gt;&gt;&gt; x = torch.randn(batch, time_steps, in_features)  # &gt;3 dims = multi-step</span>
+<span class="sd">        &gt;&gt;&gt; y, hidden0_in, hidden1_in, hidden0_out, hidden1_out = net(x)</span>
+<span class="sd">        &gt;&gt;&gt; x = torch.randn(batch, in_features)  # 2 dims = single step</span>
 <span class="sd">        &gt;&gt;&gt; y, hidden0_in, hidden1_in, hidden0_out, hidden1_out = net(x)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>

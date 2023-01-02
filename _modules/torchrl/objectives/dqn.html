@@ -381,7 +381,7 @@
 
 
 <div class="viewcode-block" id="DQNLoss"><a class="viewcode-back" href="../../../reference/generated/torchrl.objectives.DQNLoss.html#torchrl.objectives.DQNLoss">[docs]</a><span class="k">class</span> <span class="nc">DQNLoss</span><span class="p">(</span><span class="n">LossModule</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The DQN Loss class.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The DQN Loss class.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        value_network (QValueActor or nn.Module): a Q value operator.</span>
@@ -422,7 +422,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">action_space</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_network</span><span class="o">.</span><span class="n">action_space</span>
 
 <div class="viewcode-block" id="DQNLoss.forward"><a class="viewcode-back" href="../../../reference/generated/torchrl.objectives.DQNLoss.html#torchrl.objectives.DQNLoss.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Computes the DQN loss given a tensordict sampled from the replay buffer.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes the DQN loss given a tensordict sampled from the replay buffer.</span>
 
 <span class="sd">        This function will also write a &quot;td_error&quot; key that can be used by prioritized replay buffers to assign</span>
 <span class="sd">            a priority to items in the tensordict.</span>
@@ -491,7 +491,7 @@
 
 
 <div class="viewcode-block" id="DistributionalDQNLoss"><a class="viewcode-back" href="../../../reference/generated/torchrl.objectives.DistributionalDQNLoss.html#torchrl.objectives.DistributionalDQNLoss">[docs]</a><span class="k">class</span> <span class="nc">DistributionalDQNLoss</span><span class="p">(</span><span class="n">LossModule</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A distributional DQN loss class.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A distributional DQN loss class.</span>
 
 <span class="sd">    Distributional DQN uses a value network that outputs a distribution of</span>
 <span class="sd">    values over a discrete support of discounted returns (unlike regular DQN</span>

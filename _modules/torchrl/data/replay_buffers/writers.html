@@ -370,7 +370,7 @@
 
 
 <div class="viewcode-block" id="Writer"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.writers.Writer.html#torchrl.data.replay_buffers.writers.Writer">[docs]</a><span class="k">class</span> <span class="nc">Writer</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A ReplayBuffer base Writer class.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A ReplayBuffer base Writer class.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_storage</span> <span class="o">=</span> <span class="kc">None</span>
@@ -380,17 +380,17 @@
 
 <div class="viewcode-block" id="Writer.add"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.writers.Writer.html#torchrl.data.replay_buffers.writers.Writer.add">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Inserts one piece of data at an appropriate index, and returns that index.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inserts one piece of data at an appropriate index, and returns that index.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="Writer.extend"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.writers.Writer.html#torchrl.data.replay_buffers.writers.Writer.extend">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Inserts a series of data points at appropriate indices, and returns a tensor containing the indices.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inserts a series of data points at appropriate indices, and returns a tensor containing the indices.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
 
 
 <div class="viewcode-block" id="RoundRobinWriter"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.writers.RoundRobinWriter.html#torchrl.data.replay_buffers.writers.RoundRobinWriter">[docs]</a><span class="k">class</span> <span class="nc">RoundRobinWriter</span><span class="p">(</span><span class="n">Writer</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A RoundRobin Writer class for composable replay buffers.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A RoundRobin Writer class for composable replay buffers.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kw</span><span class="p">)</span>

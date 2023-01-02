@@ -398,7 +398,7 @@
 
 
 <span class="k">class</span> <span class="nc">EnvMetaData</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A class for environment meta-data storage and passing in multiprocessed settings.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A class for environment meta-data storage and passing in multiprocessed settings.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -459,7 +459,7 @@
 
 
 <span class="k">class</span> <span class="nc">Specs</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Container for action, observation and reward specs.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Container for action, observation and reward specs.</span>
 
 <span class="sd">    This class allows one to create an environment, retrieve all of the specs</span>
 <span class="sd">    in a single data container (and access them in one place) before erasing</span>
@@ -492,7 +492,7 @@
     <span class="k">def</span> <span class="nf">build_tensordict</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">next_observation</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">log_prob</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns a TensorDict with empty tensors of the desired shape.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a TensorDict with empty tensors of the desired shape.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            next_observation (bool, optional): if False, the observation returned</span>
@@ -505,7 +505,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># build a tensordict from specs</span>
-        <span class="n">td</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({},</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([]))</span>
+        <span class="n">td</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({},</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([]),</span> <span class="n">_run_checks</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">action_placeholder</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;action_spec&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="p">[</span><span class="s2">&quot;action_spec&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
         <span class="p">)</span>
@@ -539,7 +539,7 @@
 
 
 <div class="viewcode-block" id="EnvBase"><a class="viewcode-back" href="../../../reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase">[docs]</a><span class="k">class</span> <span class="nc">EnvBase</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Abstract environment parent class.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Abstract environment parent class.</span>
 
 <span class="sd">    Properties:</span>
 <span class="sd">        - observation_spec (CompositeSpec): sampling spec of the observations;</span>
@@ -548,8 +548,6 @@
 <span class="sd">        - reward_spec (TensorSpec): sampling spec of the rewards;</span>
 <span class="sd">        - batch_size (torch.Size): number of environments contained in the instance;</span>
 <span class="sd">        - device (torch.device): device where the env input and output are expected to live</span>
-<span class="sd">        - is_done (torch.Tensor): boolean value(s) indicating if the environment has reached a done state since the</span>
-<span class="sd">            last reset</span>
 <span class="sd">        - run_type_checks (bool): if True, the observation and reward dtypes</span>
 <span class="sd">            will be compared against their respective spec and an exception</span>
 <span class="sd">            will be raised if they don&#39;t match.</span>
@@ -574,16 +572,15 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_is_done</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
         <span class="k">if</span> <span class="s2">&quot;is_closed&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__dir__</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">is_closed</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">if</span> <span class="s2">&quot;_input_spec&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__dir__</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_input_spec</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_input_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="s2">&quot;_reward_spec&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__dir__</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_reward_spec</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_reward_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="s2">&quot;_observation_spec&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__dir__</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_observation_spec</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_observation_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># we want an error to be raised if we pass batch_size but</span>
             <span class="c1"># it&#39;s already been set</span>
@@ -605,9 +602,17 @@
         <span class="bp">cls</span><span class="o">.</span><span class="n">_device</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;_input_spec&quot;</span><span class="p">,</span> <span class="s2">&quot;_observation_spec&quot;</span><span class="p">,</span> <span class="s2">&quot;_action_spec&quot;</span><span class="p">,</span> <span class="s2">&quot;_reward_spec&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="s2">&quot;To set an environment spec, please use `env.observation_spec = obs_spec` (without the leading&quot;</span>
+                <span class="s2">&quot; underscore).&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">batch_locked</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Whether the environnement can be used with a batch size different from the one it was initialized with or not.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the environnement can be used with a batch size different from the one it was initialized with or not.</span>
 
 <span class="sd">        If True, the env needs to be used with a tensordict having the same batch size as the env.</span>
 <span class="sd">        batch_locked is an immutable property.</span>
@@ -633,9 +638,9 @@
     <span class="nd">@action_spec</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">action_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">TensorSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_input_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_input_spec</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">input_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
@@ -643,7 +648,9 @@
 
     <span class="nd">@input_spec</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">input_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">TensorSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_input_spec</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The type of an input_spec must be Composite.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_input_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">reward_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
@@ -651,7 +658,18 @@
 
     <span class="nd">@reward_spec</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">reward_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">TensorSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_reward_spec</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;shape&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;reward_spec of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2"> do not have a shape &quot;</span> <span class="sa">f</span><span class="s2">&quot;attribute.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;the reward_spec shape cannot be empty (this error&quot;</span>
+                <span class="s2">&quot; usually comes from trying to set a reward_spec&quot;</span>
+                <span class="s2">&quot; with a null number of dimensions. Try using a multidimensional&quot;</span>
+                <span class="s2">&quot; spec instead, for instance with a singleton dimension at the tail).&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_reward_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
@@ -659,10 +677,12 @@
 
     <span class="nd">@observation_spec</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">TensorSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_observation_spec</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The type of an observation_spec must be Composite.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_observation_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
 <div class="viewcode-block" id="EnvBase.step"><a class="viewcode-back" href="../../../reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Makes a step in the environment.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Makes a step in the environment.</span>
 
 <span class="sd">        Step accepts a single argument, tensordict, which usually carries an &#39;action&#39; key which indicates the action</span>
 <span class="sd">        to be taken.</span>
@@ -685,7 +705,31 @@
         <span class="n">obs_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="n">tensordict_out_select</span> <span class="o">=</span> <span class="n">tensordict_out</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="n">obs_keys</span><span class="p">)</span>
         <span class="n">tensordict_out</span> <span class="o">=</span> <span class="n">tensordict_out</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="o">*</span><span class="n">obs_keys</span><span class="p">)</span>
-        <span class="n">tensordict_out</span><span class="p">[</span><span class="s2">&quot;next&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tensordict_out_select</span>
+        <span class="n">tensordict_out</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="n">tensordict_out_select</span><span class="p">)</span>
+
+        <span class="n">reward</span> <span class="o">=</span> <span class="n">tensordict_out</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">)</span>
+        <span class="c1"># unsqueeze rewards if needed</span>
+        <span class="n">expected_reward_shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span>
+            <span class="p">[</span><span class="o">*</span><span class="n">tensordict_out</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">expected_reward_shape</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reward</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">n</span> <span class="ow">and</span> <span class="n">reward</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="n">n</span><span class="p">:]</span> <span class="o">!=</span> <span class="n">expected_reward_shape</span><span class="p">:</span>
+            <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">reward</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="n">n</span><span class="p">],</span> <span class="o">*</span><span class="n">expected_reward_shape</span><span class="p">)</span>
+            <span class="n">tensordict_out</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">,</span> <span class="n">reward</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">reward</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+            <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">expected_reward_shape</span><span class="p">)</span>
+            <span class="n">tensordict_out</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">,</span> <span class="n">reward</span><span class="p">)</span>
+
+        <span class="n">done</span> <span class="o">=</span> <span class="n">tensordict_out</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span>
+        <span class="c1"># unsqueeze done if needed</span>
+        <span class="n">expected_done_shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="o">*</span><span class="n">tensordict_out</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">expected_done_shape</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">done</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">n</span> <span class="ow">and</span> <span class="n">done</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="n">n</span><span class="p">:]</span> <span class="o">!=</span> <span class="n">expected_done_shape</span><span class="p">:</span>
+            <span class="n">done</span> <span class="o">=</span> <span class="n">done</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">done</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="n">n</span><span class="p">],</span> <span class="o">*</span><span class="n">expected_done_shape</span><span class="p">)</span>
+            <span class="n">tensordict_out</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">,</span> <span class="n">done</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">done</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+            <span class="n">done</span> <span class="o">=</span> <span class="n">done</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">expected_done_shape</span><span class="p">)</span>
+            <span class="n">tensordict_out</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">,</span> <span class="n">done</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">tensordict_out</span> <span class="ow">is</span> <span class="n">tensordict</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
@@ -693,7 +737,6 @@
                 <span class="s2">&quot;tensordict. Consider emptying the TensorDict first (e.g. tensordict.empty() or &quot;</span>
                 <span class="s2">&quot;tensordict.select()) inside _step before writing new tensors onto this new instance.&quot;</span>
             <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">is_done</span> <span class="o">=</span> <span class="n">tensordict_out</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_type_checks</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_observation_keys</span><span class="p">(</span><span class="n">tensordict_out</span><span class="p">):</span>
                 <span class="n">obs</span> <span class="o">=</span> <span class="n">tensordict_out</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
@@ -733,7 +776,7 @@
         <span class="n">tensordict</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TensorDictBase</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Resets the environment.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resets the environment.</span>
 
 <span class="sd">        As for step and _step, only the private method :obj:`_reset` should be overwritten by EnvBase subclasses.</span>
 
@@ -748,6 +791,15 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tensordict_reset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">(</span><span class="n">tensordict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">done</span> <span class="o">=</span> <span class="n">tensordict_reset</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">done</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># unsqueeze done if needed</span>
+            <span class="n">expected_done_shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="o">*</span><span class="n">tensordict_reset</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">done</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">expected_done_shape</span><span class="p">:</span>
+                <span class="n">done</span> <span class="o">=</span> <span class="n">done</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">expected_done_shape</span><span class="p">)</span>
+                <span class="n">tensordict_reset</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">,</span> <span class="n">done</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">tensordict_reset</span><span class="o">.</span><span class="n">device</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">:</span>
             <span class="n">tensordict_reset</span> <span class="o">=</span> <span class="n">tensordict_reset</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">tensordict_reset</span> <span class="ow">is</span> <span class="n">tensordict</span><span class="p">:</span>
@@ -761,11 +813,13 @@
                 <span class="sa">f</span><span class="s2">&quot;env._reset returned an object of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">tensordict_reset</span><span class="p">)</span><span class="si">}</span><span class="s2"> but a TensorDict was expected.&quot;</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">is_done</span> <span class="o">=</span> <span class="n">tensordict_reset</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="n">tensordict_reset</span><span class="o">.</span><span class="n">set_default</span><span class="p">(</span>
             <span class="s2">&quot;done&quot;</span><span class="p">,</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="o">*</span><span class="n">tensordict_reset</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span>
+            <span class="p">),</span>
         <span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_done</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">tensordict_reset</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Env </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> was done after reset. This is (currently) not allowed.&quot;</span>
             <span class="p">)</span>
@@ -778,8 +832,10 @@
     <span class="k">def</span> <span class="nf">numel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
 
-<div class="viewcode-block" id="EnvBase.set_seed"><a class="viewcode-back" href="../../../reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.set_seed">[docs]</a>    <span class="k">def</span> <span class="nf">set_seed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">static_seed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Sets the seed of the environment and returns the next seed to be used (which is the input seed if a single environment is present).</span>
+<div class="viewcode-block" id="EnvBase.set_seed"><a class="viewcode-back" href="../../../reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.set_seed">[docs]</a>    <span class="k">def</span> <span class="nf">set_seed</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">static_seed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the seed of the environment and returns the next seed to be used (which is the input seed if a single environment is present).</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            seed (int): seed to be set</span>
@@ -799,6 +855,7 @@
             <span class="n">seed</span> <span class="o">=</span> <span class="n">new_seed</span>
         <span class="k">return</span> <span class="n">seed</span></div>
 
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">_set_seed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
@@ -814,18 +871,8 @@
                 <span class="sa">f</span><span class="s2">&quot;got </span><span class="si">{</span><span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">is_done_get_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_done</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_is_done</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_done</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">is_done_set_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_is_done</span> <span class="o">=</span> <span class="n">val</span>
-
-    <span class="n">is_done</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">is_done_get_fn</span><span class="p">,</span> <span class="n">is_done_set_fn</span><span class="p">)</span>
-
 <div class="viewcode-block" id="EnvBase.rand_step"><a class="viewcode-back" href="../../../reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.rand_step">[docs]</a>    <span class="k">def</span> <span class="nf">rand_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TensorDictBase</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Performs a random step in the environment given the action_spec attribute.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Performs a random step in the environment given the action_spec attribute.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            tensordict (TensorDictBase, optional): tensordict where the resulting info should be written.</span>
@@ -836,14 +883,16 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">tensordict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">tensordict</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({},</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+            <span class="n">tensordict</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span>
+                <span class="p">{},</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">_run_checks</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
         <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
         <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;action&quot;</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">specs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Specs</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns a Specs container where all the environment specs are contained.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a Specs container where all the environment specs are contained.</span>
 
 <span class="sd">        This feature allows one to create an environment, retrieve all of the specs in a single data container and then</span>
 <span class="sd">        erase the environment from the workspace.</span>
@@ -862,7 +911,7 @@
         <span class="n">return_contiguous</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">tensordict</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TensorDictBase</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Executes a rollout in the environment.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Executes a rollout in the environment.</span>
 
 <span class="sd">        The function will stop as soon as one of the contained environments</span>
 <span class="sd">        returns done=True.</span>
@@ -910,30 +959,27 @@
                 <span class="k">return</span> <span class="n">td</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;action&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">))</span>
 
         <span class="n">tensordicts</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_done</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_steps</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">auto_cast_to_device</span><span class="p">:</span>
-                    <span class="n">tensordict</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">policy_device</span><span class="p">)</span>
-                <span class="n">tensordict</span> <span class="o">=</span> <span class="n">policy</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">auto_cast_to_device</span><span class="p">:</span>
-                    <span class="n">tensordict</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">env_device</span><span class="p">)</span>
-                <span class="n">tensordict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
-                <span class="n">tensordicts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">clone</span><span class="p">())</span>
-                <span class="k">if</span> <span class="p">(</span>
-                    <span class="n">break_when_any_done</span> <span class="ow">and</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
-                <span class="p">)</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">==</span> <span class="n">max_steps</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="k">break</span>
-                <span class="n">tensordict</span> <span class="o">=</span> <span class="n">step_mdp</span><span class="p">(</span>
-                    <span class="n">tensordict</span><span class="p">,</span>
-                    <span class="n">keep_other</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="n">exclude_reward</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                    <span class="n">exclude_action</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                <span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_steps</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">auto_cast_to_device</span><span class="p">:</span>
+                <span class="n">tensordict</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">policy_device</span><span class="p">)</span>
+            <span class="n">tensordict</span> <span class="o">=</span> <span class="n">policy</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">auto_cast_to_device</span><span class="p">:</span>
+                <span class="n">tensordict</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">env_device</span><span class="p">)</span>
+            <span class="n">tensordict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
+            <span class="n">tensordicts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">clone</span><span class="p">())</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">break_when_any_done</span> <span class="ow">and</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+            <span class="p">)</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">==</span> <span class="n">max_steps</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">tensordict</span> <span class="o">=</span> <span class="n">step_mdp</span><span class="p">(</span>
+                <span class="n">tensordict</span><span class="p">,</span>
+                <span class="n">keep_other</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">exclude_reward</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">exclude_action</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
 
-                <span class="k">if</span> <span class="n">callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;reset env before calling rollout!&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">)</span>
 
         <span class="n">batch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="k">if</span> <span class="n">tensordict</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span>
 
@@ -993,7 +1039,14 @@
         <span class="c1"># if del occurs before env has been set up, we don&#39;t want a recursion</span>
         <span class="c1"># error</span>
         <span class="k">if</span> <span class="s2">&quot;is_closed&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_closed</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="c1"># a TypeError will typically be raised if the env is deleted when the program ends.</span>
+                <span class="c1"># In the future, insignificant changes to the close method may change the error type.</span>
+                <span class="c1"># We excplicitely assume that any error raised during closure in</span>
+                <span class="c1"># __del__ will not affect the program.</span>
+                <span class="k">pass</span>
 
 <div class="viewcode-block" id="EnvBase.to"><a class="viewcode-back" href="../../../reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.to">[docs]</a>    <span class="k">def</span> <span class="nf">to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="n">DEVICE_TYPING</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EnvBase</span><span class="p">:</span>
         <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
@@ -1002,12 +1055,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">is_done</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_done</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="EnvBase.fake_tensordict"><a class="viewcode-back" href="../../../reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.fake_tensordict">[docs]</a>    <span class="k">def</span> <span class="nf">fake_tensordict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns a fake tensordict with key-value pairs that match in shape, device and dtype what can be expected during an environment rollout.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a fake tensordict with key-value pairs that match in shape, device and dtype what can be expected during an environment rollout.&quot;&quot;&quot;</span>
         <span class="n">input_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span>
         <span class="n">fake_input</span> <span class="o">=</span> <span class="n">input_spec</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
         <span class="n">observation_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span>
@@ -1024,12 +1076,13 @@
             <span class="p">},</span>
             <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
             <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+            <span class="n">_run_checks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">fake_td</span></div></div>
 
 
 <span class="k">class</span> <span class="nc">_EnvWrapper</span><span class="p">(</span><span class="n">EnvBase</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Abstract environment wrapper class.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Abstract environment wrapper class.</span>
 
 <span class="sd">    Unlike EnvBase, _EnvWrapper comes with a :obj:`_build_env` private method that will be called upon instantiation.</span>
 <span class="sd">    Interfaces with other libraries should be coded using _EnvWrapper.</span>
@@ -1106,8 +1159,9 @@
             <span class="sa">f</span><span class="s2">&quot;env not set in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">, cannot access </span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">_init_env</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Runs all the necessary steps such that the environment is ready to use.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Runs all the necessary steps such that the environment is ready to use.</span>
 
 <span class="sd">        This step is intended to ensure that a seed is provided to the environment (if needed) and that the environment</span>
 <span class="sd">        is reset (if needed). For instance, DMControl envs require the env to be reset before being used, but Gym envs</span>
@@ -1121,7 +1175,7 @@
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">_build_env</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;gym.Env&quot;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
-        <span class="sd">&quot;&quot;&quot;Creates an environment from the target library and stores it with the `_env` attribute.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates an environment from the target library and stores it with the `_env` attribute.</span>
 
 <span class="sd">        When overwritten, this function should pass all the required kwargs to the env instantiation method.</span>
 
@@ -1133,34 +1187,19 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Closes the contained environment if possible.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Closes the contained environment if possible.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_closed</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">set_seed</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">static_seed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">static_seed</span><span class="p">:</span>
-            <span class="n">new_seed</span> <span class="o">=</span> <span class="n">seed_generator</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
-            <span class="n">seed</span> <span class="o">=</span> <span class="n">new_seed</span>
-        <span class="k">return</span> <span class="n">seed</span>
-
-    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_set_seed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-
 
 <span class="k">def</span> <span class="nf">make_tensordict</span><span class="p">(</span>
     <span class="n">env</span><span class="p">:</span> <span class="n">_EnvWrapper</span><span class="p">,</span>
     <span class="n">policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">TensorDictBase</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">TensorDictBase</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns a zeroed-tensordict with fields matching those required for a full step (action selection and environment step) in the environment.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a zeroed-tensordict with fields matching those required for a full step (action selection and environment step) in the environment.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        env (_EnvWrapper): environment defining the observation, action and reward space;</span>

@@ -395,7 +395,7 @@
 
 
 <div class="viewcode-block" id="REDQLoss"><a class="viewcode-back" href="../../../reference/generated/torchrl.objectives.REDQLoss.html#torchrl.objectives.REDQLoss">[docs]</a><span class="k">class</span> <span class="nc">REDQLoss</span><span class="p">(</span><span class="n">LossModule</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;REDQ Loss module.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;REDQ Loss module.</span>
 
 <span class="sd">    REDQ (RANDOMIZED ENSEMBLED DOUBLE Q-LEARNING: LEARNING FAST WITHOUT A MODEL</span>
 <span class="sd">    https://openreview.net/pdf?id=AY8zfZm0tDd) generalizes the idea of using an ensemble of Q-value functions to</span>
@@ -554,12 +554,12 @@
                 <span class="n">actor_params</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">actor_network</span><span class="p">,</span> <span class="n">TensorDictSequential</span><span class="p">):</span>
-                <span class="n">sample_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_network</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">sample_out_key</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">tensordict_actor_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_network</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">build_dist_from_params</span><span class="p">(</span>
+                <span class="n">sample_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_network</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">out_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">tensordict_actor_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_network</span><span class="o">.</span><span class="n">build_dist_from_params</span><span class="p">(</span>
                     <span class="n">td_params</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">sample_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_network</span><span class="o">.</span><span class="n">sample_out_key</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">sample_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_network</span><span class="o">.</span><span class="n">out_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="n">tensordict_actor_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_network</span><span class="o">.</span><span class="n">build_dist_from_params</span><span class="p">(</span>
                     <span class="n">td_params</span>
                 <span class="p">)</span>

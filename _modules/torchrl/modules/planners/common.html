@@ -375,7 +375,7 @@
 
 
 <div class="viewcode-block" id="MPCPlannerBase"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.MPCPlannerBase.html#torchrl.modules.MPCPlannerBase">[docs]</a><span class="k">class</span> <span class="nc">MPCPlannerBase</span><span class="p">(</span><span class="n">SafeModule</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;MPCPlannerBase abstract Module.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MPCPlannerBase abstract Module.</span>
 
 <span class="sd">    This class inherits from :obj:`SafeModule`. Provided a :obj:`TensorDict`, this module will perform a Model Predictive Control (MPC) planning step.</span>
 <span class="sd">    At the end of the planning step, the :obj:`MPCPlanner` will return a proposed action.</span>
@@ -404,7 +404,7 @@
 
 <div class="viewcode-block" id="MPCPlannerBase.planning"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.MPCPlannerBase.html#torchrl.modules.MPCPlannerBase.planning">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">planning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">td</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Performs the MPC planning step.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Performs the MPC planning step.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            td (TensorDict): The TensorDict to perform the planning step on.</span>

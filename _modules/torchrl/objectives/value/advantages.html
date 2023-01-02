@@ -365,36 +365,52 @@
 <span class="c1"># This source code is licensed under the MIT license found in the</span>
 <span class="c1"># LICENSE file in the root directory of this source tree.</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="n">dispatch_kwargs</span>
 <span class="kn">from</span> <span class="nn">tensordict.tensordict</span> <span class="kn">import</span> <span class="n">TensorDictBase</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span><span class="p">,</span> <span class="n">Tensor</span>
 
 <span class="kn">from</span> <span class="nn">torchrl.envs.utils</span> <span class="kn">import</span> <span class="n">step_mdp</span>
 <span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="n">SafeModule</span>
+
+<span class="kn">from</span> <span class="nn">torchrl.objectives.utils</span> <span class="kn">import</span> <span class="n">hold_out_net</span>
 <span class="kn">from</span> <span class="nn">torchrl.objectives.value.functional</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">td_advantage_estimate</span><span class="p">,</span>
     <span class="n">td_lambda_advantage_estimate</span><span class="p">,</span>
     <span class="n">vec_generalized_advantage_estimate</span><span class="p">,</span>
     <span class="n">vec_td_lambda_advantage_estimate</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">hold_out_net</span>
-<span class="kn">from</span> <span class="nn">.functional</span> <span class="kn">import</span> <span class="n">td_advantage_estimate</span>
+
+<span class="k">def</span> <span class="nf">_self_set_grad_enabled</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">new_fun</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">set_grad_enabled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">differentiable</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">fun</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">new_fun</span>
 
 
 <div class="viewcode-block" id="TDEstimate"><a class="viewcode-back" href="../../../../reference/generated/torchrl.objectives.value.TDEstimate.html#torchrl.objectives.value.TDEstimate">[docs]</a><span class="k">class</span> <span class="nc">TDEstimate</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Temporal Difference estimate of advantage function.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Temporal Difference estimate of advantage function.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        gamma (scalar): exponential mean discount.</span>
 <span class="sd">        value_network (SafeModule): value operator used to retrieve the value estimates.</span>
 <span class="sd">        average_rewards (bool, optional): if True, rewards will be standardized</span>
 <span class="sd">            before the TD is computed.</span>
-<span class="sd">        gradient_mode (bool, optional): if True, gradients are propagated throught</span>
+<span class="sd">        differentiable (bool, optional): if True, gradients are propagated throught</span>
 <span class="sd">            the computation of the value function. Default is :obj:`False`.</span>
-<span class="sd">        value_key (str, optional): key pointing to the state value. Default is</span>
-<span class="sd">            `&quot;state_value&quot;`.</span>
+<span class="sd">        advantage_key (str or tuple of str, optional): the key of the advantage entry.</span>
+<span class="sd">            Defaults to &quot;advantage&quot;.</span>
+<span class="sd">        value_target_key (str or tuple of str, optional): the key of the advantage entry.</span>
+<span class="sd">            Defaults to &quot;value_target&quot;.</span>
+<span class="sd">        value_key (str or tuple of str, optional): the value key to read from the input tensordict.</span>
+<span class="sd">            Defaults to &quot;state_value&quot;.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -402,16 +418,36 @@
         <span class="n">gamma</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
         <span class="n">value_network</span><span class="p">:</span> <span class="n">SafeModule</span><span class="p">,</span>
         <span class="n">average_rewards</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">gradient_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">value_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;state_value&quot;</span><span class="p">,</span>
+        <span class="n">differentiable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">advantage_key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;advantage&quot;</span><span class="p">,</span>
+        <span class="n">value_target_key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;value_target&quot;</span><span class="p">,</span>
+        <span class="n">value_key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;state_value&quot;</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;gamma&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">gamma</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">value_network</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">device</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;gamma&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value_network</span> <span class="o">=</span> <span class="n">value_network</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">average_rewards</span> <span class="o">=</span> <span class="n">average_rewards</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">gradient_mode</span> <span class="o">=</span> <span class="n">gradient_mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">differentiable</span> <span class="o">=</span> <span class="n">differentiable</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value_key</span> <span class="o">=</span> <span class="n">value_key</span>
+        <span class="k">if</span> <span class="n">value_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">value_network</span><span class="o">.</span><span class="n">out_keys</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;value key &#39;</span><span class="si">{</span><span class="n">value_key</span><span class="si">}</span><span class="s2">&#39; not found in value network out_keys.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">advantage_key</span> <span class="o">=</span> <span class="n">advantage_key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value_target_key</span> <span class="o">=</span> <span class="n">value_target_key</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">value_network</span><span class="o">.</span><span class="n">in_keys</span>
+            <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;reward&quot;</span><span class="p">,</span> <span class="s2">&quot;done&quot;</span><span class="p">]</span>
+            <span class="o">+</span> <span class="p">[(</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="n">in_key</span><span class="p">)</span> <span class="k">for</span> <span class="n">in_key</span> <span class="ow">in</span> <span class="n">value_network</span><span class="o">.</span><span class="n">in_keys</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">advantage_key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_target_key</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_functional</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -420,71 +456,113 @@
             <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_network</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_is_stateless&quot;</span><span class="p">]</span>
         <span class="p">)</span>
 
-<div class="viewcode-block" id="TDEstimate.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.objectives.value.TDEstimate.html#torchrl.objectives.value.TDEstimate.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+<div class="viewcode-block" id="TDEstimate.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.objectives.value.TDEstimate.html#torchrl.objectives.value.TDEstimate.forward">[docs]</a>    <span class="nd">@_self_set_grad_enabled</span>
+    <span class="nd">@dispatch_kwargs</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">unused_args</span><span class="p">,</span>
-        <span class="n">params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">target_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TensorDictBase</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">target_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TensorDictBase</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Computes the GAE given the data in tensordict.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes the TDEstimate given the data in tensordict.</span>
+
+<span class="sd">        If a functional module is provided, a nested TensorDict containing the parameters</span>
+<span class="sd">        (and if relevant the target parameters) can be passed to the module.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            tensordict (TensorDictBase): A TensorDict containing the data (observation, action, reward, done state)</span>
-<span class="sd">                necessary to compute the value estimates and the GAE.</span>
+<span class="sd">            tensordict (TensorDictBase): A TensorDict containing the data</span>
+<span class="sd">                (an observation key, &quot;action&quot;, &quot;reward&quot;, &quot;done&quot; and &quot;next&quot; tensordict state</span>
+<span class="sd">                as returned by the environment) necessary to compute the value estimates and the TDEstimate.</span>
+<span class="sd">                The data passed to this module should be structured as :obj:`[*B, T, F]` where :obj:`B` are</span>
+<span class="sd">                the batch size, :obj:`T` the time dimension and :obj:`F` the feature dimension(s).</span>
+<span class="sd">            params (TensorDictBase, optional): A nested TensorDict containing the params</span>
+<span class="sd">                to be passed to the functional value network module.</span>
+<span class="sd">            target_params (TensorDictBase, optional): A nested TensorDict containing the</span>
+<span class="sd">                target params to be passed to the functional value network module.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            An updated TensorDict with an &quot;advantage&quot; and a &quot;value_error&quot; keys</span>
+<span class="sd">            An updated TensorDict with an advantage and a value_error keys as defined in the constructor.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; from tensordict import TensorDict</span>
+<span class="sd">            &gt;&gt;&gt; value_net = SafeModule(</span>
+<span class="sd">            ...     nn.Linear(3, 1), in_keys=[&quot;obs&quot;], out_keys=[&quot;state_value&quot;]</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; module = TDEstimate(</span>
+<span class="sd">            ...     gamma=0.98,</span>
+<span class="sd">            ...     value_network=value_net,</span>
+<span class="sd">            ...     differentiable=False,</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; obs, next_obs = torch.randn(2, 1, 10, 3)</span>
+<span class="sd">            &gt;&gt;&gt; reward = torch.randn(1, 10, 1)</span>
+<span class="sd">            &gt;&gt;&gt; done = torch.zeros(1, 10, 1, dtype=torch.bool)</span>
+<span class="sd">            &gt;&gt;&gt; tensordict = TensorDict({&quot;obs&quot;: obs, &quot;next&quot;: {&quot;obs&quot;: next_obs}, &quot;done&quot;: done, &quot;reward&quot;: reward}, [1, 10])</span>
+<span class="sd">            &gt;&gt;&gt; _ = module(tensordict)</span>
+<span class="sd">            &gt;&gt;&gt; assert &quot;advantage&quot; in tensordict.keys()</span>
+
+<span class="sd">        The module supports non-tensordict (i.e. unpacked tensordict) inputs too:</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; value_net = SafeModule(</span>
+<span class="sd">            ...     nn.Linear(3, 1), in_keys=[&quot;obs&quot;], out_keys=[&quot;state_value&quot;]</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; module = TDEstimate(</span>
+<span class="sd">            ...     gamma=0.98,</span>
+<span class="sd">            ...     value_network=value_net,</span>
+<span class="sd">            ...     differentiable=False,</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; obs, next_obs = torch.randn(2, 1, 10, 3)</span>
+<span class="sd">            &gt;&gt;&gt; reward = torch.randn(1, 10, 1)</span>
+<span class="sd">            &gt;&gt;&gt; done = torch.zeros(1, 10, 1, dtype=torch.bool)</span>
+<span class="sd">            &gt;&gt;&gt; advantage, value_target = module(obs=obs, reward=reward, done=done, next_obs=next_obs)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">set_grad_enabled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gradient_mode</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">batch_dims</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="s2">&quot;Expected input tensordict to have at least one dimensions, got&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;tensordict.batch_size = </span><span class="si">{</span><span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="p">)</span>
-            <span class="n">reward</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">average_rewards</span><span class="p">:</span>
-                <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span> <span class="o">-</span> <span class="n">reward</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-                <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span> <span class="o">/</span> <span class="n">reward</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="mf">1e-4</span><span class="p">)</span>
-                <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
-                    <span class="s2">&quot;reward&quot;</span><span class="p">,</span> <span class="n">reward</span>
-                <span class="p">)</span>  <span class="c1"># we must update the rewards if they are used later in the code</span>
+        <span class="k">if</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">batch_dims</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Expected input tensordict to have at least one dimensions, got&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;tensordict.batch_size = </span><span class="si">{</span><span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="n">reward</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">average_rewards</span><span class="p">:</span>
+            <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span> <span class="o">-</span> <span class="n">reward</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span> <span class="o">/</span> <span class="n">reward</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="mf">1e-4</span><span class="p">)</span>
+            <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+                <span class="s2">&quot;reward&quot;</span><span class="p">,</span> <span class="n">reward</span>
+            <span class="p">)</span>  <span class="c1"># we must update the rewards if they are used later in the code</span>
 
-            <span class="n">gamma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span>
-            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_functional</span> <span class="ow">and</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="s2">&quot;Expected params to be passed to advantage module but got none.&quot;</span>
-                <span class="p">)</span>
-            <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_functional</span> <span class="ow">and</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Expected params to be passed to advantage module but got none.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">hold_out_net</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value_network</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">value_network</span><span class="p">(</span><span class="n">tensordict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value_key</span><span class="p">)</span>
 
+        <span class="c1"># we may still need to pass gradient, but we don&#39;t want to assign grads to</span>
+        <span class="c1"># value net params</span>
+        <span class="n">step_td</span> <span class="o">=</span> <span class="n">step_mdp</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">target_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># we assume that target parameters are not differentiable</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_params</span>
+        <span class="k">elif</span> <span class="s2">&quot;params&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
         <span class="k">with</span> <span class="n">hold_out_net</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value_network</span><span class="p">):</span>
-            <span class="c1"># we may still need to pass gradient, but we don&#39;t want to assign grads to</span>
-            <span class="c1"># value net params</span>
-            <span class="n">step_td</span> <span class="o">=</span> <span class="n">step_mdp</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">target_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="c1"># we assume that target parameters are not differentiable</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_params</span>
-            <span class="k">elif</span> <span class="s2">&quot;params&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">value_network</span><span class="p">(</span><span class="n">step_td</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="n">next_value</span> <span class="o">=</span> <span class="n">step_td</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value_key</span><span class="p">)</span>
 
         <span class="n">done</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span>
-        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">set_grad_enabled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gradient_mode</span><span class="p">):</span>
-            <span class="n">adv</span> <span class="o">=</span> <span class="n">td_advantage_estimate</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">next_value</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">)</span>
-            <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;advantage&quot;</span><span class="p">,</span> <span class="n">adv</span><span class="o">.</span><span class="n">detach</span><span class="p">())</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gradient_mode</span><span class="p">:</span>
-                <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;value_error&quot;</span><span class="p">,</span> <span class="n">adv</span><span class="p">)</span>
+        <span class="n">adv</span> <span class="o">=</span> <span class="n">td_advantage_estimate</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">next_value</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">)</span>
+        <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;advantage&quot;</span><span class="p">,</span> <span class="n">adv</span><span class="p">)</span>
+        <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;value_target&quot;</span><span class="p">,</span> <span class="n">adv</span> <span class="o">+</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tensordict</span></div></div>
 
 
 <div class="viewcode-block" id="TDLambdaEstimate"><a class="viewcode-back" href="../../../../reference/generated/torchrl.objectives.value.TDLambdaEstimate.html#torchrl.objectives.value.TDLambdaEstimate">[docs]</a><span class="k">class</span> <span class="nc">TDLambdaEstimate</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;TD-Lambda estimate of advantage function.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;TD-Lambda estimate of advantage function.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        gamma (scalar): exponential mean discount.</span>
@@ -492,12 +570,17 @@
 <span class="sd">        value_network (SafeModule): value operator used to retrieve the value estimates.</span>
 <span class="sd">        average_rewards (bool, optional): if True, rewards will be standardized</span>
 <span class="sd">            before the TD is computed.</span>
-<span class="sd">        gradient_mode (bool, optional): if True, gradients are propagated throught</span>
-<span class="sd">            the computation of the value function. Default is `False`.</span>
-<span class="sd">        value_key (str, optional): key pointing to the state value. Default is</span>
-<span class="sd">            `&quot;state_value&quot;`.</span>
+<span class="sd">        differentiable (bool, optional): if True, gradients are propagated throught</span>
+<span class="sd">            the computation of the value function. Default is :obj:`False`.</span>
 <span class="sd">        vectorized (bool, optional): whether to use the vectorized version of the</span>
 <span class="sd">            lambda return. Default is `True`.</span>
+<span class="sd">        advantage_key (str or tuple of str, optional): the key of the advantage entry.</span>
+<span class="sd">            Defaults to &quot;advantage&quot;.</span>
+<span class="sd">        value_target_key (str or tuple of str, optional): the key of the advantage entry.</span>
+<span class="sd">            Defaults to &quot;value_target&quot;.</span>
+<span class="sd">        value_key (str or tuple of str, optional): the value key to read from the input tensordict.</span>
+<span class="sd">            Defaults to &quot;state_value&quot;.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -506,19 +589,39 @@
         <span class="n">lmbda</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
         <span class="n">value_network</span><span class="p">:</span> <span class="n">SafeModule</span><span class="p">,</span>
         <span class="n">average_rewards</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">gradient_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">value_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;state_value&quot;</span><span class="p">,</span>
+        <span class="n">differentiable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">vectorized</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">advantage_key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;advantage&quot;</span><span class="p">,</span>
+        <span class="n">value_target_key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;value_target&quot;</span><span class="p">,</span>
+        <span class="n">value_key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;state_value&quot;</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;gamma&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">gamma</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;lmbda&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">lmbda</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">value_network</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">device</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;gamma&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;lmbda&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">lmbda</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value_network</span> <span class="o">=</span> <span class="n">value_network</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vectorized</span> <span class="o">=</span> <span class="n">vectorized</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">average_rewards</span> <span class="o">=</span> <span class="n">average_rewards</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">gradient_mode</span> <span class="o">=</span> <span class="n">gradient_mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">differentiable</span> <span class="o">=</span> <span class="n">differentiable</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value_key</span> <span class="o">=</span> <span class="n">value_key</span>
+        <span class="k">if</span> <span class="n">value_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">value_network</span><span class="o">.</span><span class="n">out_keys</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;value key &#39;</span><span class="si">{</span><span class="n">value_key</span><span class="si">}</span><span class="s2">&#39; not found in value network out_keys.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">advantage_key</span> <span class="o">=</span> <span class="n">advantage_key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value_target_key</span> <span class="o">=</span> <span class="n">value_target_key</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">value_network</span><span class="o">.</span><span class="n">in_keys</span>
+            <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;reward&quot;</span><span class="p">,</span> <span class="s2">&quot;done&quot;</span><span class="p">]</span>
+            <span class="o">+</span> <span class="p">[(</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="n">in_key</span><span class="p">)</span> <span class="k">for</span> <span class="n">in_key</span> <span class="ow">in</span> <span class="n">value_network</span><span class="o">.</span><span class="n">in_keys</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">advantage_key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_target_key</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_functional</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -527,81 +630,125 @@
             <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_network</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_is_stateless&quot;</span><span class="p">]</span>
         <span class="p">)</span>
 
-<div class="viewcode-block" id="TDLambdaEstimate.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.objectives.value.TDLambdaEstimate.html#torchrl.objectives.value.TDLambdaEstimate.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+<div class="viewcode-block" id="TDLambdaEstimate.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.objectives.value.TDLambdaEstimate.html#torchrl.objectives.value.TDLambdaEstimate.forward">[docs]</a>    <span class="nd">@_self_set_grad_enabled</span>
+    <span class="nd">@dispatch_kwargs</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">unused_args</span><span class="p">,</span>
         <span class="n">params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">target_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Computes the GAE given the data in tensordict.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes the TDLambdaEstimate given the data in tensordict.</span>
+
+<span class="sd">        If a functional module is provided, a nested TensorDict containing the parameters</span>
+<span class="sd">        (and if relevant the target parameters) can be passed to the module.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            tensordict (TensorDictBase): A TensorDict containing the data (observation, action, reward, done state)</span>
-<span class="sd">                necessary to compute the value estimates and the GAE.</span>
+<span class="sd">            tensordict (TensorDictBase): A TensorDict containing the data</span>
+<span class="sd">                (an observation key, &quot;action&quot;, &quot;reward&quot;, &quot;done&quot; and &quot;next&quot; tensordict state</span>
+<span class="sd">                as returned by the environment) necessary to compute the value estimates and the TDLambdaEstimate.</span>
+<span class="sd">                The data passed to this module should be structured as :obj:`[*B, T, F]` where :obj:`B` are</span>
+<span class="sd">                the batch size, :obj:`T` the time dimension and :obj:`F` the feature dimension(s).</span>
+<span class="sd">            params (TensorDictBase, optional): A nested TensorDict containing the params</span>
+<span class="sd">                to be passed to the functional value network module.</span>
+<span class="sd">            target_params (TensorDictBase, optional): A nested TensorDict containing the</span>
+<span class="sd">                target params to be passed to the functional value network module.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            An updated TensorDict with an &quot;advantage&quot; and a &quot;value_error&quot; keys</span>
+<span class="sd">            An updated TensorDict with an advantage and a value_error keys as defined in the constructor.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; from tensordict import TensorDict</span>
+<span class="sd">            &gt;&gt;&gt; value_net = SafeModule(</span>
+<span class="sd">            ...     nn.Linear(3, 1), in_keys=[&quot;obs&quot;], out_keys=[&quot;state_value&quot;]</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; module = TDLambdaEstimate(</span>
+<span class="sd">            ...     gamma=0.98,</span>
+<span class="sd">            ...     lmbda=0.94,</span>
+<span class="sd">            ...     value_network=value_net,</span>
+<span class="sd">            ...     differentiable=False,</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; obs, next_obs = torch.randn(2, 1, 10, 3)</span>
+<span class="sd">            &gt;&gt;&gt; reward = torch.randn(1, 10, 1)</span>
+<span class="sd">            &gt;&gt;&gt; done = torch.zeros(1, 10, 1, dtype=torch.bool)</span>
+<span class="sd">            &gt;&gt;&gt; tensordict = TensorDict({&quot;obs&quot;: obs, &quot;next&quot;: {&quot;obs&quot;: next_obs}, &quot;done&quot;: done, &quot;reward&quot;: reward}, [1, 10])</span>
+<span class="sd">            &gt;&gt;&gt; _ = module(tensordict)</span>
+<span class="sd">            &gt;&gt;&gt; assert &quot;advantage&quot; in tensordict.keys()</span>
+
+<span class="sd">        The module supports non-tensordict (i.e. unpacked tensordict) inputs too:</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; value_net = SafeModule(</span>
+<span class="sd">            ...     nn.Linear(3, 1), in_keys=[&quot;obs&quot;], out_keys=[&quot;state_value&quot;]</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; module = TDLambdaEstimate(</span>
+<span class="sd">            ...     gamma=0.98,</span>
+<span class="sd">            ...     lmbda=0.94,</span>
+<span class="sd">            ...     value_network=value_net,</span>
+<span class="sd">            ...     differentiable=False,</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; obs, next_obs = torch.randn(2, 1, 10, 3)</span>
+<span class="sd">            &gt;&gt;&gt; reward = torch.randn(1, 10, 1)</span>
+<span class="sd">            &gt;&gt;&gt; done = torch.zeros(1, 10, 1, dtype=torch.bool)</span>
+<span class="sd">            &gt;&gt;&gt; advantage, value_target = module(obs=obs, reward=reward, done=done, next_obs=next_obs)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">set_grad_enabled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gradient_mode</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">batch_dims</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="s2">&quot;Expected input tensordict to have at least one dimensions, got&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;tensordict.batch_size = </span><span class="si">{</span><span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="p">)</span>
-            <span class="n">reward</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">average_rewards</span><span class="p">:</span>
-                <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span> <span class="o">-</span> <span class="n">reward</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-                <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span> <span class="o">/</span> <span class="n">reward</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="mf">1e-4</span><span class="p">)</span>
-                <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
-                    <span class="s2">&quot;reward&quot;</span><span class="p">,</span> <span class="n">reward</span>
-                <span class="p">)</span>  <span class="c1"># we must update the rewards if they are used later in the code</span>
+        <span class="k">if</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">batch_dims</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Expected input tensordict to have at least one dimensions, got&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;tensordict.batch_size = </span><span class="si">{</span><span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="n">reward</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">average_rewards</span><span class="p">:</span>
+            <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span> <span class="o">-</span> <span class="n">reward</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span> <span class="o">/</span> <span class="n">reward</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="mf">1e-4</span><span class="p">)</span>
+            <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+                <span class="s2">&quot;reward&quot;</span><span class="p">,</span> <span class="n">reward</span>
+            <span class="p">)</span>  <span class="c1"># we must update the rewards if they are used later in the code</span>
 
-            <span class="n">gamma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span>
-            <span class="n">lmbda</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lmbda</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span>
+        <span class="n">lmbda</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lmbda</span>
 
-            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_functional</span> <span class="ow">and</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="s2">&quot;Expected params to be passed to advantage module but got none.&quot;</span>
-                <span class="p">)</span>
-            <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_functional</span> <span class="ow">and</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Expected params to be passed to advantage module but got none.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span>
+        <span class="k">with</span> <span class="n">hold_out_net</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value_network</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">value_network</span><span class="p">(</span><span class="n">tensordict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value_key</span><span class="p">)</span>
 
+        <span class="n">step_td</span> <span class="o">=</span> <span class="n">step_mdp</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">target_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># we assume that target parameters are not differentiable</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_params</span>
+        <span class="k">elif</span> <span class="s2">&quot;params&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
         <span class="k">with</span> <span class="n">hold_out_net</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value_network</span><span class="p">):</span>
             <span class="c1"># we may still need to pass gradient, but we don&#39;t want to assign grads to</span>
             <span class="c1"># value net params</span>
-            <span class="n">step_td</span> <span class="o">=</span> <span class="n">step_mdp</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">target_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="c1"># we assume that target parameters are not differentiable</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_params</span>
-            <span class="k">elif</span> <span class="s2">&quot;params&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">value_network</span><span class="p">(</span><span class="n">step_td</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="n">next_value</span> <span class="o">=</span> <span class="n">step_td</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value_key</span><span class="p">)</span>
 
         <span class="n">done</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span>
-        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">set_grad_enabled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gradient_mode</span><span class="p">):</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vectorized</span><span class="p">:</span>
-                <span class="n">adv</span> <span class="o">=</span> <span class="n">vec_td_lambda_advantage_estimate</span><span class="p">(</span>
-                    <span class="n">gamma</span><span class="p">,</span> <span class="n">lmbda</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">next_value</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span>
-                <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">adv</span> <span class="o">=</span> <span class="n">td_lambda_advantage_estimate</span><span class="p">(</span>
-                    <span class="n">gamma</span><span class="p">,</span> <span class="n">lmbda</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">next_value</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span>
-                <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vectorized</span><span class="p">:</span>
+            <span class="n">adv</span> <span class="o">=</span> <span class="n">vec_td_lambda_advantage_estimate</span><span class="p">(</span>
+                <span class="n">gamma</span><span class="p">,</span> <span class="n">lmbda</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">next_value</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">adv</span> <span class="o">=</span> <span class="n">td_lambda_advantage_estimate</span><span class="p">(</span>
+                <span class="n">gamma</span><span class="p">,</span> <span class="n">lmbda</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">next_value</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span>
+            <span class="p">)</span>
 
-            <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;advantage&quot;</span><span class="p">,</span> <span class="n">adv</span><span class="o">.</span><span class="n">detach</span><span class="p">())</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gradient_mode</span><span class="p">:</span>
-                <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;value_error&quot;</span><span class="p">,</span> <span class="n">adv</span><span class="p">)</span>
+        <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">advantage_key</span><span class="p">,</span> <span class="n">adv</span><span class="p">)</span>
+        <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value_target_key</span><span class="p">,</span> <span class="n">adv</span> <span class="o">+</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tensordict</span></div></div>
 
 
 <div class="viewcode-block" id="GAE"><a class="viewcode-back" href="../../../../reference/generated/torchrl.objectives.value.GAE.html#torchrl.objectives.value.GAE">[docs]</a><span class="k">class</span> <span class="nc">GAE</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A class wrapper around the generalized advantage estimate functional.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A class wrapper around the generalized advantage estimate functional.</span>
 
 <span class="sd">    Refer to &quot;HIGH-DIMENSIONAL CONTINUOUS CONTROL USING GENERALIZED ADVANTAGE ESTIMATION&quot;</span>
 <span class="sd">    https://arxiv.org/pdf/1506.02438.pdf for more context.</span>
@@ -610,9 +757,23 @@
 <span class="sd">        gamma (scalar): exponential mean discount.</span>
 <span class="sd">        lmbda (scalar): trajectory discount.</span>
 <span class="sd">        value_network (SafeModule): value operator used to retrieve the value estimates.</span>
-<span class="sd">        average_rewards (bool): if True, rewards will be standardized before the GAE is computed.</span>
-<span class="sd">        gradient_mode (bool): if True, gradients are propagated throught the computation of the value function.</span>
-<span class="sd">            Default is `False`.</span>
+<span class="sd">        average_gae (bool): if True, the resulting GAE values will be standardized.</span>
+<span class="sd">            Default is :obj:`False`.</span>
+<span class="sd">        differentiable (bool, optional): if True, gradients are propagated throught</span>
+<span class="sd">            the computation of the value function. Default is :obj:`False`.</span>
+<span class="sd">        advantage_key (str or tuple of str, optional): the key of the advantage entry.</span>
+<span class="sd">            Defaults to &quot;advantage&quot;.</span>
+<span class="sd">        value_target_key (str or tuple of str, optional): the key of the advantage entry.</span>
+<span class="sd">            Defaults to &quot;value_target&quot;.</span>
+<span class="sd">        value_key (str or tuple of str, optional): the value key to read from the input tensordict.</span>
+<span class="sd">            Defaults to &quot;state_value&quot;.</span>
+
+<span class="sd">    GAE will return an :obj:`&quot;advantage&quot;` entry containing the advange value. It will also</span>
+<span class="sd">    return a :obj:`&quot;value_target&quot;` entry with the return value that is to be used</span>
+<span class="sd">    to train the value network. Finally, if :obj:`gradient_mode` is :obj:`True`,</span>
+<span class="sd">    an additional and differentiable :obj:`&quot;value_error&quot;` entry will be returned,</span>
+<span class="sd">    which simple represents the difference between the return and the value network</span>
+<span class="sd">    output (i.e. an additional distance loss should be applied to that signed value).</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -621,16 +782,38 @@
         <span class="n">gamma</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
         <span class="n">lmbda</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">value_network</span><span class="p">:</span> <span class="n">SafeModule</span><span class="p">,</span>
-        <span class="n">average_rewards</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">gradient_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">average_gae</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">differentiable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">advantage_key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;advantage&quot;</span><span class="p">,</span>
+        <span class="n">value_target_key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;value_target&quot;</span><span class="p">,</span>
+        <span class="n">value_key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;state_value&quot;</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;gamma&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">gamma</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;lmbda&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">lmbda</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">value_network</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">device</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;gamma&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;lmbda&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">lmbda</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value_network</span> <span class="o">=</span> <span class="n">value_network</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value_key</span> <span class="o">=</span> <span class="n">value_key</span>
+        <span class="k">if</span> <span class="n">value_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">value_network</span><span class="o">.</span><span class="n">out_keys</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;value key &#39;</span><span class="si">{</span><span class="n">value_key</span><span class="si">}</span><span class="s2">&#39; not found in value network out_keys.&quot;</span>
+            <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">average_rewards</span> <span class="o">=</span> <span class="n">average_rewards</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">gradient_mode</span> <span class="o">=</span> <span class="n">gradient_mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">average_gae</span> <span class="o">=</span> <span class="n">average_gae</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">differentiable</span> <span class="o">=</span> <span class="n">differentiable</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">advantage_key</span> <span class="o">=</span> <span class="n">advantage_key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value_target_key</span> <span class="o">=</span> <span class="n">value_target_key</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">value_network</span><span class="o">.</span><span class="n">in_keys</span>
+            <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;reward&quot;</span><span class="p">,</span> <span class="s2">&quot;done&quot;</span><span class="p">]</span>
+            <span class="o">+</span> <span class="p">[(</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="n">in_key</span><span class="p">)</span> <span class="k">for</span> <span class="n">in_key</span> <span class="ow">in</span> <span class="n">value_network</span><span class="o">.</span><span class="n">in_keys</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">advantage_key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_target_key</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_functional</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -639,67 +822,113 @@
             <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_network</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_is_stateless&quot;</span><span class="p">]</span>
         <span class="p">)</span>
 
-<div class="viewcode-block" id="GAE.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.objectives.value.GAE.html#torchrl.objectives.value.GAE.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+<div class="viewcode-block" id="GAE.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.objectives.value.GAE.html#torchrl.objectives.value.GAE.forward">[docs]</a>    <span class="nd">@_self_set_grad_enabled</span>
+    <span class="nd">@dispatch_kwargs</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">,</span>
         <span class="o">*</span><span class="n">unused_args</span><span class="p">,</span>
         <span class="n">params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">target_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Computes the GAE given the data in tensordict.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes the GAE given the data in tensordict.</span>
+
+<span class="sd">        If a functional module is provided, a nested TensorDict containing the parameters</span>
+<span class="sd">        (and if relevant the target parameters) can be passed to the module.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            tensordict (TensorDictBase): A TensorDict containing the data (observation, action, reward, done state)</span>
-<span class="sd">                necessary to compute the value estimates and the GAE.</span>
+<span class="sd">            tensordict (TensorDictBase): A TensorDict containing the data</span>
+<span class="sd">                (an observation key, &quot;action&quot;, &quot;reward&quot;, &quot;done&quot; and &quot;next&quot; tensordict state</span>
+<span class="sd">                as returned by the environment) necessary to compute the value estimates and the GAE.</span>
+<span class="sd">                The data passed to this module should be structured as :obj:`[*B, T, F]` where :obj:`B` are</span>
+<span class="sd">                the batch size, :obj:`T` the time dimension and :obj:`F` the feature dimension(s).</span>
+<span class="sd">            params (TensorDictBase, optional): A nested TensorDict containing the params</span>
+<span class="sd">                to be passed to the functional value network module.</span>
+<span class="sd">            target_params (TensorDictBase, optional): A nested TensorDict containing the</span>
+<span class="sd">                target params to be passed to the functional value network module.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            An updated TensorDict with an &quot;advantage&quot; and a &quot;value_error&quot; keys</span>
+<span class="sd">            An updated TensorDict with an advantage and a value_error keys as defined in the constructor.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; from tensordict import TensorDict</span>
+<span class="sd">            &gt;&gt;&gt; value_net = SafeModule(</span>
+<span class="sd">            ...     nn.Linear(3, 1), in_keys=[&quot;obs&quot;], out_keys=[&quot;state_value&quot;]</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; module = GAE(</span>
+<span class="sd">            ...     gamma=0.98,</span>
+<span class="sd">            ...     lmbda=0.94,</span>
+<span class="sd">            ...     value_network=value_net,</span>
+<span class="sd">            ...     differentiable=False,</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; obs, next_obs = torch.randn(2, 1, 10, 3)</span>
+<span class="sd">            &gt;&gt;&gt; reward = torch.randn(1, 10, 1)</span>
+<span class="sd">            &gt;&gt;&gt; done = torch.zeros(1, 10, 1, dtype=torch.bool)</span>
+<span class="sd">            &gt;&gt;&gt; tensordict = TensorDict({&quot;obs&quot;: obs, &quot;next&quot;: {&quot;obs&quot;: next_obs}, &quot;done&quot;: done, &quot;reward&quot;: reward}, [1, 10])</span>
+<span class="sd">            &gt;&gt;&gt; _ = module(tensordict)</span>
+<span class="sd">            &gt;&gt;&gt; assert &quot;advantage&quot; in tensordict.keys()</span>
+
+<span class="sd">        The module supports non-tensordict (i.e. unpacked tensordict) inputs too:</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; value_net = SafeModule(</span>
+<span class="sd">            ...     nn.Linear(3, 1), in_keys=[&quot;obs&quot;], out_keys=[&quot;state_value&quot;]</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; module = GAE(</span>
+<span class="sd">            ...     gamma=0.98,</span>
+<span class="sd">            ...     lmbda=0.94,</span>
+<span class="sd">            ...     value_network=value_net,</span>
+<span class="sd">            ...     differentiable=False,</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; obs, next_obs = torch.randn(2, 1, 10, 3)</span>
+<span class="sd">            &gt;&gt;&gt; reward = torch.randn(1, 10, 1)</span>
+<span class="sd">            &gt;&gt;&gt; done = torch.zeros(1, 10, 1, dtype=torch.bool)</span>
+<span class="sd">            &gt;&gt;&gt; advantage, value_target = module(obs=obs, reward=reward, done=done, next_obs=next_obs)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">set_grad_enabled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gradient_mode</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">batch_dims</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="s2">&quot;Expected input tensordict to have at least one dimensions, got&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;tensordict.batch_size = </span><span class="si">{</span><span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="p">)</span>
-            <span class="n">reward</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">average_rewards</span><span class="p">:</span>
-                <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span> <span class="o">-</span> <span class="n">reward</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-                <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span> <span class="o">/</span> <span class="n">reward</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="mf">1e-4</span><span class="p">)</span>
-                <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
-                    <span class="s2">&quot;reward&quot;</span><span class="p">,</span> <span class="n">reward</span>
-                <span class="p">)</span>  <span class="c1"># we must update the rewards if they are used later in the code</span>
-
-            <span class="n">gamma</span><span class="p">,</span> <span class="n">lmbda</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lmbda</span>
-            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_functional</span> <span class="ow">and</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="s2">&quot;Expected params to be passed to advantage module but got none.&quot;</span>
-                <span class="p">)</span>
-            <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">value_network</span><span class="p">(</span><span class="n">tensordict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;state_value&quot;</span><span class="p">)</span>
-
+        <span class="k">if</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">batch_dims</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Expected input tensordict to have at least one dimensions, got&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;tensordict.batch_size = </span><span class="si">{</span><span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="n">reward</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">)</span>
+        <span class="n">gamma</span><span class="p">,</span> <span class="n">lmbda</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lmbda</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_functional</span> <span class="ow">and</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Expected params to be passed to advantage module but got none.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span>
         <span class="k">with</span> <span class="n">hold_out_net</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value_network</span><span class="p">):</span>
             <span class="c1"># we may still need to pass gradient, but we don&#39;t want to assign grads to</span>
             <span class="c1"># value net params</span>
-            <span class="n">step_td</span> <span class="o">=</span> <span class="n">step_mdp</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">target_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="c1"># we assume that target parameters are not differentiable</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_params</span>
-            <span class="k">elif</span> <span class="s2">&quot;params&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">value_network</span><span class="p">(</span><span class="n">step_td</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="n">next_value</span> <span class="o">=</span> <span class="n">step_td</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;state_value&quot;</span><span class="p">)</span>
-            <span class="n">done</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span>
-            <span class="n">adv</span><span class="p">,</span> <span class="n">value_target</span> <span class="o">=</span> <span class="n">vec_generalized_advantage_estimate</span><span class="p">(</span>
-                <span class="n">gamma</span><span class="p">,</span> <span class="n">lmbda</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">next_value</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value_network</span><span class="p">(</span><span class="n">tensordict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;advantage&quot;</span><span class="p">,</span> <span class="n">adv</span><span class="o">.</span><span class="n">detach</span><span class="p">())</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gradient_mode</span><span class="p">:</span>
-            <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;value_error&quot;</span><span class="p">,</span> <span class="n">value_target</span> <span class="o">-</span> <span class="n">value</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value_key</span><span class="p">)</span>
+
+        <span class="n">step_td</span> <span class="o">=</span> <span class="n">step_mdp</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">target_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># we assume that target parameters are not differentiable</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_params</span>
+        <span class="k">elif</span> <span class="s2">&quot;params&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">hold_out_net</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value_network</span><span class="p">):</span>
+            <span class="c1"># we may still need to pass gradient, but we don&#39;t want to assign grads to</span>
+            <span class="c1"># value net params</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value_network</span><span class="p">(</span><span class="n">step_td</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">next_value</span> <span class="o">=</span> <span class="n">step_td</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value_key</span><span class="p">)</span>
+        <span class="n">done</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span>
+        <span class="n">adv</span><span class="p">,</span> <span class="n">value_target</span> <span class="o">=</span> <span class="n">vec_generalized_advantage_estimate</span><span class="p">(</span>
+            <span class="n">gamma</span><span class="p">,</span> <span class="n">lmbda</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">next_value</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">average_gae</span><span class="p">:</span>
+            <span class="n">adv</span> <span class="o">=</span> <span class="n">adv</span> <span class="o">-</span> <span class="n">adv</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="n">adv</span> <span class="o">=</span> <span class="n">adv</span> <span class="o">/</span> <span class="n">adv</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="mf">1e-4</span><span class="p">)</span>
+
+        <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">advantage_key</span><span class="p">,</span> <span class="n">adv</span><span class="p">)</span>
+        <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value_target_key</span><span class="p">,</span> <span class="n">value_target</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">tensordict</span></div></div>
 </pre></div>

@@ -366,7 +366,7 @@
 <span class="c1"># LICENSE file in the root directory of this source tree.</span>
 
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span> <span class="k">as</span> <span class="n">dataclass_field</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
 
@@ -379,6 +379,7 @@
     <span class="n">CatFrames</span><span class="p">,</span>
     <span class="n">CatTensors</span><span class="p">,</span>
     <span class="n">CenterCrop</span><span class="p">,</span>
+    <span class="n">Compose</span><span class="p">,</span>
     <span class="n">DoubleToFloat</span><span class="p">,</span>
     <span class="n">FiniteTensorDictCheck</span><span class="p">,</span>
     <span class="n">GrayScale</span><span class="p">,</span>
@@ -394,7 +395,6 @@
 <span class="kn">from</span> <span class="nn">torchrl.record.recorder</span> <span class="kn">import</span> <span class="n">VideoRecorder</span>
 <span class="kn">from</span> <span class="nn">torchrl.trainers.loggers</span> <span class="kn">import</span> <span class="n">Logger</span>
 
-
 <span class="n">LIBS</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;gym&quot;</span><span class="p">:</span> <span class="n">GymEnv</span><span class="p">,</span>
     <span class="s2">&quot;dm_control&quot;</span><span class="p">:</span> <span class="n">DMControlEnv</span><span class="p">,</span>
@@ -402,7 +402,7 @@
 
 
 <div class="viewcode-block" id="correct_for_frame_skip"><a class="viewcode-back" href="../../../../reference/generated/torchrl.trainers.helpers.correct_for_frame_skip.html#torchrl.trainers.helpers.correct_for_frame_skip">[docs]</a><span class="k">def</span> <span class="nf">correct_for_frame_skip</span><span class="p">(</span><span class="n">cfg</span><span class="p">:</span> <span class="s2">&quot;DictConfig&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DictConfig&quot;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
-    <span class="sd">&quot;&quot;&quot;Correct the arguments for the input frame_skip, by dividing all the arguments that reflect a count of frames by the frame_skip.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Correct the arguments for the input frame_skip, by dividing all the arguments that reflect a count of frames by the frame_skip.</span>
 
 <span class="sd">    This is aimed at avoiding unknowingly over-sampling from the environment, i.e. targetting a total number of frames</span>
 <span class="sd">    of 1M but actually collecting frame_skip * 1M frames.</span>
@@ -446,8 +446,9 @@
     <span class="n">action_dim_gsde</span><span class="p">,</span>
     <span class="n">state_dim_gsde</span><span class="p">,</span>
     <span class="n">batch_dims</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">obs_norm_state_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Creates the typical transforms for and env.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates the typical transforms for and env.&quot;&quot;&quot;</span>
     <span class="n">env</span> <span class="o">=</span> <span class="n">TransformedEnv</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
 
     <span class="n">from_pixels</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">from_pixels</span>
@@ -487,11 +488,17 @@
         <span class="n">env</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span><span class="n">FlattenObservation</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
         <span class="n">env</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span><span class="n">CatFrames</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">catframes</span><span class="p">,</span> <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pixels&quot;</span><span class="p">]))</span>
         <span class="k">if</span> <span class="n">stats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">obs_stats</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;loc&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;scale&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
+            <span class="n">obs_stats</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;loc&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">observation_spec</span><span class="p">[</span><span class="s2">&quot;pixels&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
+                <span class="s2">&quot;scale&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">observation_spec</span><span class="p">[</span><span class="s2">&quot;pixels&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
+            <span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">obs_stats</span> <span class="o">=</span> <span class="n">stats</span>
         <span class="n">obs_stats</span><span class="p">[</span><span class="s2">&quot;standard_normal&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">env</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span><span class="n">ObservationNorm</span><span class="p">(</span><span class="o">**</span><span class="n">obs_stats</span><span class="p">,</span> <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pixels&quot;</span><span class="p">]))</span>
+        <span class="n">obs_norm</span> <span class="o">=</span> <span class="n">ObservationNorm</span><span class="p">(</span><span class="o">**</span><span class="n">obs_stats</span><span class="p">,</span> <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pixels&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">obs_norm_state_dict</span><span class="p">:</span>
+            <span class="n">obs_norm</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">obs_norm_state_dict</span><span class="p">)</span>
+        <span class="n">env</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span><span class="n">obs_norm</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">norm_rewards</span><span class="p">:</span>
         <span class="n">reward_scaling</span> <span class="o">=</span> <span class="mf">1.0</span>
         <span class="n">reward_loc</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -524,12 +531,18 @@
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">vecnorm</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">stats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">_stats</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;loc&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;scale&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
+                <span class="n">_stats</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;loc&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">observation_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
+                    <span class="s2">&quot;scale&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">observation_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
+                <span class="p">}</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">_stats</span> <span class="o">=</span> <span class="n">stats</span>
-            <span class="n">env</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span>
-                <span class="n">ObservationNorm</span><span class="p">(</span><span class="o">**</span><span class="n">_stats</span><span class="p">,</span> <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="n">out_key</span><span class="p">],</span> <span class="n">standard_normal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">obs_norm</span> <span class="o">=</span> <span class="n">ObservationNorm</span><span class="p">(</span>
+                <span class="o">**</span><span class="n">_stats</span><span class="p">,</span> <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="n">out_key</span><span class="p">],</span> <span class="n">standard_normal</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span>
+            <span class="k">if</span> <span class="n">obs_norm_state_dict</span><span class="p">:</span>
+                <span class="n">obs_norm</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">obs_norm_state_dict</span><span class="p">)</span>
+            <span class="n">env</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span><span class="n">obs_norm</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">env</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span>
                 <span class="n">VecNorm</span><span class="p">(</span>
@@ -563,6 +576,7 @@
         <span class="p">)</span>
 
     <span class="n">env</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span><span class="n">FiniteTensorDictCheck</span><span class="p">())</span>
+
     <span class="k">return</span> <span class="n">env</span>
 
 
@@ -579,8 +593,9 @@
     <span class="n">action_dim_gsde</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">state_dim_gsde</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">batch_dims</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">obs_norm_state_dict</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="n">EnvCreator</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Returns an environment creator from an argparse.Namespace built with the appropriate parser constructor.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns an environment creator from an argparse.Namespace built with the appropriate parser constructor.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        cfg (DictConfig): a DictConfig containing the arguments of the script.</span>
@@ -608,6 +623,8 @@
 <span class="sd">        batch_dims (int, optional): number of dimensions of a batch of data. If a single env is</span>
 <span class="sd">            used, it should be 0 (default). If multiple envs are being transformed in parallel,</span>
 <span class="sd">            it should be set to 1 (or the number of dims of the batch).</span>
+<span class="sd">        obs_norm_state_dict (dict, optional): the state_dict of the ObservationNorm transform to be loaded into the</span>
+<span class="sd">            environment</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">make_transformed_env</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TransformedEnv</span><span class="p">:</span>
@@ -668,6 +685,7 @@
             <span class="n">action_dim_gsde</span><span class="p">,</span>
             <span class="n">state_dim_gsde</span><span class="p">,</span>
             <span class="n">batch_dims</span><span class="o">=</span><span class="n">batch_dims</span><span class="p">,</span>
+            <span class="n">obs_norm_state_dict</span><span class="o">=</span><span class="n">obs_norm_state_dict</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">use_env_creator</span><span class="p">:</span>
@@ -678,7 +696,7 @@
 <div class="viewcode-block" id="parallel_env_constructor"><a class="viewcode-back" href="../../../../reference/generated/torchrl.trainers.helpers.parallel_env_constructor.html#torchrl.trainers.helpers.parallel_env_constructor">[docs]</a><span class="k">def</span> <span class="nf">parallel_env_constructor</span><span class="p">(</span>
     <span class="n">cfg</span><span class="p">:</span> <span class="s2">&quot;DictConfig&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>  <span class="c1"># noqa: F821</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ParallelEnv</span><span class="p">,</span> <span class="n">EnvCreator</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Returns a parallel environment from an argparse.Namespace built with the appropriate parser constructor.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a parallel environment from an argparse.Namespace built with the appropriate parser constructor.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        cfg (DictConfig): config containing user-defined arguments</span>
@@ -719,7 +737,7 @@
     <span class="n">proof_environment</span><span class="p">:</span> <span class="n">EnvBase</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Gathers stas (loc and scale) from an environment using random rollouts.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gathers stas (loc and scale) from an environment using random rollouts.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        cfg (DictConfig): a config object with `init_env_steps` field, indicating</span>
@@ -734,7 +752,7 @@
     <span class="n">proof_env_is_none</span> <span class="o">=</span> <span class="n">proof_environment</span> <span class="ow">is</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">proof_env_is_none</span><span class="p">:</span>
         <span class="n">proof_environment</span> <span class="o">=</span> <span class="n">transformed_env_constructor</span><span class="p">(</span>
-            <span class="n">cfg</span><span class="o">=</span><span class="n">cfg</span><span class="p">,</span> <span class="n">use_env_creator</span><span class="o">=</span><span class="kc">False</span>
+            <span class="n">cfg</span><span class="o">=</span><span class="n">cfg</span><span class="p">,</span> <span class="n">use_env_creator</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">stats</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;loc&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;scale&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
         <span class="p">)()</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;computing state stats&quot;</span><span class="p">)</span>
@@ -756,7 +774,7 @@
         <span class="n">key</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;More than one key exists in the observation_specs: </span><span class="si">{</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="n">keys</span><span class="si">}</span><span class="s2"> were found, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;More than one key exists in the observation_specs: </span><span class="si">{</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">keys</span><span class="si">}</span><span class="s2"> were found, &quot;</span>
                 <span class="s2">&quot;thus get_stats_random_rollout cannot infer which to compute the stats of.&quot;</span>
             <span class="p">)</span>
 
@@ -790,9 +808,82 @@
     <span class="k">return</span> <span class="n">stats</span></div>
 
 
+<span class="k">def</span> <span class="nf">initialize_observation_norm_transforms</span><span class="p">(</span>
+    <span class="n">proof_environment</span><span class="p">:</span> <span class="n">EnvBase</span><span class="p">,</span>
+    <span class="n">num_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="n">key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calls :obj:`ObservationNorm.init_stats` on all uninitialized :obj:`ObservationNorm` instances of a :obj:`TransformedEnv`.</span>
+
+<span class="sd">    If an :obj:`ObservationNorm` already has non-null :obj:`loc` or :obj:`scale`, a call to :obj:`initialize_observation_norm_transforms` will be a no-op.</span>
+<span class="sd">    Similarly, if the transformed environment does not contain any :obj:`ObservationNorm`, a call to this function will have no effect.</span>
+<span class="sd">    If no key is provided but the observations of the :obj:`EnvBase` contains more than one key, an exception will</span>
+<span class="sd">    be raised.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        proof_environment (EnvBase instance, optional): if provided, this env will</span>
+<span class="sd">            be used ot execute the rollouts. If not, it will be created using</span>
+<span class="sd">            the cfg object.</span>
+<span class="sd">        num_iter (int): Number of iterations used for initializing the :obj:`ObservationNorms`</span>
+<span class="sd">        key (str, optional): if provided, the stats of this key will be gathered.</span>
+<span class="sd">            If not, it is expected that only one key exists in `env.observation_spec`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">proof_environment</span><span class="o">.</span><span class="n">transform</span><span class="p">,</span> <span class="n">Compose</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+        <span class="n">proof_environment</span><span class="o">.</span><span class="n">transform</span><span class="p">,</span> <span class="n">ObservationNorm</span>
+    <span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">proof_environment</span><span class="o">.</span><span class="n">base_env</span><span class="o">.</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;More than one key exists in the observation_specs: </span><span class="si">{</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">keys</span><span class="si">}</span><span class="s2"> were found, &quot;</span>
+                <span class="s2">&quot;thus initialize_observation_norm_transforms cannot infer which to compute the stats of.&quot;</span>
+            <span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">proof_environment</span><span class="o">.</span><span class="n">transform</span><span class="p">,</span> <span class="n">Compose</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">transform</span> <span class="ow">in</span> <span class="n">proof_environment</span><span class="o">.</span><span class="n">transform</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">transform</span><span class="p">,</span> <span class="n">ObservationNorm</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="n">transform</span><span class="o">.</span><span class="n">loc</span> <span class="ow">is</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="n">transform</span><span class="o">.</span><span class="n">scale</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="p">):</span>
+                <span class="n">transform</span><span class="o">.</span><span class="n">init_stats</span><span class="p">(</span><span class="n">num_iter</span><span class="o">=</span><span class="n">num_iter</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="p">(</span>
+        <span class="n">proof_environment</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">loc</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="ow">and</span> <span class="n">proof_environment</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="n">proof_environment</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">init_stats</span><span class="p">(</span><span class="n">num_iter</span><span class="o">=</span><span class="n">num_iter</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">retrieve_observation_norms_state_dict</span><span class="p">(</span><span class="n">proof_environment</span><span class="p">:</span> <span class="n">TransformedEnv</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Traverses the transforms of the environment and retrieves the :obj:`ObservationNorm` state dicts.</span>
+
+<span class="sd">    Returns a list of tuple (idx, state_dict) for each :obj:`ObservationNorm` transform in proof_environment</span>
+<span class="sd">    If the environment transforms do not contain any :obj:`ObservationNorm`, returns an empty list</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        proof_environment (EnvBase instance, optional): the :obj:``TransformedEnv` to retrieve the :obj:`ObservationNorm`</span>
+<span class="sd">            state dict from</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">obs_norm_state_dicts</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">proof_environment</span><span class="o">.</span><span class="n">transform</span><span class="p">,</span> <span class="n">Compose</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">transform</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">proof_environment</span><span class="o">.</span><span class="n">transform</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transform</span><span class="p">,</span> <span class="n">ObservationNorm</span><span class="p">):</span>
+                <span class="n">obs_norm_state_dicts</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">idx</span><span class="p">,</span> <span class="n">transform</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()))</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">proof_environment</span><span class="o">.</span><span class="n">transform</span><span class="p">,</span> <span class="n">ObservationNorm</span><span class="p">):</span>
+        <span class="n">obs_norm_state_dicts</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">proof_environment</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()))</span>
+
+    <span class="k">return</span> <span class="n">obs_norm_state_dicts</span>
+
+
 <span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">EnvConfig</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Environment config struct.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Environment config struct.&quot;&quot;&quot;</span>
 
     <span class="n">env_library</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gym&quot;</span>
     <span class="c1"># env_library used for the simulated environment. Default=gym</span>

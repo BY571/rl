@@ -381,7 +381,7 @@
 
 
 <div class="viewcode-block" id="NoisyLinear"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.NoisyLinear.html#torchrl.modules.NoisyLinear">[docs]</a><span class="k">class</span> <span class="nc">NoisyLinear</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Noisy Linear Layer.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Noisy Linear Layer.</span>
 
 <span class="sd">    Presented in &quot;Noisy Networks for Exploration&quot;, https://arxiv.org/abs/1706.10295v3</span>
 
@@ -507,7 +507,7 @@
 
 
 <div class="viewcode-block" id="NoisyLazyLinear"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.NoisyLazyLinear.html#torchrl.modules.NoisyLazyLinear">[docs]</a><span class="k">class</span> <span class="nc">NoisyLazyLinear</span><span class="p">(</span><span class="n">LazyModuleMixin</span><span class="p">,</span> <span class="n">NoisyLinear</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Noisy Lazy Linear Layer.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Noisy Lazy Linear Layer.</span>
 
 <span class="sd">    This class makes the Noisy Linear layer lazy, in that the in_feature argument does not need to be passed at</span>
 <span class="sd">    initialization (but is inferred after the first call to the layer).</span>
@@ -587,13 +587,13 @@
 
 
 <div class="viewcode-block" id="reset_noise"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.reset_noise.html#torchrl.modules.reset_noise">[docs]</a><span class="k">def</span> <span class="nf">reset_noise</span><span class="p">(</span><span class="n">layer</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Resets the noise of noisy layers.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Resets the noise of noisy layers.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="s2">&quot;reset_noise&quot;</span><span class="p">):</span>
         <span class="n">layer</span><span class="o">.</span><span class="n">reset_noise</span><span class="p">()</span></div>
 
 
 <span class="k">class</span> <span class="nc">gSDEModule</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A gSDE exploration module.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A gSDE exploration module.</span>
 
 <span class="sd">     Presented in &quot;Smooth Exploration for Robotic Reinforcement Learning&quot; by Antonin Raffin, Jens Kober, Freek Stulp (https://arxiv.org/abs/2005.05719)</span>
 
@@ -765,7 +765,7 @@
 
 
 <span class="k">class</span> <span class="nc">LazygSDEModule</span><span class="p">(</span><span class="n">LazyModuleMixin</span><span class="p">,</span> <span class="n">gSDEModule</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Lazy gSDE Module.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Lazy gSDE Module.</span>
 
 <span class="sd">    This module behaves exactly as gSDEModule except that it does not require the</span>
 <span class="sd">    user to specify the action and state dimension.</span>

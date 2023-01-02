@@ -378,7 +378,7 @@
 
 
 <div class="viewcode-block" id="ReplayBuffer"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.rb_prototype.ReplayBuffer.html#torchrl.data.replay_buffers.rb_prototype.ReplayBuffer">[docs]</a><span class="k">class</span> <span class="nc">ReplayBuffer</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A generic, composable replay buffer class.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A generic, composable replay buffer class.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        storage (Storage, optional): the storage to be used. If none is provided</span>
@@ -461,7 +461,7 @@
         <span class="k">return</span> <span class="n">data</span>
 
 <div class="viewcode-block" id="ReplayBuffer.add"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.rb_prototype.ReplayBuffer.html#torchrl.data.replay_buffers.rb_prototype.ReplayBuffer.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Add a single element to the replay buffer.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a single element to the replay buffer.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            data (Any): data to be added to the replay buffer</span>
@@ -475,7 +475,7 @@
         <span class="k">return</span> <span class="n">index</span></div>
 
 <div class="viewcode-block" id="ReplayBuffer.extend"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.rb_prototype.ReplayBuffer.html#torchrl.data.replay_buffers.rb_prototype.ReplayBuffer.extend">[docs]</a>    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Extends the replay buffer with one or more elements contained in an iterable.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extends the replay buffer with one or more elements contained in an iterable.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            data (iterable): collection of data to be added to the replay</span>
@@ -508,7 +508,7 @@
         <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">info</span>
 
 <div class="viewcode-block" id="ReplayBuffer.sample"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.rb_prototype.ReplayBuffer.html#torchrl.data.replay_buffers.rb_prototype.ReplayBuffer.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Samples a batch of data from the replay buffer.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Samples a batch of data from the replay buffer.</span>
 
 <span class="sd">        Uses Sampler to sample indices, and retrieves them from Storage.</span>
 
@@ -538,7 +538,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_sampler</span><span class="o">.</span><span class="n">mark_update</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ReplayBuffer.append_transform"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.rb_prototype.ReplayBuffer.html#torchrl.data.replay_buffers.rb_prototype.ReplayBuffer.append_transform">[docs]</a>    <span class="k">def</span> <span class="nf">append_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transform</span><span class="p">:</span> <span class="n">Transform</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Appends transform at the end.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Appends transform at the end.</span>
 
 <span class="sd">        Transforms are applied in order when `sample` is called.</span>
 
@@ -549,7 +549,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ReplayBuffer.insert_transform"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.rb_prototype.ReplayBuffer.html#torchrl.data.replay_buffers.rb_prototype.ReplayBuffer.insert_transform">[docs]</a>    <span class="k">def</span> <span class="nf">insert_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">transform</span><span class="p">:</span> <span class="n">Transform</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Inserts transform.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inserts transform.</span>
 
 <span class="sd">        Transforms are executed in order when `sample` is called.</span>
 
@@ -562,7 +562,7 @@
 
 
 <div class="viewcode-block" id="TensorDictReplayBuffer"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.rb_prototype.TensorDictReplayBuffer.html#torchrl.data.replay_buffers.rb_prototype.TensorDictReplayBuffer">[docs]</a><span class="k">class</span> <span class="nc">TensorDictReplayBuffer</span><span class="p">(</span><span class="n">ReplayBuffer</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;TensorDict-specific wrapper around the ReplayBuffer class.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;TensorDict-specific wrapper around the ReplayBuffer class.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        priority_key (str): the key at which priority is assumed to be stored</span>
@@ -647,7 +647,7 @@
 
 <div class="viewcode-block" id="RemoteTensorDictReplayBuffer"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.rb_prototype.RemoteTensorDictReplayBuffer.html#torchrl.data.replay_buffers.rb_prototype.RemoteTensorDictReplayBuffer">[docs]</a><span class="nd">@accept_remote_rref_udf_invocation</span>
 <span class="k">class</span> <span class="nc">RemoteTensorDictReplayBuffer</span><span class="p">(</span><span class="n">TensorDictReplayBuffer</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A remote invocation friendly ReplayBuffer class. Public methods can be invoked by remote agents using `torch.rpc` or called locally as normal.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A remote invocation friendly ReplayBuffer class. Public methods can be invoked by remote agents using `torch.rpc` or called locally as normal.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>

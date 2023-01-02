@@ -373,6 +373,7 @@
 
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">tensordict.memmap</span> <span class="kn">import</span> <span class="n">MemmapTensor</span>
+<span class="kn">from</span> <span class="nn">tensordict.prototype</span> <span class="kn">import</span> <span class="n">is_tensorclass</span>
 <span class="kn">from</span> <span class="nn">tensordict.tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">TensorDictBase</span>
 
 <span class="kn">from</span> <span class="nn">torchrl._utils</span> <span class="kn">import</span> <span class="n">_CKPT_BACKEND</span>
@@ -387,7 +388,7 @@
 
 
 <div class="viewcode-block" id="Storage"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.storages.Storage.html#torchrl.data.replay_buffers.storages.Storage">[docs]</a><span class="k">class</span> <span class="nc">Storage</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A Storage is the container of a replay buffer.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A Storage is the container of a replay buffer.</span>
 
 <span class="sd">    Every storage must have a set, get and __len__ methods implemented.</span>
 <span class="sd">    Get and set should support integers as well as list of integers.</span>
@@ -412,7 +413,7 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 <div class="viewcode-block" id="Storage.attach"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.storages.Storage.html#torchrl.data.replay_buffers.storages.Storage.attach">[docs]</a>    <span class="k">def</span> <span class="nf">attach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;This function attaches a sampler to this storage.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function attaches a sampler to this storage.</span>
 
 <span class="sd">        Buffers that read from this storage must be included as an attached</span>
 <span class="sd">        entity by calling this method. This guarantees that when data</span>
@@ -449,7 +450,7 @@
 
 
 <div class="viewcode-block" id="ListStorage"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.storages.ListStorage.html#torchrl.data.replay_buffers.storages.ListStorage">[docs]</a><span class="k">class</span> <span class="nc">ListStorage</span><span class="p">(</span><span class="n">Storage</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A storage stored in a list.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A storage stored in a list.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        max_size (int): the maximum number of elements stored in the storage.</span>
@@ -518,7 +519,7 @@
 
 
 <div class="viewcode-block" id="LazyTensorStorage"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.storages.LazyTensorStorage.html#torchrl.data.replay_buffers.storages.LazyTensorStorage">[docs]</a><span class="k">class</span> <span class="nc">LazyTensorStorage</span><span class="p">(</span><span class="n">Storage</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A pre-allocated tensor storage for tensors and tensordicts.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A pre-allocated tensor storage for tensors and tensordicts.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        size (int): size of the storage, i.e. maximum number of elements stored</span>
@@ -597,6 +598,10 @@
                 <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
                 <span class="n">dtype</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
             <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">is_tensorclass</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_size</span><span class="p">,</span> <span class="o">*</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">out</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">data</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_size</span><span class="p">,</span> <span class="o">*</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
@@ -639,7 +644,7 @@
 
 
 <div class="viewcode-block" id="LazyMemmapStorage"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.storages.LazyMemmapStorage.html#torchrl.data.replay_buffers.storages.LazyMemmapStorage">[docs]</a><span class="k">class</span> <span class="nc">LazyMemmapStorage</span><span class="p">(</span><span class="n">LazyTensorStorage</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A memory-mapped storage for tensors and tensordicts.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A memory-mapped storage for tensors and tensordicts.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        max_size (int): size of the storage, i.e. maximum number of elements stored</span>
@@ -722,6 +727,21 @@
             <span class="nb">print</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;The storage was created in </span><span class="si">{</span><span class="n">out</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2"> and occupies </span><span class="si">{</span><span class="n">filesize</span><span class="si">}</span><span class="s2"> Mb of storage.&quot;</span>
             <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">is_tensorclass</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_size</span><span class="p">,</span> <span class="o">*</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">memmap_</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scratch_dir</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tensor</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="n">include_nested</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">leaves_only</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="nb">str</span>
+            <span class="p">):</span>
+                <span class="n">filesize</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">tensor</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">/</span> <span class="mi">1024</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">tensor</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">filesize</span><span class="si">}</span><span class="s2"> Mb of storage (size: </span><span class="si">{</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">).&quot;</span>
+                <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># out = TensorDict({}, [self.max_size, *data.shape])</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The storage is being created: &quot;</span><span class="p">)</span>

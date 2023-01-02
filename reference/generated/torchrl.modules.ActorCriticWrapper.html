@@ -389,7 +389,7 @@ will both return a stand-alone TDModule with the dedicated functionality.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">NdUnboundedContinuousTensorSpec</span><span class="p">,</span> <span class="n">NdBoundedTensorSpec</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">,</span> <span class="n">BoundedTensorSpec</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="p">(</span>
 <span class="go">        ActorCriticWrapper,</span>
 <span class="go">        ProbabilisticActor,</span>
@@ -398,7 +398,7 @@ will both return a stand-alone TDModule with the dedicated functionality.</p>
 <span class="go">        TanhNormal,</span>
 <span class="go">        ValueOperator,</span>
 <span class="go">    )</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">NdBoundedTensorSpec</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">8</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">BoundedTensorSpec</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">8</span><span class="p">]))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">action_module</span> <span class="o">=</span> <span class="n">SafeModule</span><span class="p">(</span>
 <span class="go">        NormalParamWrapper(torch.nn.Linear(4, 8)),</span>
 <span class="go">        in_keys=[&quot;observation&quot;],</span>

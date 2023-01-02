@@ -377,6 +377,49 @@
 <p>The collection keeps on occuring on all processes even between the time
 the batch of rollouts is collected and the next call to the iterator.
 This class can be safely used with offline RL algorithms.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs.libs.gym</span> <span class="kn">import</span> <span class="n">GymEnv</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="n">TensorDictModule</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">env_maker</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">GymEnv</span><span class="p">(</span><span class="s2">&quot;Pendulum-v1&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">policy</span> <span class="o">=</span> <span class="n">TensorDictModule</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;observation&quot;</span><span class="p">],</span> <span class="n">out_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">collector</span> <span class="o">=</span> <span class="n">MultiaSyncDataCollector</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">create_env_fn</span><span class="o">=</span><span class="p">[</span><span class="n">env_maker</span><span class="p">,</span> <span class="n">env_maker</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">policy</span><span class="o">=</span><span class="n">policy</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">total_frames</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">max_frames_per_traj</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">frames_per_batch</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">init_random_frames</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">reset_at_each_iter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">devices</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">passing_devices</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">collector</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">... </span>        <span class="k">break</span>
+<span class="go">TensorDict(</span>
+<span class="go">    fields={</span>
+<span class="go">        action: Tensor(torch.Size([4, 50, 1]), dtype=torch.float32),</span>
+<span class="go">        done: Tensor(torch.Size([4, 50, 1]), dtype=torch.bool),</span>
+<span class="go">        mask: Tensor(torch.Size([4, 50, 1]), dtype=torch.bool),</span>
+<span class="go">        next: TensorDict(</span>
+<span class="go">            fields={</span>
+<span class="go">                observation: Tensor(torch.Size([4, 50, 3]), dtype=torch.float32)},</span>
+<span class="go">            batch_size=torch.Size([4, 50]),</span>
+<span class="go">            device=cpu,</span>
+<span class="go">            is_shared=False),</span>
+<span class="go">        observation: Tensor(torch.Size([4, 50, 3]), dtype=torch.float32),</span>
+<span class="go">        reward: Tensor(torch.Size([4, 50, 1]), dtype=torch.float32),</span>
+<span class="go">        step_count: Tensor(torch.Size([4, 50, 1]), dtype=torch.float32),</span>
+<span class="go">        traj_ids: Tensor(torch.Size([4, 50, 1, 1]), dtype=torch.float32)},</span>
+<span class="go">    batch_size=torch.Size([4, 50]),</span>
+<span class="go">    device=cpu,</span>
+<span class="go">    is_shared=False)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">collector</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">collector</span>
+</pre></div>
+</div>
 <p>Runs a given number of DataCollectors on separate processes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -389,7 +432,7 @@ the actual number of frames may well be greater than this as the closing signals
 workers only once the total number of frames has been collected on the server.</p></li>
 <li><p><strong>create_env_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – A (list of) dictionaries with the arguments used to create an environment</p></li>
 <li><p><strong>max_frames_per_traj</strong> – Maximum steps per trajectory. Note that a trajectory can span over multiple batches
-(unless reset_at_each_iter is set to True, see below). Once a trajectory reaches n_steps_max,
+(unless reset_at_each_iter is set to True, see below). Once a traje tory reaches n_steps_max,
 the environment is reset. If the environment wraps multiple environments together, the number of steps
 is tracked for each environment independently. Negative values are allowed, in which case this argument
 is ignored.

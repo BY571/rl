@@ -378,7 +378,7 @@
 
 
 <div class="viewcode-block" id="DreamerActor"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.DreamerActor.html#torchrl.modules.DreamerActor">[docs]</a><span class="k">class</span> <span class="nc">DreamerActor</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Dreamer actor network.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dreamer actor network.</span>
 
 <span class="sd">    This network is used to predict the action distribution given the</span>
 <span class="sd">    the stochastic state and the deterministic belief at the current</span>
@@ -427,7 +427,7 @@
 
 
 <div class="viewcode-block" id="ObsEncoder"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.ObsEncoder.html#torchrl.modules.ObsEncoder">[docs]</a><span class="k">class</span> <span class="nc">ObsEncoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Observation encoder network.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Observation encoder network.</span>
 
 <span class="sd">    Takes an pixel observation and encodes it into a latent space.</span>
 
@@ -464,7 +464,7 @@
 
 
 <div class="viewcode-block" id="ObsDecoder"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.ObsDecoder.html#torchrl.modules.ObsDecoder">[docs]</a><span class="k">class</span> <span class="nc">ObsDecoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Observation decoder network.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Observation decoder network.</span>
 
 <span class="sd">    Takes the deterministic state and the stochastic belief and decodes it into a pixel observation.</span>
 
@@ -503,7 +503,7 @@
 
 
 <span class="k">class</span> <span class="nc">RSSMRollout</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Rollout the RSSM network.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rollout the RSSM network.</span>
 
 <span class="sd">    Given a set of encoded observations and actions, this module will rollout the RSSM network to compute all the intermediate</span>
 <span class="sd">    states and beliefs.</span>
@@ -528,7 +528,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rssm_posterior</span> <span class="o">=</span> <span class="n">rssm_posterior</span>
 
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Runs a rollout of simulated transitions in the latent space given a sequence of actions and environment observations.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Runs a rollout of simulated transitions in the latent space given a sequence of actions and environment observations.</span>
 
 <span class="sd">        The rollout requires a belief and posterior state primer.</span>
 
@@ -570,7 +570,7 @@
 
 
 <div class="viewcode-block" id="RSSMPrior"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.RSSMPrior.html#torchrl.modules.RSSMPrior">[docs]</a><span class="k">class</span> <span class="nc">RSSMPrior</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The prior network of the RSSM.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The prior network of the RSSM.</span>
 
 <span class="sd">    This network takes as input the previous state and belief and the current action.</span>
 <span class="sd">    It returns the next prior state and belief, as well as the parameters of the prior state distribution.</span>
@@ -641,7 +641,7 @@
 
 
 <div class="viewcode-block" id="RSSMPosterior"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.RSSMPosterior.html#torchrl.modules.RSSMPosterior">[docs]</a><span class="k">class</span> <span class="nc">RSSMPosterior</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The posterior network of the RSSM.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The posterior network of the RSSM.</span>
 
 <span class="sd">    This network takes as input the belief and the associated encoded observation.</span>
 <span class="sd">    It returns the parameters of the posterior as well as a state sampled according to this distribution.</span>

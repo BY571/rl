@@ -374,8 +374,8 @@
 
 <span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">CompositeSpec</span><span class="p">,</span>
-    <span class="n">NdUnboundedContinuousTensorSpec</span><span class="p">,</span>
     <span class="n">TensorSpec</span><span class="p">,</span>
+    <span class="n">UnboundedContinuousTensorSpec</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.utils</span> <span class="kn">import</span> <span class="n">DEVICE_TYPING</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.transforms.transforms</span> <span class="kn">import</span> <span class="p">(</span>
@@ -460,7 +460,7 @@
                 <span class="k">del</span> <span class="n">observation_spec</span><span class="p">[</span><span class="n">in_key</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">out_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">:</span>
-            <span class="n">observation_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">NdUnboundedContinuousTensorSpec</span><span class="p">(</span>
+            <span class="n">observation_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
                 <span class="n">shape</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="o">*</span><span class="n">dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outdim</span><span class="p">]),</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span>
             <span class="p">)</span>
 
@@ -499,7 +499,7 @@
 
 
 <div class="viewcode-block" id="R3MTransform"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.R3MTransform.html#torchrl.envs.transforms.R3MTransform">[docs]</a><span class="k">class</span> <span class="nc">R3MTransform</span><span class="p">(</span><span class="n">Compose</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;R3M Transform class.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;R3M Transform class.</span>
 
 <span class="sd">    R3M provides pre-trained ResNet weights aimed at facilitating visual</span>
 <span class="sd">    embedding for robotic tasks. The models are trained using Ego4d.</span>

@@ -381,7 +381,7 @@
 <div class="viewcode-block" id="make_replay_buffer"><a class="viewcode-back" href="../../../../reference/generated/torchrl.trainers.helpers.make_replay_buffer.html#torchrl.trainers.helpers.make_replay_buffer">[docs]</a><span class="k">def</span> <span class="nf">make_replay_buffer</span><span class="p">(</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">DEVICE_TYPING</span><span class="p">,</span> <span class="n">cfg</span><span class="p">:</span> <span class="s2">&quot;DictConfig&quot;</span>  <span class="c1"># noqa: F821</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ReplayBuffer</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
-    <span class="sd">&quot;&quot;&quot;Builds a replay buffer using the config built from ReplayArgsConfig.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Builds a replay buffer using the config built from ReplayArgsConfig.&quot;&quot;&quot;</span>
     <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">cfg</span><span class="o">.</span><span class="n">prb</span><span class="p">:</span>
         <span class="n">buffer</span> <span class="o">=</span> <span class="n">TensorDictReplayBuffer</span><span class="p">(</span>
@@ -412,7 +412,7 @@
 
 <span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">ReplayArgsConfig</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Generic Replay Buffer config struct.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generic Replay Buffer config struct.&quot;&quot;&quot;</span>
 
     <span class="n">buffer_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000000</span>
     <span class="c1"># buffer size, in number of frames stored. Default=1e6</span>

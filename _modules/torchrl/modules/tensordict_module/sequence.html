@@ -375,7 +375,7 @@
 
 
 <div class="viewcode-block" id="SafeSequential"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.SafeSequential.html#torchrl.modules.SafeSequential">[docs]</a><span class="k">class</span> <span class="nc">SafeSequential</span><span class="p">(</span><span class="n">TensorDictSequential</span><span class="p">,</span> <span class="n">SafeModule</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A sequence of SafeModules.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A sequence of SafeModules.</span>
 
 <span class="sd">    Similarly to :obj:`nn.Sequence` which passes a tensor through a chain of mappings that read and write a single tensor</span>
 <span class="sd">    each, this module will read and write over a tensordict by querying each of the input modules.</span>
@@ -396,11 +396,11 @@
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict.nn.functional_modules import make_functional</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import CompositeSpec, NdUnboundedContinuousTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import CompositeSpec, UnboundedContinuousTensorSpec</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules import TanhNormal, SafeSequential, SafeModule, NormalParamWrapper</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module import SafeProbabilisticModule</span>
 <span class="sd">        &gt;&gt;&gt; td = TensorDict({&quot;input&quot;: torch.randn(3, 4)}, [3,])</span>
-<span class="sd">        &gt;&gt;&gt; spec1 = CompositeSpec(hidden=NdUnboundedContinuousTensorSpec(4), loc=None, scale=None)</span>
+<span class="sd">        &gt;&gt;&gt; spec1 = CompositeSpec(hidden=UnboundedContinuousTensorSpec(4), loc=None, scale=None)</span>
 <span class="sd">        &gt;&gt;&gt; net1 = NormalParamWrapper(torch.nn.Linear(4, 8))</span>
 <span class="sd">        &gt;&gt;&gt; module1 = SafeModule(net1, in_keys=[&quot;input&quot;], out_keys=[&quot;loc&quot;, &quot;scale&quot;])</span>
 <span class="sd">        &gt;&gt;&gt; td_module1 = SafeProbabilisticModule(</span>
@@ -411,7 +411,7 @@
 <span class="sd">        ...     distribution_class=TanhNormal,</span>
 <span class="sd">        ...     return_log_prob=True,</span>
 <span class="sd">        ... )</span>
-<span class="sd">        &gt;&gt;&gt; spec2 = NdUnboundedContinuousTensorSpec(8)</span>
+<span class="sd">        &gt;&gt;&gt; spec2 = UnboundedContinuousTensorSpec(8)</span>
 <span class="sd">        &gt;&gt;&gt; module2 = torch.nn.Linear(4, 8)</span>
 <span class="sd">        &gt;&gt;&gt; td_module2 = SafeModule(</span>
 <span class="sd">        ...    module=module2,</span>

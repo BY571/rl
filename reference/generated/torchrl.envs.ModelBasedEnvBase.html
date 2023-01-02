@@ -39,7 +39,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="DreamerEnv" href="torchrl.envs.model_based.dreamer.DreamerEnv.html" />
-    <link rel="prev" title="exploration_mode" href="torchrl.envs.utils.exploration_mode.html" />
+    <link rel="prev" title="check_env_specs" href="torchrl.envs.utils.check_env_specs.html" />
   <!-- Google Analytics -->
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-117752657-2"></script>
@@ -381,18 +381,18 @@ and to behave as a classical environment.</p>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">CompositeSpec</span><span class="p">,</span> <span class="n">NdUnboundedContinuousTensorSpec</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">CompositeSpec</span><span class="p">,</span> <span class="n">UnboundedContinuousTensorSpec</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyMBEnv</span><span class="p">(</span><span class="n">ModelBasedEnvBase</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">world_model</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="gp">... </span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">world_model</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
 <span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
-<span class="gp">... </span>            <span class="n">hidden_observation</span><span class="o">=</span><span class="n">NdUnboundedContinuousTensorSpec</span><span class="p">((</span><span class="mi">4</span><span class="p">,))</span>
+<span class="gp">... </span>            <span class="n">hidden_observation</span><span class="o">=</span><span class="n">UnboundedContinuousTensorSpec</span><span class="p">((</span><span class="mi">4</span><span class="p">,))</span>
 <span class="gp">... </span>        <span class="p">)</span>
 <span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
-<span class="gp">... </span>            <span class="n">hidden_observation</span><span class="o">=</span><span class="n">NdUnboundedContinuousTensorSpec</span><span class="p">((</span><span class="mi">4</span><span class="p">,)),</span>
-<span class="gp">... </span>            <span class="n">action</span><span class="o">=</span><span class="n">NdUnboundedContinuousTensorSpec</span><span class="p">((</span><span class="mi">1</span><span class="p">,)),</span>
+<span class="gp">... </span>            <span class="n">hidden_observation</span><span class="o">=</span><span class="n">UnboundedContinuousTensorSpec</span><span class="p">((</span><span class="mi">4</span><span class="p">,)),</span>
+<span class="gp">... </span>            <span class="n">action</span><span class="o">=</span><span class="n">UnboundedContinuousTensorSpec</span><span class="p">((</span><span class="mi">1</span><span class="p">,)),</span>
 <span class="gp">... </span>        <span class="p">)</span>
-<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">NdUnboundedContinuousTensorSpec</span><span class="p">((</span><span class="mi">1</span><span class="p">,))</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">((</span><span class="mi">1</span><span class="p">,))</span>
 <span class="gp">...</span>
 <span class="gp">... </span>    <span class="k">def</span> <span class="nf">_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDict</span><span class="p">:</span>
 <span class="gp">... </span>        <span class="n">tensordict</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({},</span>
@@ -445,7 +445,6 @@ and to behave as a classical environment.</p>
 <li><p>input_spec (CompositeSpec): sampling spec of the inputs;</p></li>
 <li><p>batch_size (torch.Size): batch_size to be used by the env. If not set, the env accept tensordicts of all batch sizes.</p></li>
 <li><p>device (torch.device): device where the env input and output are expected to live</p></li>
-<li><p>is_done (torch.Tensor): boolean value(s) indicating if the environment has reached a done state since the last reset</p></li>
 </ul>
 </dd>
 </dl>
@@ -508,7 +507,7 @@ steps if no policy is provided)</p>
         <a href="torchrl.envs.model_based.dreamer.DreamerEnv.html" class="btn btn-neutral float-right" title="DreamerEnv" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
       
       
-        <a href="torchrl.envs.utils.exploration_mode.html" class="btn btn-neutral" title="exploration_mode" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
+        <a href="torchrl.envs.utils.check_env_specs.html" class="btn btn-neutral" title="check_env_specs" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
       
     </div>
   

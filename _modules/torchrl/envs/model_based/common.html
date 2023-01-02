@@ -379,7 +379,7 @@
 
 
 <div class="viewcode-block" id="ModelBasedEnvBase"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.ModelBasedEnvBase.html#torchrl.envs.ModelBasedEnvBase">[docs]</a><span class="k">class</span> <span class="nc">ModelBasedEnvBase</span><span class="p">(</span><span class="n">EnvBase</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Basic environnement for Model Based RL algorithms.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Basic environnement for Model Based RL algorithms.</span>
 
 <span class="sd">    Wrapper around the model of the MBRL algorithm.</span>
 <span class="sd">    It is meant to give an env framework to a world model (including but not limited to observations, reward, done state and safety constraints models).</span>
@@ -390,18 +390,18 @@
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import CompositeSpec, NdUnboundedContinuousTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import CompositeSpec, UnboundedContinuousTensorSpec</span>
 <span class="sd">        &gt;&gt;&gt; class MyMBEnv(ModelBasedEnvBase):</span>
 <span class="sd">        ...     def __init__(self, world_model, device=&quot;cpu&quot;, dtype=None, batch_size=None):</span>
 <span class="sd">        ...         super().__init__(world_model, device=device, dtype=dtype, batch_size=batch_size)</span>
 <span class="sd">        ...         self.observation_spec = CompositeSpec(</span>
-<span class="sd">        ...             hidden_observation=NdUnboundedContinuousTensorSpec((4,))</span>
+<span class="sd">        ...             hidden_observation=UnboundedContinuousTensorSpec((4,))</span>
 <span class="sd">        ...         )</span>
 <span class="sd">        ...         self.input_spec = CompositeSpec(</span>
-<span class="sd">        ...             hidden_observation=NdUnboundedContinuousTensorSpec((4,)),</span>
-<span class="sd">        ...             action=NdUnboundedContinuousTensorSpec((1,)),</span>
+<span class="sd">        ...             hidden_observation=UnboundedContinuousTensorSpec((4,)),</span>
+<span class="sd">        ...             action=UnboundedContinuousTensorSpec((1,)),</span>
 <span class="sd">        ...         )</span>
-<span class="sd">        ...         self.reward_spec = NdUnboundedContinuousTensorSpec((1,))</span>
+<span class="sd">        ...         self.reward_spec = UnboundedContinuousTensorSpec((1,))</span>
 <span class="sd">        ...</span>
 <span class="sd">        ...     def _reset(self, tensordict: TensorDict) -&gt; TensorDict:</span>
 <span class="sd">        ...         tensordict = TensorDict({},</span>
@@ -453,7 +453,6 @@
 <span class="sd">        - input_spec (CompositeSpec): sampling spec of the inputs;</span>
 <span class="sd">        - batch_size (torch.Size): batch_size to be used by the env. If not set, the env accept tensordicts of all batch sizes.</span>
 <span class="sd">        - device (torch.device): device where the env input and output are expected to live</span>
-<span class="sd">        - is_done (torch.Tensor): boolean value(s) indicating if the environment has reached a done state since the last reset</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        world_model (nn.Module): model that generates world states and its corresponding rewards;</span>
@@ -501,7 +500,7 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">set_specs_from_env</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">:</span> <span class="n">EnvBase</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Sets the specs of the environment from the specs of the given environment.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the specs of the environment from the specs of the given environment.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">observation_spec</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">reward_spec</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">input_spec</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>

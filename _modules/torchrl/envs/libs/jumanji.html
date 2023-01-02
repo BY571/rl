@@ -360,22 +360,21 @@
              <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
               
   <h1>Source code for torchrl.envs.libs.jumanji</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">dataclasses</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">tensordict.tensordict</span> <span class="kn">import</span> <span class="n">make_tensordict</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">TensorDictBase</span>
+<span class="kn">from</span> <span class="nn">tensordict.tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">TensorDictBase</span>
 
 <span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BoundedTensorSpec</span><span class="p">,</span>
     <span class="n">CompositeSpec</span><span class="p">,</span>
     <span class="n">DEVICE_TYPING</span><span class="p">,</span>
     <span class="n">DiscreteTensorSpec</span><span class="p">,</span>
-    <span class="n">NdBoundedTensorSpec</span><span class="p">,</span>
-    <span class="n">NdUnboundedContinuousTensorSpec</span><span class="p">,</span>
-    <span class="n">NdUnboundedDiscreteTensorSpec</span><span class="p">,</span>
     <span class="n">OneHotDiscreteTensorSpec</span><span class="p">,</span>
     <span class="n">TensorSpec</span><span class="p">,</span>
+    <span class="n">UnboundedContinuousTensorSpec</span><span class="p">,</span>
+    <span class="n">UnboundedDiscreteTensorSpec</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.utils</span> <span class="kn">import</span> <span class="n">numpy_to_torch_dtype_dict</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">GymLikeEnv</span>
@@ -384,60 +383,26 @@
     <span class="kn">import</span> <span class="nn">jax</span>
     <span class="kn">import</span> <span class="nn">jumanji</span>
     <span class="kn">from</span> <span class="nn">jax</span> <span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">jnp</span>
+    <span class="kn">from</span> <span class="nn">torchrl.envs.libs.jax_utils</span> <span class="kn">import</span> <span class="p">(</span>
+        <span class="n">_extract_spec</span><span class="p">,</span>
+        <span class="n">_ndarray_to_tensor</span><span class="p">,</span>
+        <span class="n">_object_to_tensordict</span><span class="p">,</span>
+        <span class="n">_tensordict_to_object</span><span class="p">,</span>
+        <span class="n">_tree_flatten</span><span class="p">,</span>
+        <span class="n">_tree_reshape</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="n">_has_jumanji</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">IMPORT_ERR</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
     <span class="n">_has_jumanji</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">IMPORT_ERR</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_ndarray_to_tensor</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;jnp.ndarray&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">device</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-    <span class="c1"># tensor doesn&#39;t support conversion from jnp.ndarray.</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-    <span class="c1"># tensor doesn&#39;t support unsigned dtypes.</span>
-    <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">:</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">value</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">:</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">value</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">:</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
-    <span class="c1"># convert to tensor.</span>
-    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_object_to_tensordict</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Converts a namedtuple or a dataclass to a TensorDict.&quot;&quot;&quot;</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;_fields&quot;</span><span class="p">):</span>  <span class="c1"># named tuple</span>
-        <span class="n">_iter</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">_fields</span>
-    <span class="k">elif</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">is_dataclass</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-        <span class="n">_iter</span> <span class="o">=</span> <span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">fields</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unsupported data type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_iter</span><span class="p">:</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
-            <span class="n">t</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ndarray_to_tensor</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">t</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">_object_to_tensordict</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">make_tensordict</span><span class="p">(</span><span class="o">**</span><span class="n">t</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_tensordict_to_object</span><span class="p">(</span><span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">,</span> <span class="n">object_example</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Converts a TensorDict to a namedtuple or a dataclass.&quot;&quot;&quot;</span>
-    <span class="n">object_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">object_example</span><span class="p">)</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">tensordict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">TensorDictBase</span><span class="p">):</span>
-            <span class="n">t</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">_tensordict_to_object</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">object_example</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">example</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">object_example</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-            <span class="n">t</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">value</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">example</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">example</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-            <span class="p">)</span>
-    <span class="k">return</span> <span class="n">object_type</span><span class="p">(</span><span class="o">**</span><span class="n">t</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_get_envs</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_has_jumanji</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="k">return</span> <span class="n">jumanji</span><span class="o">.</span><span class="n">registered_environments</span><span class="p">()</span>
 
 
 <span class="k">def</span> <span class="nf">_jumanji_to_torchrl_spec_transform</span><span class="p">(</span>
@@ -456,26 +421,26 @@
             <span class="n">dtype</span> <span class="o">=</span> <span class="n">numpy_to_torch_dtype_dict</span><span class="p">[</span><span class="n">spec</span><span class="o">.</span><span class="n">dtype</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">action_space_cls</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">num_values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">jumanji</span><span class="o">.</span><span class="n">specs</span><span class="o">.</span><span class="n">BoundedArray</span><span class="p">):</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">shape</span>
         <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dtype</span> <span class="o">=</span> <span class="n">numpy_to_torch_dtype_dict</span><span class="p">[</span><span class="n">spec</span><span class="o">.</span><span class="n">dtype</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">NdBoundedTensorSpec</span><span class="p">(</span>
-            <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+        <span class="k">return</span> <span class="n">BoundedTensorSpec</span><span class="p">(</span>
+            <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
             <span class="n">minimum</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">minimum</span><span class="p">),</span>
             <span class="n">maximum</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">maximum</span><span class="p">),</span>
             <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
             <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">jumanji</span><span class="o">.</span><span class="n">specs</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">shape</span>
         <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dtype</span> <span class="o">=</span> <span class="n">numpy_to_torch_dtype_dict</span><span class="p">[</span><span class="n">spec</span><span class="o">.</span><span class="n">dtype</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">double</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">half</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">NdUnboundedContinuousTensorSpec</span><span class="p">(</span>
-                <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span>
+            <span class="k">return</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
+                <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">NdUnboundedDiscreteTensorSpec</span><span class="p">(</span>
-                <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span>
-            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">UnboundedDiscreteTensorSpec</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">jumanji</span><span class="o">.</span><span class="n">specs</span><span class="o">.</span><span class="n">Spec</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="s2">&quot;__dict__&quot;</span><span class="p">):</span>
         <span class="n">new_spec</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -492,41 +457,40 @@
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported spec type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_torchrl_data_to_spec_transform</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">double</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">half</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">NdUnboundedContinuousTensorSpec</span><span class="p">(</span>
-                <span class="n">shape</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">device</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">NdUnboundedDiscreteTensorSpec</span><span class="p">(</span>
-                <span class="n">shape</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">device</span>
-            <span class="p">)</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">CompositeSpec</span><span class="p">(</span>
-            <span class="o">**</span><span class="p">{</span>
-                <span class="n">key</span><span class="p">:</span> <span class="n">_torchrl_data_to_spec_transform</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-            <span class="p">}</span>
-        <span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported data type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-
 <div class="viewcode-block" id="JumanjiWrapper"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.libs.jumanji.JumanjiWrapper.html#torchrl.envs.libs.jumanji.JumanjiWrapper">[docs]</a><span class="k">class</span> <span class="nc">JumanjiWrapper</span><span class="p">(</span><span class="n">GymLikeEnv</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Jumanji environment wrapper.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Jumanji environment wrapper.</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; env = jumanju.make(&quot;Snake-6x6-v0&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; env = jumanji.make(&quot;Snake-6x6-v0&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; env = JumanjiWrapper(env)</span>
-<span class="sd">        &gt;&gt;&gt; td0 = env.reset()</span>
-<span class="sd">        &gt;&gt;&gt; print(td0)</span>
-<span class="sd">        &gt;&gt;&gt; td1 = env.rand_step(td0)</span>
+<span class="sd">        &gt;&gt;&gt; env.set_seed(0)</span>
+<span class="sd">        &gt;&gt;&gt; td = env.reset()</span>
+<span class="sd">        &gt;&gt;&gt; td[&quot;action&quot;] = env.action_spec.rand()</span>
+<span class="sd">        &gt;&gt;&gt; td = env.step(td)</span>
 <span class="sd">        &gt;&gt;&gt; print(td1)</span>
+<span class="sd">        TensorDict(</span>
+<span class="sd">            fields={</span>
+<span class="sd">                action: Tensor(torch.Size([1]), dtype=torch.int32),</span>
+<span class="sd">                done: Tensor(torch.Size([1]), dtype=torch.bool),</span>
+<span class="sd">                next: TensorDict(</span>
+<span class="sd">                    fields={</span>
+<span class="sd">                        observation: Tensor(torch.Size([6, 6, 5]), dtype=torch.float32)},</span>
+<span class="sd">                    batch_size=torch.Size([]),</span>
+<span class="sd">                    device=cpu,</span>
+<span class="sd">                    is_shared=False),</span>
+<span class="sd">                observation: Tensor(torch.Size([6, 6, 5]), dtype=torch.float32),</span>
+<span class="sd">                reward: Tensor(torch.Size([1]), dtype=torch.float32),</span>
+<span class="sd">                state: TensorDict(...)},</span>
+<span class="sd">            batch_size=torch.Size([]),</span>
+<span class="sd">            device=cpu,</span>
+<span class="sd">            is_shared=False)</span>
 <span class="sd">        &gt;&gt;&gt; print(env.available_envs)</span>
+<span class="sd">        [&#39;Snake-6x6-v0&#39;, &#39;Snake-12x12-v0&#39;, &#39;TSP50-v0&#39;, &#39;TSP100-v0&#39;, ...]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">git_url</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/instadeepai/jumanji&quot;</span>
+    <span class="n">available_envs</span> <span class="o">=</span> <span class="n">_get_envs</span><span class="p">()</span>
+    <span class="n">libname</span> <span class="o">=</span> <span class="s2">&quot;jumanji&quot;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">lib</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -558,14 +522,14 @@
         <span class="n">key</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="o">.</span><span class="n">numel</span><span class="p">())</span>
         <span class="n">state</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">vmap</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">)(</span><span class="n">jnp</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">keys</span><span class="p">))</span>
-        <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reshape</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">_tree_reshape</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">state</span>
 
     <span class="k">def</span> <span class="nf">_make_state_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
         <span class="n">key</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">state</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="n">state_dict</span> <span class="o">=</span> <span class="n">_object_to_tensordict</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="p">())</span>
-        <span class="n">state_spec</span> <span class="o">=</span> <span class="n">_torchrl_data_to_spec_transform</span><span class="p">(</span><span class="n">state_dict</span><span class="p">)</span>
+        <span class="n">state_spec</span> <span class="o">=</span> <span class="n">_extract_spec</span><span class="p">(</span><span class="n">state_dict</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">state_spec</span>
 
     <span class="k">def</span> <span class="nf">_make_input_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
@@ -586,18 +550,23 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported spec type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_make_reward_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_jumanji_to_torchrl_spec_transform</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">reward_spec</span><span class="p">(),</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">reward_spec</span> <span class="o">=</span> <span class="n">_jumanji_to_torchrl_spec_transform</span><span class="p">(</span>
+            <span class="n">env</span><span class="o">.</span><span class="n">reward_spec</span><span class="p">(),</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
+            <span class="n">reward_spec</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">reward_spec</span>
 
     <span class="k">def</span> <span class="nf">_make_specs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">:</span> <span class="s2">&quot;jumanji.env.Environment&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
 
         <span class="c1"># extract spec from jumanji definition</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_input_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_input_spec</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_observation_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_observation_spec</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_reward_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_reward_spec</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_input_spec</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_observation_spec</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_reward_spec</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
 
         <span class="c1"># extract state spec from instance</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_state_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_state_spec</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_input_spec</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_spec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_state_spec</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_spec</span>
 
         <span class="c1"># build state example for data conversion</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_state_example</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_state_example</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
@@ -619,11 +588,11 @@
 
     <span class="k">def</span> <span class="nf">read_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
         <span class="n">state_dict</span> <span class="o">=</span> <span class="n">_object_to_tensordict</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_spec</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">state_dict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_spec</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">state_dict</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">read_obs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obs</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
-            <span class="n">obs_dict</span> <span class="o">=</span> <span class="n">_ndarray_to_tensor</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">obs_dict</span> <span class="o">=</span> <span class="n">_ndarray_to_tensor</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">obs_dict</span> <span class="o">=</span> <span class="n">_object_to_tensordict</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">read_obs</span><span class="p">(</span><span class="n">obs_dict</span><span class="p">)</span>
@@ -636,25 +605,22 @@
         <span class="n">reward</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">zero</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
 
         <span class="c1"># flatten batch size into vector</span>
-        <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flatten</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-        <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flatten</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">_tree_flatten</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="n">_tree_flatten</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
 
         <span class="c1"># jax vectorizing map on env.step</span>
         <span class="n">state</span><span class="p">,</span> <span class="n">timestep</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">vmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">step</span><span class="p">)(</span><span class="n">state</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span>
 
         <span class="c1"># reshape batch size from vector</span>
-        <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reshape</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-        <span class="n">timestep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reshape</span><span class="p">(</span><span class="n">timestep</span><span class="p">)</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">_tree_reshape</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+        <span class="n">timestep</span> <span class="o">=</span> <span class="n">_tree_reshape</span><span class="p">(</span><span class="n">timestep</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
 
         <span class="c1"># collect outputs</span>
         <span class="n">state_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_state</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
         <span class="n">obs_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_obs</span><span class="p">(</span><span class="n">timestep</span><span class="o">.</span><span class="n">observation</span><span class="p">)</span>
         <span class="n">reward</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_reward</span><span class="p">(</span><span class="n">reward</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">timestep</span><span class="o">.</span><span class="n">reward</span><span class="p">))</span>
-        <span class="n">done</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">timestep</span><span class="o">.</span><span class="n">step_type</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">StepType</span><span class="o">.</span><span class="n">LAST</span><span class="p">)</span>
-        <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_is_done</span> <span class="o">=</span> <span class="n">done</span>
+        <span class="n">done</span> <span class="o">=</span> <span class="n">timestep</span><span class="o">.</span><span class="n">step_type</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">StepType</span><span class="o">.</span><span class="n">LAST</span>
+        <span class="n">done</span> <span class="o">=</span> <span class="n">_ndarray_to_tensor</span><span class="p">(</span><span class="n">done</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
         <span class="c1"># build results</span>
         <span class="n">tensordict_out</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span>
@@ -679,15 +645,13 @@
         <span class="n">state</span><span class="p">,</span> <span class="n">timestep</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">vmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">reset</span><span class="p">)(</span><span class="n">jnp</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">keys</span><span class="p">))</span>
 
         <span class="c1"># reshape batch size from vector</span>
-        <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reshape</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-        <span class="n">timestep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reshape</span><span class="p">(</span><span class="n">timestep</span><span class="p">)</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">_tree_reshape</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+        <span class="n">timestep</span> <span class="o">=</span> <span class="n">_tree_reshape</span><span class="p">(</span><span class="n">timestep</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
 
         <span class="c1"># collect outputs</span>
         <span class="n">state_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_state</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
         <span class="n">obs_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_obs</span><span class="p">(</span><span class="n">timestep</span><span class="o">.</span><span class="n">observation</span><span class="p">)</span>
         <span class="n">done</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_is_done</span> <span class="o">=</span> <span class="n">done</span>
 
         <span class="c1"># build results</span>
         <span class="n">tensordict_out</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span>
@@ -698,19 +662,11 @@
         <span class="n">tensordict_out</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">,</span> <span class="n">done</span><span class="p">)</span>
         <span class="n">tensordict_out</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">state_dict</span>
 
-        <span class="k">return</span> <span class="n">tensordict_out</span>
-
-    <span class="k">def</span> <span class="nf">_reshape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="n">shape</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="n">jax</span><span class="o">.</span><span class="n">tree_util</span><span class="o">.</span><span class="n">tree_map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span> <span class="o">+</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">n</span><span class="p">:]),</span> <span class="n">x</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_flatten</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="n">shape</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="o">.</span><span class="n">numel</span><span class="p">(),),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">jax</span><span class="o">.</span><span class="n">tree_util</span><span class="o">.</span><span class="n">tree_map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span> <span class="o">+</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">n</span><span class="p">:]),</span> <span class="n">x</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">tensordict_out</span></div>
 
 
 <div class="viewcode-block" id="JumanjiEnv"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.libs.jumanji.JumanjiEnv.html#torchrl.envs.libs.jumanji.JumanjiEnv">[docs]</a><span class="k">class</span> <span class="nc">JumanjiEnv</span><span class="p">(</span><span class="n">JumanjiWrapper</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Jumanji environment wrapper.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Jumanji environment wrapper.</span>
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; env = JumanjiEnv(env_name=&quot;Snake-6x6-v0&quot;, frame_skip=4)</span>

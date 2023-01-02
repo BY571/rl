@@ -398,6 +398,8 @@
 
 <span class="n">_NO_CHECK_SPEC_ENCODE</span> <span class="o">=</span> <span class="n">get_binary_env_var</span><span class="p">(</span><span class="s2">&quot;NO_CHECK_SPEC_ENCODE&quot;</span><span class="p">)</span>
 
+<span class="n">_DEFAULT_SHAPE</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">((</span><span class="mi">1</span><span class="p">,))</span>
+
 
 <span class="k">def</span> <span class="nf">_default_dtype_and_device</span><span class="p">(</span>
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">],</span>
@@ -412,7 +414,7 @@
 
 
 <span class="k">class</span> <span class="nc">invertible_dict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;An invertible dictionary.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An invertible dictionary.</span>
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; my_dict = invertible_dict(a=3, b=2)</span>
@@ -446,7 +448,7 @@
 
 
 <span class="k">class</span> <span class="nc">Box</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A box of values.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A box of values.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
@@ -460,7 +462,7 @@
 
 <span class="nd">@dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">ContinuousBox</span><span class="p">(</span><span class="n">Box</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A continuous box of values, in between a minimum and a maximum.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A continuous box of values, in between a minimum and a maximum.&quot;&quot;&quot;</span>
 
     <span class="n">minimum</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
     <span class="n">maximum</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
@@ -491,7 +493,7 @@
 
 <span class="nd">@dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">DiscreteBox</span><span class="p">(</span><span class="n">Box</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A box of discrete values.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A box of discrete values.&quot;&quot;&quot;</span>
 
     <span class="n">n</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">register</span> <span class="o">=</span> <span class="n">invertible_dict</span><span class="p">()</span>
@@ -505,7 +507,7 @@
 
 <span class="nd">@dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">BoxList</span><span class="p">(</span><span class="n">Box</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A box of discrete values.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A box of discrete values.&quot;&quot;&quot;</span>
 
     <span class="n">boxes</span><span class="p">:</span> <span class="n">List</span>
 
@@ -522,7 +524,7 @@
 
 <span class="nd">@dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">BinaryBox</span><span class="p">(</span><span class="n">Box</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A box of n binary values.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A box of n binary values.&quot;&quot;&quot;</span>
 
     <span class="n">n</span><span class="p">:</span> <span class="nb">int</span>
 
@@ -535,7 +537,7 @@
 
 <div class="viewcode-block" id="TensorSpec"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">TensorSpec</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Parent class of the tensor meta-data containers for observation, actions and rewards.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parent class of the tensor meta-data containers for observation, actions and rewards.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        shape (torch.Size): size of the tensor</span>
@@ -553,7 +555,7 @@
     <span class="n">domain</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
 <div class="viewcode-block" id="TensorSpec.encode"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Encodes a value given the specified spec, and return the corresponding tensor.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Encodes a value given the specified spec, and return the corresponding tensor.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            val (np.ndarray or torch.Tensor): value to be encoded as tensor.</span>
@@ -584,12 +586,26 @@
             <span class="p">):</span>
                 <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="n">val</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">val</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="p">:]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="c1"># option 1: add a singleton dim at the end</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">1</span><span class="p">]):</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Shape mismatch: the value has shape </span><span class="si">{</span><span class="n">val</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> which &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;is incompatible with the spec shape </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span>
+                    <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">_NO_CHECK_SPEC_ENCODE</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">assert_is_in</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">val</span></div>
 
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;shape&quot;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
 <div class="viewcode-block" id="TensorSpec.to_numpy"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec.to_numpy">[docs]</a>    <span class="k">def</span> <span class="nf">to_numpy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">safe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns the np.ndarray correspondent of an input tensor.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the np.ndarray correspondent of an input tensor.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            val (torch.Tensor): tensor to be transformed_in to numpy</span>
@@ -606,7 +622,7 @@
 
 <div class="viewcode-block" id="TensorSpec.index"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec.index">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">INDEX_TYPING</span><span class="p">,</span> <span class="n">tensor_to_index</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Indexes the input tensor.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Indexes the input tensor.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            index (int, torch.Tensor, slice or list): index of the tensor</span>
@@ -623,7 +639,7 @@
 
 <div class="viewcode-block" id="TensorSpec.is_in"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec.is_in">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">is_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;If the value :obj:`val` is in the box defined by the TensorSpec, returns True, otherwise False.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;If the value :obj:`val` is in the box defined by the TensorSpec, returns True, otherwise False.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            val (torch.Tensor): value to be checked</span>
@@ -635,7 +651,7 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="TensorSpec.project"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec.project">[docs]</a>    <span class="k">def</span> <span class="nf">project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;If the input tensor is not in the TensorSpec box, it maps it back to it given some heuristic.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;If the input tensor is not in the TensorSpec box, it maps it back to it given some heuristic.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            val (torch.Tensor): tensor to be mapped to the box.</span>
@@ -649,7 +665,7 @@
         <span class="k">return</span> <span class="n">val</span></div>
 
 <div class="viewcode-block" id="TensorSpec.assert_is_in"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec.assert_is_in">[docs]</a>    <span class="k">def</span> <span class="nf">assert_is_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Asserts whether a tensor belongs to the box, and raises an exception otherwise.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Asserts whether a tensor belongs to the box, and raises an exception otherwise.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            value (torch.Tensor): value to be checked.</span>
@@ -663,7 +679,7 @@
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="TensorSpec.type_check"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec.type_check">[docs]</a>    <span class="k">def</span> <span class="nf">type_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Checks the input value dtype against the TensorSpec dtype and raises an exception if they don&#39;t match.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks the input value dtype against the TensorSpec dtype and raises an exception if they don&#39;t match.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            value (torch.Tensor): tensor whose dtype has to be checked</span>
@@ -680,7 +696,7 @@
 
 <div class="viewcode-block" id="TensorSpec.rand"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec.rand">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">rand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns a random tensor in the box. The sampling will be uniform unless the box is unbounded.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a random tensor in the box. The sampling will be uniform unless the box is unbounded.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            shape (torch.Size): shape of the random tensor</span>
@@ -692,7 +708,7 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="TensorSpec.zero"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec.zero">[docs]</a>    <span class="k">def</span> <span class="nf">zero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns a zero-filled tensor in the box.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a zero-filled tensor in the box.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            shape (torch.Size): shape of the zero-tensor</span>
@@ -727,101 +743,9 @@
         <span class="k">return</span> <span class="n">string</span></div>
 
 
-<div class="viewcode-block" id="BoundedTensorSpec"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.BoundedTensorSpec.html#torchrl.data.BoundedTensorSpec">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">BoundedTensorSpec</span><span class="p">(</span><span class="n">TensorSpec</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A bounded, unidimensional, continuous tensor spec.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        minimum (np.ndarray, torch.Tensor or number): lower bound of the box.</span>
-<span class="sd">        maximum (np.ndarray, torch.Tensor or number): upper bound of the box.</span>
-<span class="sd">        device (str, int or torch.device, optional): device of the tensors.</span>
-<span class="sd">        dtype (str or torch.dtype, optional): dtype of the tensors.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">shape</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span>
-    <span class="n">space</span><span class="p">:</span> <span class="n">ContinuousBox</span>
-    <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
-    <span class="n">dtype</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">float</span>
-    <span class="n">domain</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">minimum</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
-        <span class="n">maximum</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
-        <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DEVICE_TYPING</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="n">dtype</span><span class="p">,</span> <span class="n">device</span> <span class="o">=</span> <span class="n">_default_dtype_and_device</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">minimum</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
-            <span class="n">minimum</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">minimum</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">minimum</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">dtype</span><span class="p">:</span>
-            <span class="n">minimum</span> <span class="o">=</span> <span class="n">minimum</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">minimum</span><span class="o">.</span><span class="n">device</span> <span class="o">!=</span> <span class="n">device</span><span class="p">:</span>
-            <span class="n">minimum</span> <span class="o">=</span> <span class="n">minimum</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">maximum</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
-            <span class="n">maximum</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">maximum</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">maximum</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">dtype</span><span class="p">:</span>
-            <span class="n">maximum</span> <span class="o">=</span> <span class="n">maximum</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">maximum</span><span class="o">.</span><span class="n">device</span> <span class="o">!=</span> <span class="n">device</span><span class="p">:</span>
-            <span class="n">maximum</span> <span class="o">=</span> <span class="n">maximum</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span>
-                <span class="p">[</span>
-                    <span class="mi">1</span><span class="p">,</span>
-                <span class="p">]</span>
-            <span class="p">),</span>
-            <span class="n">ContinuousBox</span><span class="p">(</span><span class="n">minimum</span><span class="p">,</span> <span class="n">maximum</span><span class="p">),</span>
-            <span class="n">device</span><span class="p">,</span>
-            <span class="n">dtype</span><span class="p">,</span>
-            <span class="s2">&quot;continuous&quot;</span><span class="p">,</span>
-        <span class="p">)</span>
-
-<div class="viewcode-block" id="BoundedTensorSpec.rand"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.BoundedTensorSpec.html#torchrl.data.BoundedTensorSpec.rand">[docs]</a>    <span class="k">def</span> <span class="nf">rand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([])</span>
-        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">double</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">half</span><span class="p">):</span>
-            <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">shape</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">]</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">uniform_</span><span class="p">()</span>
-                <span class="o">*</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span>
-                <span class="o">+</span> <span class="n">a</span>
-            <span class="p">)</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">out</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-                <span class="n">out</span><span class="p">[</span><span class="n">out</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">out</span><span class="p">)[</span><span class="n">out</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">]</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">out</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-                <span class="n">out</span><span class="p">[</span><span class="n">out</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">out</span><span class="p">)[</span><span class="n">out</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">]</span>
-            <span class="k">return</span> <span class="n">out</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">interval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">maximum</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">minimum</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="o">*</span><span class="n">shape</span><span class="p">,</span> <span class="o">*</span><span class="n">interval</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">interval</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="n">interval</span> <span class="o">*</span> <span class="n">r</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">minimum</span> <span class="o">+</span> <span class="n">r</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">r</span></div>
-
-    <span class="k">def</span> <span class="nf">_project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="n">minimum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">minimum</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-        <span class="n">maximum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">maximum</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">clamp_</span><span class="p">(</span><span class="n">minimum</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="n">maximum</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="n">minimum</span> <span class="o">=</span> <span class="n">minimum</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-            <span class="n">maximum</span> <span class="o">=</span> <span class="n">maximum</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-            <span class="n">val</span><span class="p">[</span><span class="n">val</span> <span class="o">&lt;</span> <span class="n">minimum</span><span class="p">]</span> <span class="o">=</span> <span class="n">minimum</span><span class="p">[</span><span class="n">val</span> <span class="o">&lt;</span> <span class="n">minimum</span><span class="p">]</span>
-            <span class="n">val</span><span class="p">[</span><span class="n">val</span> <span class="o">&gt;</span> <span class="n">maximum</span><span class="p">]</span> <span class="o">=</span> <span class="n">maximum</span><span class="p">[</span><span class="n">val</span> <span class="o">&gt;</span> <span class="n">maximum</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">val</span>
-
-<div class="viewcode-block" id="BoundedTensorSpec.is_in"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.BoundedTensorSpec.html#torchrl.data.BoundedTensorSpec.is_in">[docs]</a>    <span class="k">def</span> <span class="nf">is_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">val</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">minimum</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">device</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span>
-            <span class="n">val</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">maximum</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span></div></div>
-
-
 <div class="viewcode-block" id="OneHotDiscreteTensorSpec"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.OneHotDiscreteTensorSpec.html#torchrl.data.OneHotDiscreteTensorSpec">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">OneHotDiscreteTensorSpec</span><span class="p">(</span><span class="n">TensorSpec</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A unidimensional, one-hot discrete tensor spec.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A unidimensional, one-hot discrete tensor spec.</span>
 
 <span class="sd">    By default, TorchRL assumes that categorical variables are encoded as</span>
 <span class="sd">    one-hot encodings of the variable. This allows for simple indexing of</span>
@@ -876,7 +800,7 @@
         <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([])</span>
         <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">gumbel_softmax</span><span class="p">(</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="o">*</span><span class="n">shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="o">*</span><span class="n">shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">n</span><span class="p">]),</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
             <span class="n">hard</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span></div>
@@ -948,80 +872,9 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="UnboundedContinuousTensorSpec"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">UnboundedContinuousTensorSpec</span><span class="p">(</span><span class="n">TensorSpec</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;An unbounded, unidimensional, continuous tensor spec.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        device (str, int or torch.device, optional): device of the tensors.</span>
-<span class="sd">        dtype (str or torch.dtype, optional): dtype of the tensors.</span>
-<span class="sd">            (should be an floating point dtype such as float, double etc.)</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">shape</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span>
-    <span class="n">space</span><span class="p">:</span> <span class="n">ContinuousBox</span>
-    <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
-    <span class="n">dtype</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">float</span>
-    <span class="n">domain</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">dtype</span><span class="p">,</span> <span class="n">device</span> <span class="o">=</span> <span class="n">_default_dtype_and_device</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
-        <span class="n">box</span> <span class="o">=</span> <span class="n">ContinuousBox</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">))</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">((</span><span class="mi">1</span><span class="p">,)),</span> <span class="n">box</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="s2">&quot;composite&quot;</span><span class="p">)</span>
-
-<div class="viewcode-block" id="UnboundedContinuousTensorSpec.rand"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec.rand">[docs]</a>    <span class="k">def</span> <span class="nf">rand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([])</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">shape</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="UnboundedContinuousTensorSpec.is_in"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec.is_in">[docs]</a>    <span class="k">def</span> <span class="nf">is_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">True</span></div></div>
-
-
-<span class="nd">@dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">UnboundedDiscreteTensorSpec</span><span class="p">(</span><span class="n">TensorSpec</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;An unbounded, unidimensional, discrete tensor spec.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        device (str, int or torch.device, optional): device of the tensors.</span>
-<span class="sd">        dtype (str or torch.dtype, optional): dtype of the tensors</span>
-<span class="sd">            (should be an integer dtype such as long, uint8 etc.)</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">shape</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span>
-    <span class="n">space</span><span class="p">:</span> <span class="n">ContinuousBox</span>
-    <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
-    <span class="n">dtype</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">uint8</span>
-    <span class="n">domain</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">dtype</span><span class="p">,</span> <span class="n">device</span> <span class="o">=</span> <span class="n">_default_dtype_and_device</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
-        <span class="n">box</span> <span class="o">=</span> <span class="n">ContinuousBox</span><span class="p">(</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">min</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">),</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">),</span>
-        <span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">((</span><span class="mi">1</span><span class="p">,)),</span> <span class="n">box</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="s2">&quot;composite&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">rand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([])</span>
-        <span class="n">interval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">maximum</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">minimum</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="o">*</span><span class="n">shape</span><span class="p">,</span> <span class="o">*</span><span class="n">interval</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">interval</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">interval</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">minimum</span> <span class="o">+</span> <span class="n">r</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">is_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">True</span>
-
-
-<div class="viewcode-block" id="NdBoundedTensorSpec"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.NdBoundedTensorSpec.html#torchrl.data.NdBoundedTensorSpec">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">NdBoundedTensorSpec</span><span class="p">(</span><span class="n">BoundedTensorSpec</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A bounded, multi-dimensional, continuous tensor spec.</span>
+<div class="viewcode-block" id="BoundedTensorSpec"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.BoundedTensorSpec.html#torchrl.data.BoundedTensorSpec">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">BoundedTensorSpec</span><span class="p">(</span><span class="n">TensorSpec</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A bounded continuous tensor spec.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        minimum (np.ndarray, torch.Tensor or number): lower bound of the box.</span>
@@ -1035,7 +888,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">minimum</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
         <span class="n">maximum</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
-        <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DEVICE_TYPING</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
@@ -1058,7 +911,7 @@
         <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">maximum</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">dtype</span><span class="p">:</span>
             <span class="n">maximum</span> <span class="o">=</span> <span class="n">maximum</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">err_msg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;NdBoundedTensorSpec requires the shape to be explicitely (via &quot;</span>
+            <span class="s2">&quot;BoundedTensorSpec requires the shape to be explicitely (via &quot;</span>
             <span class="s2">&quot;the shape argument) or implicitely defined (via either the &quot;</span>
             <span class="s2">&quot;minimum or the maximum or both). If the maximum and/or the &quot;</span>
             <span class="s2">&quot;minimum have a non-singleton shape, they must match the &quot;</span>
@@ -1106,14 +959,62 @@
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">shape_err_msg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">shape</span>
 
-        <span class="nb">super</span><span class="p">(</span><span class="n">BoundedTensorSpec</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">shape</span><span class="p">,</span> <span class="n">ContinuousBox</span><span class="p">(</span><span class="n">minimum</span><span class="p">,</span> <span class="n">maximum</span><span class="p">),</span> <span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="s2">&quot;continuous&quot;</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="BoundedTensorSpec.rand"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.BoundedTensorSpec.html#torchrl.data.BoundedTensorSpec.rand">[docs]</a>    <span class="k">def</span> <span class="nf">rand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([])</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">double</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">half</span><span class="p">):</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">shape</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">]</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">uniform_</span><span class="p">()</span>
+                <span class="o">*</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span>
+                <span class="o">+</span> <span class="n">a</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">out</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="n">out</span><span class="p">[</span><span class="n">out</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">out</span><span class="p">)[</span><span class="n">out</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">]</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">out</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="n">out</span><span class="p">[</span><span class="n">out</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">out</span><span class="p">)[</span><span class="n">out</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">out</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">interval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">maximum</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">minimum</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="o">*</span><span class="n">shape</span><span class="p">,</span> <span class="o">*</span><span class="n">interval</span><span class="o">.</span><span class="n">shape</span><span class="p">]),</span> <span class="n">device</span><span class="o">=</span><span class="n">interval</span><span class="o">.</span><span class="n">device</span>
+            <span class="p">)</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">interval</span> <span class="o">*</span> <span class="n">r</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">minimum</span> <span class="o">+</span> <span class="n">r</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">r</span></div>
+
+    <span class="k">def</span> <span class="nf">_project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">minimum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">minimum</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">maximum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">maximum</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">clamp_</span><span class="p">(</span><span class="n">minimum</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="n">maximum</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">minimum</span> <span class="o">=</span> <span class="n">minimum</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="n">maximum</span> <span class="o">=</span> <span class="n">maximum</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="n">val</span><span class="p">[</span><span class="n">val</span> <span class="o">&lt;</span> <span class="n">minimum</span><span class="p">]</span> <span class="o">=</span> <span class="n">minimum</span><span class="p">[</span><span class="n">val</span> <span class="o">&lt;</span> <span class="n">minimum</span><span class="p">]</span>
+            <span class="n">val</span><span class="p">[</span><span class="n">val</span> <span class="o">&gt;</span> <span class="n">maximum</span><span class="p">]</span> <span class="o">=</span> <span class="n">maximum</span><span class="p">[</span><span class="n">val</span> <span class="o">&gt;</span> <span class="n">maximum</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+            <span class="n">minimum</span> <span class="o">=</span> <span class="n">minimum</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="n">maximum</span> <span class="o">=</span> <span class="n">maximum</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="n">val</span><span class="p">[</span><span class="n">val</span> <span class="o">&lt;</span> <span class="n">minimum</span><span class="p">]</span> <span class="o">=</span> <span class="n">minimum</span><span class="p">[</span><span class="n">val</span> <span class="o">&lt;</span> <span class="n">minimum</span><span class="p">]</span>
+            <span class="n">val</span><span class="p">[</span><span class="n">val</span> <span class="o">&gt;</span> <span class="n">maximum</span><span class="p">]</span> <span class="o">=</span> <span class="n">maximum</span><span class="p">[</span><span class="n">val</span> <span class="o">&gt;</span> <span class="n">maximum</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">val</span>
+
+<div class="viewcode-block" id="BoundedTensorSpec.is_in"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.BoundedTensorSpec.html#torchrl.data.BoundedTensorSpec.is_in">[docs]</a>    <span class="k">def</span> <span class="nf">is_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">val</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">minimum</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">device</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="n">val</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">maximum</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span></div></div>
 
 
-<div class="viewcode-block" id="NdUnboundedContinuousTensorSpec"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.NdUnboundedContinuousTensorSpec.html#torchrl.data.NdUnboundedContinuousTensorSpec">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">NdUnboundedContinuousTensorSpec</span><span class="p">(</span><span class="n">UnboundedContinuousTensorSpec</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;An unbounded, multi-dimensional, continuous tensor spec.</span>
+<div class="viewcode-block" id="UnboundedContinuousTensorSpec"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">UnboundedContinuousTensorSpec</span><span class="p">(</span><span class="n">TensorSpec</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An unbounded continuous tensor spec.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        device (str, int or torch.device, optional): device of the tensors.</span>
@@ -1123,7 +1024,7 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">_DEFAULT_SHAPE</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DEVICE_TYPING</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
@@ -1131,18 +1032,32 @@
             <span class="n">shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="n">shape</span><span class="p">])</span>
 
         <span class="n">dtype</span><span class="p">,</span> <span class="n">device</span> <span class="o">=</span> <span class="n">_default_dtype_and_device</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">UnboundedContinuousTensorSpec</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">ContinuousBox</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">shape</span> <span class="o">==</span> <span class="n">_DEFAULT_SHAPE</span>
+            <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
-            <span class="n">space</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">space</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
             <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
             <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
             <span class="n">domain</span><span class="o">=</span><span class="s2">&quot;continuous&quot;</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="UnboundedContinuousTensorSpec.rand"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec.rand">[docs]</a>    <span class="k">def</span> <span class="nf">rand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([])</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">shape</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UnboundedContinuousTensorSpec.is_in"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec.is_in">[docs]</a>    <span class="k">def</span> <span class="nf">is_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span></div></div>
 
 
 <span class="nd">@dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">NdUnboundedDiscreteTensorSpec</span><span class="p">(</span><span class="n">UnboundedDiscreteTensorSpec</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;An unbounded, multi-dimensional, discrete tensor spec.</span>
+<span class="k">class</span> <span class="nc">UnboundedDiscreteTensorSpec</span><span class="p">(</span><span class="n">TensorSpec</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An unbounded discrete tensor spec.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        device (str, int or torch.device, optional): device of the tensors.</span>
@@ -1152,7 +1067,7 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">_DEFAULT_SHAPE</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DEVICE_TYPING</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
@@ -1171,7 +1086,7 @@
             <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">max_value</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">),</span>
         <span class="p">)</span>
 
-        <span class="nb">super</span><span class="p">(</span><span class="n">UnboundedDiscreteTensorSpec</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
             <span class="n">space</span><span class="o">=</span><span class="n">space</span><span class="p">,</span>
             <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
@@ -1179,10 +1094,23 @@
             <span class="n">domain</span><span class="o">=</span><span class="s2">&quot;continuous&quot;</span><span class="p">,</span>
         <span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">rand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([])</span>
+        <span class="n">interval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">maximum</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">minimum</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="o">*</span><span class="n">shape</span><span class="p">,</span> <span class="o">*</span><span class="n">interval</span><span class="o">.</span><span class="n">shape</span><span class="p">]),</span> <span class="n">device</span><span class="o">=</span><span class="n">interval</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">interval</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">minimum</span> <span class="o">+</span> <span class="n">r</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">is_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
 
 <div class="viewcode-block" id="BinaryDiscreteTensorSpec"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.BinaryDiscreteTensorSpec.html#torchrl.data.BinaryDiscreteTensorSpec">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">BinaryDiscreteTensorSpec</span><span class="p">(</span><span class="n">TensorSpec</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A binary discrete tensor spec.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A binary discrete tensor spec.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        n (int): length of the binary vector.</span>
@@ -1230,7 +1158,7 @@
 
 <div class="viewcode-block" id="MultOneHotDiscreteTensorSpec"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.MultOneHotDiscreteTensorSpec.html#torchrl.data.MultOneHotDiscreteTensorSpec">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">MultOneHotDiscreteTensorSpec</span><span class="p">(</span><span class="n">OneHotDiscreteTensorSpec</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A concatenation of one-hot discrete tensor spec.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A concatenation of one-hot discrete tensor spec.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        nvec (iterable of integers): cardinality of each of the elements of</span>
@@ -1341,7 +1269,7 @@
 
 
 <div class="viewcode-block" id="DiscreteTensorSpec"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.DiscreteTensorSpec.html#torchrl.data.DiscreteTensorSpec">[docs]</a><span class="k">class</span> <span class="nc">DiscreteTensorSpec</span><span class="p">(</span><span class="n">TensorSpec</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A discrete tensor spec.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A discrete tensor spec.</span>
 
 <span class="sd">    An alternative to OneHotTensorSpec for categorical variables in TorchRL. Instead of</span>
 <span class="sd">    using multiplication, categorical variables perform indexing which can speed up</span>
@@ -1378,7 +1306,7 @@
         <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">]]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">((</span><span class="mi">1</span><span class="p">,))</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([])</span>
         <span class="n">dtype</span><span class="p">,</span> <span class="n">device</span> <span class="o">=</span> <span class="n">_default_dtype_and_device</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
         <span class="n">space</span> <span class="o">=</span> <span class="n">DiscreteBox</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">space</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">&quot;discrete&quot;</span><span class="p">)</span>
@@ -1413,11 +1341,11 @@
         <span class="p">)</span>
 
 <div class="viewcode-block" id="DiscreteTensorSpec.to_numpy"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.DiscreteTensorSpec.html#torchrl.data.DiscreteTensorSpec.to_numpy">[docs]</a>    <span class="k">def</span> <span class="nf">to_numpy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">safe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">safe</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">safe</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="CompositeSpec"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.CompositeSpec.html#torchrl.data.CompositeSpec">[docs]</a><span class="k">class</span> <span class="nc">CompositeSpec</span><span class="p">(</span><span class="n">TensorSpec</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A composition of TensorSpecs.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A composition of TensorSpecs.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        *args: if an unnamed argument is passed, it must be a dictionary with keys</span>
@@ -1429,10 +1357,10 @@
 <span class="sd">            effect. `spec.encode` cannot be used with missing values.</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; pixels_spec = NdBoundedTensorSpec(</span>
+<span class="sd">        &gt;&gt;&gt; pixels_spec = BoundedTensorSpec(</span>
 <span class="sd">        ...    torch.zeros(3,32,32),</span>
 <span class="sd">        ...    torch.ones(3, 32, 32))</span>
-<span class="sd">        &gt;&gt;&gt; observation_vector_spec = NdBoundedTensorSpec(torch.zeros(33),</span>
+<span class="sd">        &gt;&gt;&gt; observation_vector_spec = BoundedTensorSpec(torch.zeros(33),</span>
 <span class="sd">        ...    torch.ones(33))</span>
 <span class="sd">        &gt;&gt;&gt; composite_spec = CompositeSpec(</span>
 <span class="sd">        ...     pixels=pixels_spec,</span>
@@ -1651,7 +1579,7 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="CompositeSpec.keys"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.CompositeSpec.html#torchrl.data.CompositeSpec.keys">[docs]</a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yield_nesting_keys</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeysView</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Keys of the CompositeSpec.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Keys of the CompositeSpec.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            yield_nesting_keys (bool, optional): if :obj:`True`, the values returned</span>
@@ -1740,7 +1668,7 @@
 
 
 <span class="k">class</span> <span class="nc">_CompositeSpecKeysView</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Wrapper class that enables richer behaviour of `key in tensordict.keys()`.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper class that enables richer behaviour of `key in tensordict.keys()`.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>

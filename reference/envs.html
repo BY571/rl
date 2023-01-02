@@ -467,18 +467,25 @@ one can simply call:</p>
          <span class="n">fields</span><span class="o">=</span><span class="p">{</span>
              <span class="n">done</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">),</span>
              <span class="n">pixels</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
-             <span class="n">reset_workers</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)},</span>
+             <span class="n">reset_workers</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">4</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)},</span>
          <span class="n">batch_size</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">4</span><span class="p">]),</span>
          <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
          <span class="n">is_shared</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<p>A note on performance: launching a <a class="reference internal" href="generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv" title="torchrl.envs.ParallelEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParallelEnv</span></code></a> can take quite some time
+<p><em>A note on performance</em>: launching a <a class="reference internal" href="generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv" title="torchrl.envs.ParallelEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParallelEnv</span></code></a> can take quite some time
 as it requires to launch as many python instances as there are processes. Due to
 the time that it takes to run <code class="xref py py-obj docutils literal notranslate"><span class="pre">import</span> <span class="pre">torch</span></code> (and other imports), starting the
 parallel env can be a bottleneck. This is why, for instance, TorchRL tests are so slow.
 Once the environment is launched, a great speedup should be observed.</p>
+<p>Another thing to take in consideration is that <code class="xref py py-obj docutils literal notranslate"><span class="pre">ParallelEnv`s</span> <span class="pre">(as</span> <span class="pre">well</span> <span class="pre">as</span> <span class="pre">data</span> <span class="pre">collectors)</span>
+<span class="pre">will</span> <span class="pre">create</span> <span class="pre">data</span> <span class="pre">buffers</span> <span class="pre">based</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">environment</span> <span class="pre">specs</span> <span class="pre">to</span> <span class="pre">pass</span> <span class="pre">data</span> <span class="pre">from</span> <span class="pre">one</span> <span class="pre">process</span>
+<span class="pre">to</span> <span class="pre">another.</span> <span class="pre">This</span> <span class="pre">means</span> <span class="pre">that</span> <span class="pre">a</span> <span class="pre">misspecified</span> <span class="pre">spec</span> <span class="pre">(input,</span> <span class="pre">observation</span> <span class="pre">or</span> <span class="pre">reward)</span> <span class="pre">will</span>
+<span class="pre">cause</span> <span class="pre">a</span> <span class="pre">breakage</span> <span class="pre">at</span> <span class="pre">runtime</span> <span class="pre">as</span> <span class="pre">the</span> <span class="pre">data</span> <span class="pre">can't</span> <span class="pre">be</span> <span class="pre">written</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">preallocated</span> <span class="pre">buffer.</span>
+<span class="pre">In</span> <span class="pre">general,</span> <span class="pre">an</span> <span class="pre">environment</span> <span class="pre">should</span> <span class="pre">be</span> <span class="pre">tested</span> <span class="pre">using</span> <span class="pre">the</span> <span class="pre">:obj:`check_env_specs</span></code>
+test function before being used in a <a class="reference internal" href="generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv" title="torchrl.envs.ParallelEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParallelEnv</span></code></a>. This function will raise
+an assertion error whenever the preallocated buffer and the collected data mismatch.</p>
 <p>We also offer the <a class="reference internal" href="generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv" title="torchrl.envs.SerialEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SerialEnv</span></code></a> class that enjoys the exact same API but is executed
 serially. This is mostly useful for testing purposes, when one wants to assess the
 behaviour of a <a class="reference internal" href="generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv" title="torchrl.envs.ParallelEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParallelEnv</span></code></a> without launching the subprocesses.</p>
@@ -614,6 +621,9 @@ in the environment. The keys to be included in this inverse transform are passed
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.VIPTransform.html#torchrl.envs.transforms.VIPTransform" title="torchrl.envs.transforms.VIPTransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VIPTransform</span></code></a>(*args, **kwargs)</p></td>
 <td><p>VIP Transform class.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.VIPRewardTransform.html#torchrl.envs.transforms.VIPRewardTransform" title="torchrl.envs.transforms.VIPRewardTransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VIPRewardTransform</span></code></a>(*args, **kwargs)</p></td>
+<td><p>A VIP transform to compute rewards based on embedded similarity.</p></td>
+</tr>
 </tbody>
 </table>
 </section>
@@ -632,6 +642,9 @@ in the environment. The keys to be included in this inverse transform are passed
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.utils.exploration_mode.html#torchrl.envs.utils.exploration_mode" title="torchrl.envs.utils.exploration_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exploration_mode</span></code></a>()</p></td>
 <td><p>Returns the current sampling mode.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.utils.check_env_specs.html#torchrl.envs.utils.check_env_specs" title="torchrl.envs.utils.check_env_specs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_env_specs</span></code></a>(env)</p></td>
+<td><p>Tests an environment specs against the results of short rollout.</p></td>
 </tr>
 </tbody>
 </table>

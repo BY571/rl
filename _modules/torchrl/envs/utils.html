@@ -366,6 +366,7 @@
 <span class="c1"># LICENSE file in the root directory of this source tree.</span>
 
 <span class="kn">import</span> <span class="nn">pkg_resources</span>
+<span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">tensordict.nn.probabilistic</span> <span class="kn">import</span> <span class="p">(</span>  <span class="c1"># noqa</span>
     <span class="n">interaction_mode</span> <span class="k">as</span> <span class="n">exploration_mode</span><span class="p">,</span>
     <span class="n">set_interaction_mode</span> <span class="k">as</span> <span class="n">set_exploration_mode</span><span class="p">,</span>
@@ -389,7 +390,7 @@
     <span class="n">exclude_action</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">_run_check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Creates a new tensordict that reflects a step in time of the input tensordict.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a new tensordict that reflects a step in time of the input tensordict.</span>
 
 <span class="sd">    Given a tensordict retrieved after a step, returns the :obj:`&quot;next&quot;` indexed-tensordict.</span>
 
@@ -455,34 +456,34 @@
 
 
 <div class="viewcode-block" id="get_available_libraries"><a class="viewcode-back" href="../../../reference/generated/torchrl.envs.utils.get_available_libraries.html#torchrl.envs.utils.get_available_libraries">[docs]</a><span class="k">def</span> <span class="nf">get_available_libraries</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Returns all the supported libraries.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns all the supported libraries.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">SUPPORTED_LIBRARIES</span></div>
 
 
 <span class="k">def</span> <span class="nf">_check_gym</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Returns True if the gym library is installed.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns True if the gym library is installed.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="s2">&quot;gym&quot;</span> <span class="ow">in</span> <span class="n">AVAILABLE_LIBRARIES</span>
 
 
 <span class="k">def</span> <span class="nf">_check_gym_atari</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Returns True if the gym library is installed and atari envs can be found.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns True if the gym library is installed and atari envs can be found.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">_check_gym</span><span class="p">():</span>
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">return</span> <span class="s2">&quot;atari-py&quot;</span> <span class="ow">in</span> <span class="n">AVAILABLE_LIBRARIES</span>
 
 
 <span class="k">def</span> <span class="nf">_check_mario</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Returns True if the &quot;gym-super-mario-bros&quot; library is installed.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns True if the &quot;gym-super-mario-bros&quot; library is installed.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="s2">&quot;gym-super-mario-bros&quot;</span> <span class="ow">in</span> <span class="n">AVAILABLE_LIBRARIES</span>
 
 
 <span class="k">def</span> <span class="nf">_check_dmcontrol</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Returns True if the &quot;dm-control&quot; library is installed.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns True if the &quot;dm-control&quot; library is installed.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="s2">&quot;dm-control&quot;</span> <span class="ow">in</span> <span class="n">AVAILABLE_LIBRARIES</span>
 
 
 <span class="k">def</span> <span class="nf">_check_dmlab</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Returns True if the &quot;deepmind-lab&quot; library is installed.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns True if the &quot;deepmind-lab&quot; library is installed.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="s2">&quot;deepmind-lab&quot;</span> <span class="ow">in</span> <span class="n">AVAILABLE_LIBRARIES</span>
 
 
@@ -513,6 +514,56 @@
     <span class="c1"># &quot;screeps&quot;: None,  # https://github.com/screeps/screeps</span>
     <span class="c1"># &quot;ml-agents&quot;: None,</span>
 <span class="p">}</span>
+
+
+<div class="viewcode-block" id="check_env_specs"><a class="viewcode-back" href="../../../reference/generated/torchrl.envs.utils.check_env_specs.html#torchrl.envs.utils.check_env_specs">[docs]</a><span class="k">def</span> <span class="nf">check_env_specs</span><span class="p">(</span><span class="n">env</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Tests an environment specs against the results of short rollout.</span>
+
+<span class="sd">    This test function should be used as a sanity check for an env wrapped with</span>
+<span class="sd">    torchrl&#39;s EnvBase subclasses: any discrepency between the expected data and</span>
+<span class="sd">    the data collected should raise an assertion error.</span>
+
+<span class="sd">    A broken environment spec will likely make it impossible to use parallel</span>
+<span class="sd">    environments.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fake_tensordict</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">fake_tensordict</span><span class="p">()</span><span class="o">.</span><span class="n">flatten_keys</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+    <span class="n">real_tensordict</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">rollout</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">flatten_keys</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+
+    <span class="n">keys1</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">fake_tensordict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">keys2</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">real_tensordict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">assert</span> <span class="n">keys1</span> <span class="o">==</span> <span class="n">keys2</span>
+    <span class="n">fake_tensordict</span> <span class="o">=</span> <span class="n">fake_tensordict</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="n">real_tensordict</span><span class="o">.</span><span class="n">batch_dims</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">fake_tensordict</span> <span class="o">=</span> <span class="n">fake_tensordict</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="o">*</span><span class="n">real_tensordict</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">fake_tensordict</span> <span class="o">=</span> <span class="n">fake_tensordict</span><span class="o">.</span><span class="n">to_tensordict</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="p">(</span>
+        <span class="n">fake_tensordict</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="o">==</span> <span class="n">real_tensordict</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys2</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">fake_tensordict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">real_tensordict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="c1"># test dtypes</span>
+    <span class="n">real_tensordict</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">rollout</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># keep empty structures, for example dict()</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">real_tensordict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">_check_dtype</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">input_spec</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_check_dtype</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">obs_spec</span><span class="p">,</span> <span class="n">input_spec</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;reward&quot;</span><span class="p">,</span> <span class="s2">&quot;done&quot;</span><span class="p">}:</span>
+        <span class="k">return</span>
+    <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;next&quot;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">_key</span><span class="p">,</span> <span class="n">_value</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">_check_dtype</span><span class="p">(</span><span class="n">_key</span><span class="p">,</span> <span class="n">_value</span><span class="p">,</span> <span class="n">obs_spec</span><span class="p">,</span> <span class="n">input_spec</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">elif</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">input_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="n">yield_nesting_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">input_spec</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">is_in</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="p">(</span><span class="n">input_spec</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">elif</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">obs_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="n">yield_nesting_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">obs_spec</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">is_in</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="p">(</span><span class="n">input_spec</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 </pre></div>
 
              </article>

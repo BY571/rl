@@ -392,7 +392,7 @@
 
 
 <span class="k">def</span> <span class="nf">stack_tensors</span><span class="p">(</span><span class="n">list_of_tensor_iterators</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Zips a list of iterables containing tensor-like objects and stacks the resulting lists of tensors together.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Zips a list of iterables containing tensor-like objects and stacks the resulting lists of tensors together.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        list_of_tensor_iterators (list): Sequence containing similar iterators,</span>
@@ -429,7 +429,7 @@
 
 
 <span class="k">def</span> <span class="nf">pin_memory_output</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Calls pin_memory on outputs of decorated function if they have such method.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calls pin_memory on outputs of decorated function if they have such method.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">decorated_fun</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">fun</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -448,7 +448,7 @@
 
 
 <div class="viewcode-block" id="ReplayBuffer"><a class="viewcode-back" href="../../../../reference/generated/torchrl.trainers.ReplayBuffer.html#torchrl.data.ReplayBuffer">[docs]</a><span class="k">class</span> <span class="nc">ReplayBuffer</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Circular replay buffer.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Circular replay buffer.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        size (int): integer indicating the maximum size of the replay buffer.</span>
@@ -529,7 +529,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor</span>
 
 <div class="viewcode-block" id="ReplayBuffer.add"><a class="viewcode-back" href="../../../../reference/generated/torchrl.trainers.ReplayBuffer.html#torchrl.data.ReplayBuffer.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Add a single element to the replay buffer.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a single element to the replay buffer.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            data (Any): data to be added to the replay buffer</span>
@@ -544,7 +544,7 @@
             <span class="k">return</span> <span class="n">ret</span></div>
 
 <div class="viewcode-block" id="ReplayBuffer.extend"><a class="viewcode-back" href="../../../../reference/generated/torchrl.trainers.ReplayBuffer.html#torchrl.data.ReplayBuffer.extend">[docs]</a>    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">]):</span>
-        <span class="sd">&quot;&quot;&quot;Extends the replay buffer with one or more elements contained in an iterable.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extends the replay buffer with one or more elements contained in an iterable.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            data (iterable): collection of data to be added to the replay</span>
@@ -582,7 +582,7 @@
         <span class="k">return</span> <span class="n">data</span>
 
 <div class="viewcode-block" id="ReplayBuffer.sample"><a class="viewcode-back" href="../../../../reference/generated/torchrl.trainers.ReplayBuffer.html#torchrl.data.ReplayBuffer.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Samples a batch of data from the replay buffer.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Samples a batch of data from the replay buffer.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            batch_size (int): float of data to be collected.</span>
@@ -615,7 +615,7 @@
 
 
 <div class="viewcode-block" id="PrioritizedReplayBuffer"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.PrioritizedReplayBuffer.html#torchrl.data.PrioritizedReplayBuffer">[docs]</a><span class="k">class</span> <span class="nc">PrioritizedReplayBuffer</span><span class="p">(</span><span class="n">ReplayBuffer</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Prioritized replay buffer.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Prioritized replay buffer.</span>
 
 <span class="sd">    Presented in</span>
 <span class="sd">        &quot;Schaul, T.; Quan, J.; Antonoglou, I.; and Silver, D. 2015.</span>
@@ -822,7 +822,7 @@
         <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">index</span>
 
 <div class="viewcode-block" id="PrioritizedReplayBuffer.sample"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.PrioritizedReplayBuffer.html#torchrl.data.PrioritizedReplayBuffer.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Gathers a batch of data according to the non-uniform multinomial distribution with weights computed with the provided priorities of each input.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gathers a batch of data according to the non-uniform multinomial distribution with weights computed with the provided priorities of each input.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            batch_size (int): float of data to be collected.</span>
@@ -848,7 +848,7 @@
 <div class="viewcode-block" id="PrioritizedReplayBuffer.update_priority"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.PrioritizedReplayBuffer.html#torchrl.data.PrioritizedReplayBuffer.update_priority">[docs]</a>    <span class="k">def</span> <span class="nf">update_priority</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">],</span> <span class="n">priority</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Updates the priority of the data pointed by the index.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Updates the priority of the data pointed by the index.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            index (int or torch.Tensor): indexes of the priorities to be</span>
@@ -886,7 +886,7 @@
 
 
 <div class="viewcode-block" id="TensorDictReplayBuffer"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.TensorDictReplayBuffer.html#torchrl.data.TensorDictReplayBuffer">[docs]</a><span class="k">class</span> <span class="nc">TensorDictReplayBuffer</span><span class="p">(</span><span class="n">ReplayBuffer</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;TensorDict-specific wrapper around the ReplayBuffer class.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;TensorDict-specific wrapper around the ReplayBuffer class.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -900,7 +900,7 @@
 
 
 <div class="viewcode-block" id="TensorDictPrioritizedReplayBuffer"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.TensorDictPrioritizedReplayBuffer.html#torchrl.data.TensorDictPrioritizedReplayBuffer">[docs]</a><span class="k">class</span> <span class="nc">TensorDictPrioritizedReplayBuffer</span><span class="p">(</span><span class="n">PrioritizedReplayBuffer</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;TensorDict-specific wrapper around the PrioritizedReplayBuffer class.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;TensorDict-specific wrapper around the PrioritizedReplayBuffer class.</span>
 
 <span class="sd">    This class returns tensordicts with a new key &quot;index&quot; that represents</span>
 <span class="sd">    the index of each element in the replay buffer. It also facilitates the</span>
@@ -1015,7 +1015,7 @@
         <span class="k">return</span> <span class="n">idx</span></div>
 
 <div class="viewcode-block" id="TensorDictPrioritizedReplayBuffer.update_priority"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.TensorDictPrioritizedReplayBuffer.html#torchrl.data.TensorDictPrioritizedReplayBuffer.update_priority">[docs]</a>    <span class="k">def</span> <span class="nf">update_priority</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Updates the priorities of the tensordicts stored in the replay buffer.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Updates the priorities of the tensordicts stored in the replay buffer.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            tensordict: tensordict with key-value pairs &#39;self.priority_key&#39;</span>
@@ -1027,12 +1027,12 @@
         <span class="k">if</span> <span class="p">(</span><span class="n">priority</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Priority must be a positive value, got &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="p">(</span><span class="n">priority</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2"> negative priority values.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="p">(</span><span class="n">priority</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2"> negative priority values.&quot;</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">update_priority</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">),</span> <span class="n">priority</span><span class="o">=</span><span class="n">priority</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TensorDictPrioritizedReplayBuffer.sample"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.TensorDictPrioritizedReplayBuffer.html#torchrl.data.TensorDictPrioritizedReplayBuffer.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">return_weight</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Gather a batch of tensordicts according to the non-uniform multinomial distribution with weights computed with the priority_key of each input tensordict.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gather a batch of tensordicts according to the non-uniform multinomial distribution with weights computed with the priority_key of each input tensordict.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            size (int): size of the batch to be returned</span>
@@ -1051,7 +1051,7 @@
 
 
 <span class="k">class</span> <span class="nc">InPlaceSampler</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A sampler to write tennsordicts in-place.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A sampler to write tennsordicts in-place.</span>
 
 <span class="sd">    To be used cautiously as this may lead to unexpected behaviour (i.e. tensordicts</span>
 <span class="sd">    overwritten during execution).</span>

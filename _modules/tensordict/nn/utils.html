@@ -374,7 +374,7 @@
 
 
 <div class="viewcode-block" id="inv_softplus"><a class="viewcode-back" href="../../../reference/generated/torchrl.modules.utils.inv_softplus.html#torchrl.modules.utils.inv_softplus">[docs]</a><span class="k">def</span> <span class="nf">inv_softplus</span><span class="p">(</span><span class="n">bias</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Inverse softplus function.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inverse softplus function.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        bias (float or tensor): the value to be softplus-inverted.</span>
@@ -390,7 +390,7 @@
 
 
 <div class="viewcode-block" id="biased_softplus"><a class="viewcode-back" href="../../../reference/generated/torchrl.modules.utils.biased_softplus.html#torchrl.modules.utils.biased_softplus">[docs]</a><span class="k">class</span> <span class="nc">biased_softplus</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A biased softplus module.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A biased softplus module.</span>
 
 <span class="sd">    The bias indicates the value that is to be returned when a zero-tensor is</span>
 <span class="sd">    passed through the transform.</span>
@@ -412,7 +412,7 @@
 
 
 <span class="k">def</span> <span class="nf">mappings</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Given an input string, returns a surjective function f(x): R -&gt; R^+.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Given an input string, returns a surjective function f(x): R -&gt; R^+.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        key (str): one of &quot;softplus&quot;, &quot;exp&quot;, &quot;relu&quot;, &quot;expln&quot;,</span>

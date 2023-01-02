@@ -375,40 +375,43 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.modules.SafeModule.html#torchrl.modules.SafeModule" title="torchrl.modules.SafeModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SafeModule</span></code></a>(module, in_keys, out_keys[, ...])</p></td>
 <td><p>An :obj:<code class="docutils literal notranslate"><span class="pre">SafeModule</span></code> is a :obj:<code class="docutils literal notranslate"><span class="pre">tensordict.nn.TensorDictModule</span></code> subclass that accepts a :obj:<code class="docutils literal notranslate"><span class="pre">TensorSpec</span></code> as argument to control the output domain.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.modules.SafeProbabilisticModule.html#torchrl.modules.SafeProbabilisticModule" title="torchrl.modules.SafeProbabilisticModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SafeProbabilisticModule</span></code></a>(module, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.modules.SafeProbabilisticModule.html#torchrl.modules.SafeProbabilisticModule" title="torchrl.modules.SafeProbabilisticModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SafeProbabilisticModule</span></code></a>(in_keys, ...)</p></td>
 <td><p>A :obj:<code class="docutils literal notranslate"><span class="pre">SafeProbabilisticModule</span></code> is an :obj:<code class="docutils literal notranslate"><span class="pre">tensordict.nn.ProbabilisticTensorDictModule</span></code> subclass that accepts a :obj:<code class="docutils literal notranslate"><span class="pre">TensorSpec</span></code> as argument to control the output domain.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.modules.SafeSequential.html#torchrl.modules.SafeSequential" title="torchrl.modules.SafeSequential"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SafeSequential</span></code></a>(*modules[, partial_tolerant])</p></td>
 <td><p>A sequence of SafeModules.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.modules.Actor.html#torchrl.modules.Actor" title="torchrl.modules.Actor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Actor</span></code></a>(*args[, in_keys, out_keys, spec])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.modules.SafeProbabilisticSequential.html#torchrl.modules.SafeProbabilisticSequential" title="torchrl.modules.SafeProbabilisticSequential"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SafeProbabilisticSequential</span></code></a>(*modules[, ...])</p></td>
+<td><p>A :obj:<code class="docutils literal notranslate"><span class="pre">SafeProbabilisticSequential</span></code> is an :obj:<code class="docutils literal notranslate"><span class="pre">tensordict.nn.ProbabilisticTensorDictSequential</span></code> subclass that accepts a :obj:<code class="docutils literal notranslate"><span class="pre">TensorSpec</span></code> as argument to control the output domain.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.modules.Actor.html#torchrl.modules.Actor" title="torchrl.modules.Actor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Actor</span></code></a>(*args[, in_keys, out_keys, spec])</p></td>
 <td><p>General class for deterministic actors in RL.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.modules.ProbabilisticActor.html#torchrl.modules.ProbabilisticActor" title="torchrl.modules.ProbabilisticActor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProbabilisticActor</span></code></a>(module, dist_in_keys[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.modules.ProbabilisticActor.html#torchrl.modules.ProbabilisticActor" title="torchrl.modules.ProbabilisticActor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProbabilisticActor</span></code></a>(module, in_keys[, ...])</p></td>
 <td><p>General class for probabilistic actors in RL.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.modules.ValueOperator.html#torchrl.modules.ValueOperator" title="torchrl.modules.ValueOperator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ValueOperator</span></code></a>(module[, in_keys, out_keys])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.modules.ValueOperator.html#torchrl.modules.ValueOperator" title="torchrl.modules.ValueOperator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ValueOperator</span></code></a>(module[, in_keys, out_keys])</p></td>
 <td><p>General class for value functions in RL.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.modules.QValueActor.html#torchrl.modules.QValueActor" title="torchrl.modules.QValueActor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QValueActor</span></code></a>(*args[, action_space])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.modules.QValueActor.html#torchrl.modules.QValueActor" title="torchrl.modules.QValueActor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QValueActor</span></code></a>(*args[, action_space])</p></td>
 <td><p>DQN Actor subclass.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.modules.DistributionalQValueActor.html#torchrl.modules.DistributionalQValueActor" title="torchrl.modules.DistributionalQValueActor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DistributionalQValueActor</span></code></a>(*args, support[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.modules.DistributionalQValueActor.html#torchrl.modules.DistributionalQValueActor" title="torchrl.modules.DistributionalQValueActor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DistributionalQValueActor</span></code></a>(*args, support[, ...])</p></td>
 <td><p>Distributional DQN Actor subclass.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.modules.ActorValueOperator.html#torchrl.modules.ActorValueOperator" title="torchrl.modules.ActorValueOperator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActorValueOperator</span></code></a>(common_operator, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.modules.ActorValueOperator.html#torchrl.modules.ActorValueOperator" title="torchrl.modules.ActorValueOperator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActorValueOperator</span></code></a>(common_operator, ...)</p></td>
 <td><p>Actor-value operator.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.modules.ActorCriticOperator.html#torchrl.modules.ActorCriticOperator" title="torchrl.modules.ActorCriticOperator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActorCriticOperator</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.modules.ActorCriticOperator.html#torchrl.modules.ActorCriticOperator" title="torchrl.modules.ActorCriticOperator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActorCriticOperator</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Actor-critic operator.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.modules.ActorCriticWrapper.html#torchrl.modules.ActorCriticWrapper" title="torchrl.modules.ActorCriticWrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActorCriticWrapper</span></code></a>(policy_operator, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.modules.ActorCriticWrapper.html#torchrl.modules.ActorCriticWrapper" title="torchrl.modules.ActorCriticWrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActorCriticWrapper</span></code></a>(policy_operator, ...)</p></td>
 <td><p>Actor-value operator without common module.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.modules.tensordict_module.common.is_tensordict_compatible.html#torchrl.modules.tensordict_module.common.is_tensordict_compatible" title="torchrl.modules.tensordict_module.common.is_tensordict_compatible"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tensordict_module.common.is_tensordict_compatible</span></code></a>(module)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.modules.tensordict_module.common.is_tensordict_compatible.html#torchrl.modules.tensordict_module.common.is_tensordict_compatible" title="torchrl.modules.tensordict_module.common.is_tensordict_compatible"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tensordict_module.common.is_tensordict_compatible</span></code></a>(module)</p></td>
 <td><p>Returns <cite>True</cite> if a module can be used as a SafeModule, and False if it can't.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.modules.tensordict_module.common.ensure_tensordict_compatible.html#torchrl.modules.tensordict_module.common.ensure_tensordict_compatible" title="torchrl.modules.tensordict_module.common.ensure_tensordict_compatible"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tensordict_module.common.ensure_tensordict_compatible</span></code></a>(module)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.modules.tensordict_module.common.ensure_tensordict_compatible.html#torchrl.modules.tensordict_module.common.ensure_tensordict_compatible" title="torchrl.modules.tensordict_module.common.ensure_tensordict_compatible"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tensordict_module.common.ensure_tensordict_compatible</span></code></a>(module)</p></td>
 <td><p>Checks and ensures an object with forward method is TensorDict compatible.</p></td>
 </tr>
 </tbody>

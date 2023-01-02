@@ -370,13 +370,12 @@
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
-
 <span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">BinaryDiscreteTensorSpec</span><span class="p">,</span>
+    <span class="n">BoundedTensorSpec</span><span class="p">,</span>
     <span class="n">CompositeSpec</span><span class="p">,</span>
     <span class="n">DiscreteTensorSpec</span><span class="p">,</span>
     <span class="n">MultOneHotDiscreteTensorSpec</span><span class="p">,</span>
-    <span class="n">NdBoundedTensorSpec</span><span class="p">,</span>
     <span class="n">OneHotDiscreteTensorSpec</span><span class="p">,</span>
     <span class="n">TensorSpec</span><span class="p">,</span>
     <span class="n">UnboundedContinuousTensorSpec</span><span class="p">,</span>
@@ -384,6 +383,7 @@
 
 <span class="kn">from</span> <span class="nn">..._utils</span> <span class="kn">import</span> <span class="n">implement_for</span>
 <span class="kn">from</span> <span class="nn">...data.utils</span> <span class="kn">import</span> <span class="n">numpy_to_torch_dtype_dict</span>
+
 <span class="kn">from</span> <span class="nn">..gym_like</span> <span class="kn">import</span> <span class="n">default_info_dict_reader</span><span class="p">,</span> <span class="n">GymLikeEnv</span>
 <span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">_classproperty</span>
 
@@ -432,14 +432,24 @@
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">gym</span><span class="o">.</span><span class="n">spaces</span><span class="o">.</span><span class="n">multi_discrete</span><span class="o">.</span><span class="n">MultiDiscrete</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">MultOneHotDiscreteTensorSpec</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">nvec</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">gym</span><span class="o">.</span><span class="n">spaces</span><span class="o">.</span><span class="n">Box</span><span class="p">):</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dtype</span> <span class="o">=</span> <span class="n">numpy_to_torch_dtype_dict</span><span class="p">[</span><span class="n">spec</span><span class="o">.</span><span class="n">dtype</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">NdBoundedTensorSpec</span><span class="p">(</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">low</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">),</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">high</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">),</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
-            <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
-            <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+        <span class="n">low</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">low</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">high</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">high</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">is_unbounded</span> <span class="o">=</span> <span class="n">low</span><span class="o">.</span><span class="n">isinf</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="ow">and</span> <span class="n">high</span><span class="o">.</span><span class="n">isinf</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">is_unbounded</span>
+            <span class="k">else</span> <span class="n">BoundedTensorSpec</span><span class="p">(</span>
+                <span class="n">low</span><span class="p">,</span>
+                <span class="n">high</span><span class="p">,</span>
+                <span class="n">shape</span><span class="p">,</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+                <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="p">(</span><span class="n">Dict</span><span class="p">,)):</span>
         <span class="n">spec_out</span> <span class="o">=</span> <span class="p">{}</span>
@@ -508,7 +518,7 @@
 
 
 <div class="viewcode-block" id="GymWrapper"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.libs.gym.GymWrapper.html#torchrl.envs.libs.gym.GymWrapper">[docs]</a><span class="k">class</span> <span class="nc">GymWrapper</span><span class="p">(</span><span class="n">GymLikeEnv</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;OpenAI Gym environment wrapper.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;OpenAI Gym environment wrapper.</span>
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; env = gym.make(&quot;Pendulum-v0&quot;)</span>
@@ -619,22 +629,24 @@
             <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
             <span class="n">categorical_action_encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_categorical_action_encoding</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span> <span class="o">=</span> <span class="n">_gym_to_torchrl_spec_transform</span><span class="p">(</span>
+        <span class="n">observation_spec</span> <span class="o">=</span> <span class="n">_gym_to_torchrl_spec_transform</span><span class="p">(</span>
             <span class="n">env</span><span class="o">.</span><span class="n">observation_space</span><span class="p">,</span>
             <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
             <span class="n">categorical_action_encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_categorical_action_encoding</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_pixels</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">pixels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span><span class="p">)</span>
+                <span class="n">observation_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">pixels</span><span class="o">=</span><span class="n">observation_spec</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">observation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span><span class="p">)</span>
+                <span class="n">observation_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">observation</span><span class="o">=</span><span class="n">observation_spec</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span> <span class="o">=</span> <span class="n">observation_spec</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
+            <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
             <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_init_env</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>  <span class="c1"># make sure that _is_done is populated</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span>
@@ -664,7 +676,7 @@
 
 
 <div class="viewcode-block" id="GymEnv"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.libs.gym.GymEnv.html#torchrl.envs.libs.gym.GymEnv">[docs]</a><span class="k">class</span> <span class="nc">GymEnv</span><span class="p">(</span><span class="n">GymWrapper</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;OpenAI Gym environment wrapper.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;OpenAI Gym environment wrapper.</span>
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; env = GymEnv(env_name=&quot;Pendulum-v0&quot;, frame_skip=4)</span>

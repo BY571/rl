@@ -384,7 +384,7 @@
 
 
 <div class="viewcode-block" id="DDPGLoss"><a class="viewcode-back" href="../../../reference/generated/torchrl.objectives.DDPGLoss.html#torchrl.objectives.DDPGLoss">[docs]</a><span class="k">class</span> <span class="nc">DDPGLoss</span><span class="p">(</span><span class="n">LossModule</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The DDPG Loss class.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The DDPG Loss class.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        actor_network (SafeModule): a policy operator.</span>
@@ -438,7 +438,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">loss_funtion</span> <span class="o">=</span> <span class="n">loss_function</span>
 
 <div class="viewcode-block" id="DDPGLoss.forward"><a class="viewcode-back" href="../../../reference/generated/torchrl.objectives.DDPGLoss.html#torchrl.objectives.DDPGLoss.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Computes the DDPG losses given a tensordict sampled from the replay buffer.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes the DDPG losses given a tensordict sampled from the replay buffer.</span>
 
 <span class="sd">        This function will also write a &quot;td_error&quot; key that can be used by prioritized replay buffers to assign</span>
 <span class="sd">            a priority to items in the tensordict.</span>

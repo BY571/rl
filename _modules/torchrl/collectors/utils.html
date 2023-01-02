@@ -368,8 +368,7 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
-<span class="kn">from</span> <span class="nn">tensordict.tensordict</span> <span class="kn">import</span> <span class="n">TensorDictBase</span>
+<span class="kn">from</span> <span class="nn">tensordict.tensordict</span> <span class="kn">import</span> <span class="n">pad</span><span class="p">,</span> <span class="n">TensorDictBase</span>
 
 
 <span class="k">def</span> <span class="nf">_stack_output</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
@@ -389,7 +388,7 @@
 
 
 <div class="viewcode-block" id="split_trajectories"><a class="viewcode-back" href="../../../reference/generated/torchrl.collectors.utils.split_trajectories.html#torchrl.collectors.utils.split_trajectories">[docs]</a><span class="k">def</span> <span class="nf">split_trajectories</span><span class="p">(</span><span class="n">rollout_tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A util function for trajectory separation.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A util function for trajectory separation.</span>
 
 <span class="sd">    Takes a tensordict with a key traj_ids that indicates the id of each trajectory.</span>
 
@@ -399,11 +398,10 @@
     <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;.-|-.&quot;</span>
     <span class="n">rollout_tensordict</span> <span class="o">=</span> <span class="n">rollout_tensordict</span><span class="o">.</span><span class="n">flatten_keys</span><span class="p">(</span><span class="n">sep</span><span class="p">)</span>
     <span class="n">traj_ids</span> <span class="o">=</span> <span class="n">rollout_tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;traj_ids&quot;</span><span class="p">)</span>
-    <span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rollout_tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
     <span class="n">splits</span> <span class="o">=</span> <span class="n">traj_ids</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">splits</span> <span class="o">=</span> <span class="p">[(</span><span class="n">splits</span> <span class="o">==</span> <span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">splits</span><span class="o">.</span><span class="n">unique_consecutive</span><span class="p">()]</span>
     <span class="c1"># if all splits are identical then we can skip this function</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">splits</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">traj_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">splits</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">traj_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
         <span class="n">rollout_tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
             <span class="s2">&quot;mask&quot;</span><span class="p">,</span>
             <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span>
@@ -415,30 +413,22 @@
         <span class="k">if</span> <span class="n">rollout_tensordict</span><span class="o">.</span><span class="n">ndimension</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">rollout_tensordict</span> <span class="o">=</span> <span class="n">rollout_tensordict</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to_tensordict</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">rollout_tensordict</span><span class="o">.</span><span class="n">unflatten_keys</span><span class="p">(</span><span class="n">sep</span><span class="p">)</span>
-    <span class="n">out_splits</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">key</span><span class="p">:</span> <span class="n">_d</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">_d</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">ndim</span><span class="p">:])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">splits</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">_d</span> <span class="ow">in</span> <span class="n">rollout_tensordict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-        <span class="c1"># if key not in (&quot;step_count&quot;, &quot;traj_ids&quot;)</span>
-    <span class="p">}</span>
+    <span class="n">out_splits</span> <span class="o">=</span> <span class="n">rollout_tensordict</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">splits</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
-    <span class="c1"># select complete rollouts</span>
-    <span class="n">dones</span> <span class="o">=</span> <span class="n">out_splits</span><span class="p">[</span><span class="s2">&quot;done&quot;</span><span class="p">]</span>
-    <span class="n">valid_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dones</span><span class="p">)))</span>
-    <span class="n">out_splits</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="p">[</span><span class="n">_out</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">valid_ids</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">_out</span> <span class="ow">in</span> <span class="n">out_splits</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-    <span class="n">mask</span> <span class="o">=</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">_out</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span> <span class="k">for</span> <span class="n">_out</span> <span class="ow">in</span> <span class="n">out_splits</span><span class="p">[</span><span class="s2">&quot;done&quot;</span><span class="p">]]</span>
-    <span class="n">out_splits</span><span class="p">[</span><span class="s2">&quot;mask&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mask</span>
-    <span class="n">out_dict</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">key</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">rnn</span><span class="o">.</span><span class="n">pad_sequence</span><span class="p">(</span><span class="n">_o</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">_o</span> <span class="ow">in</span> <span class="n">out_splits</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-    <span class="p">}</span>
-    <span class="n">td</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span>
-        <span class="n">source</span><span class="o">=</span><span class="n">out_dict</span><span class="p">,</span>
-        <span class="n">device</span><span class="o">=</span><span class="n">rollout_tensordict</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
-        <span class="n">batch_size</span><span class="o">=</span><span class="n">out_dict</span><span class="p">[</span><span class="s2">&quot;mask&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">out_split</span> <span class="ow">in</span> <span class="n">out_splits</span><span class="p">:</span>
+        <span class="n">out_split</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+            <span class="s2">&quot;mask&quot;</span><span class="p">,</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span>
+                <span class="n">out_split</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span>
+                <span class="n">device</span><span class="o">=</span><span class="n">out_split</span><span class="o">.</span><span class="n">_get_meta</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+    <span class="n">MAX</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">out_split</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">out_split</span> <span class="ow">in</span> <span class="n">out_splits</span><span class="p">])</span>
+    <span class="n">td</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">pad</span><span class="p">(</span><span class="n">out_split</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">MAX</span> <span class="o">-</span> <span class="n">out_split</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span> <span class="k">for</span> <span class="n">out_split</span> <span class="ow">in</span> <span class="n">out_splits</span><span class="p">],</span> <span class="mi">0</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
     <span class="n">td</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">unflatten_keys</span><span class="p">(</span><span class="n">sep</span><span class="p">)</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">out_dict</span><span class="p">[</span><span class="s2">&quot;done&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Got more than one done per trajectory&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">td</span></div>
 </pre></div>
 
