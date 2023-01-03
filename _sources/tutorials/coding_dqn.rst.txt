@@ -255,7 +255,7 @@ Compute normalizing constants:
  .. code-block:: none
 
 
-    (0.9923809766769409, 0.07673963159322739)
+    (0.9926744699478149, 0.0761844664812088)
 
 
 
@@ -1183,7 +1183,7 @@ algorithm. Other possible improvements could include:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  13.948 seconds)
+   **Total running time of the script:** ( 0 minutes  11.165 seconds)
 
 
 .. _sphx_glr_download_tutorials_coding_dqn.py:
