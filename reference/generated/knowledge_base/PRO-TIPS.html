@@ -10,7 +10,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Pro-tips &mdash; torchrl main documentation</title>
+  <title>Pro-tips and Debugging &mdash; torchrl main documentation</title>
   
 
   
@@ -313,7 +313,7 @@
         
           <li><a href="../../knowledge_base.html">Knowledge Base</a> &gt;</li>
         
-      <li>Pro-tips</li>
+      <li>Pro-tips and Debugging</li>
     
     
       <li class="pytorch-breadcrumbs-aside">
@@ -366,15 +366,119 @@
             <div role="main" class="main-content" itemscope="itemscope" itemtype="http://schema.org/Article">
              <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
               
-  <section id="pro-tips">
-<h1>Pro-tips<a class="headerlink" href="#pro-tips" title="Permalink to this heading">¶</a></h1>
-<section id="training-on-a-cluster">
-<h2>Training on a cluster<a class="headerlink" href="#training-on-a-cluster" title="Permalink to this heading">¶</a></h2>
+  <section id="pro-tips-and-debugging">
+<h1>Pro-tips and Debugging<a class="headerlink" href="#pro-tips-and-debugging" title="Permalink to this heading">¶</a></h1>
+<section id="gradient-related-errors-newcomers">
+<h2>Gradient-related errors [Newcomers]<a class="headerlink" href="#gradient-related-errors-newcomers" title="Permalink to this heading">¶</a></h2>
+<p>Newcomers often face gradient-related issues when coding up an RL algorithm from scratch.
+The typical training loop can usually be sketched as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="n">obs</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_training_steps</span><span class="p">):</span>
+    <span class="c1"># STEP 1: data collection</span>
+    <span class="c1"># Get a new datapoint &quot;online&quot;</span>
+    <span class="n">observations</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">actions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">others</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_data_per_training</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="n">policy</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+        <span class="n">obs</span><span class="p">,</span> <span class="o">*</span><span class="n">other</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+        <span class="n">observations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+        <span class="n">actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+        <span class="n">others</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+    <span class="n">replay_buffer</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">observations</span><span class="p">,</span> <span class="n">actions</span><span class="p">,</span> <span class="n">others</span><span class="p">)</span>
+
+    <span class="c1"># STEP 2: loss and optimization</span>
+    <span class="c1"># =&gt; compute loss &quot;offline&quot;</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">replay_buffer</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">batch_size</span><span class="p">))</span>
+
+    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="n">optim</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="n">optim</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+
+</pre></div>
+</div>
+<p>A series of errors come from wanting to backpropagate through the policy operation
+that is decorated by the <code class="docutils literal notranslate"><span class="pre">no_grad()</span></code> context manager. In fact, this operation should
+(in most cases) not be part of any computational graph. Instead, all the differentiable
+operations should be executed in the <code class="docutils literal notranslate"><span class="pre">loss_fn(...)</span></code> abstraction.
+In general, RL is a domain where one should pay attention to understanding well
+what should be considered as non-differentiable “data” (e.g. environment
+interactions, advantage and return computation, ‘denominator’ log-probability in PPO)
+and what should be considered as  differentiable loss artifacts
+(e.g. value error, ‘numerator’ log-probability in PPO).</p>
+<p>Errors to look for that may be related to this misconception are the following:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">RuntimeError:</span> <span class="pre">Trying</span> <span class="pre">to</span> <span class="pre">backward</span> <span class="pre">through</span> <span class="pre">the</span> <span class="pre">graph</span> <span class="pre">a</span> <span class="pre">second</span> <span class="pre">time</span> <span class="pre">(or</span> <span class="pre">directly</span> <span class="pre">access</span> <span class="pre">saved</span> <span class="pre">tensors</span> <span class="pre">after</span> <span class="pre">they</span> <span class="pre">have</span> <span class="pre">already</span> <span class="pre">been</span> <span class="pre">freed).</span></code>
+This error usually appears after a datapoint that is part of a compuational graph is used twice
+in the loss function. Some users try to fix this by calling <code class="docutils literal notranslate"><span class="pre">loss.backward(retain_graph=True)</span></code>, but this will lead
+to the next error of this list.
+<strong>Related discussed PyTorch errors</strong>:</p>
+<ul>
+<li><p><a class="reference external" href="https://discuss.pytorch.org/t/how-to-properly-create-a-batch-with-torch-tensor/169217">here</a></p></li>
+<li><p><a class="reference external" href="https://discuss.pytorch.org/t/i-am-training-my-multi-agents-reinforcement-learning-project-and-i-got-an-error-trying-to-backward-through-the-graph-a-second-time/152352">here</a></p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RuntimeError:</span> <span class="pre">one</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">variables</span> <span class="pre">needed</span> <span class="pre">for</span> <span class="pre">gradient</span> <span class="pre">computation</span> <span class="pre">has</span> <span class="pre">been</span> <span class="pre">modified</span> <span class="pre">by</span> <span class="pre">an</span> <span class="pre">inplace</span> <span class="pre">operation</span></code>
+This typically occurs after one fixes the first error with a <code class="docutils literal notranslate"><span class="pre">retain_graph=True</span></code> flag. Instead, the operation
+that is to be differentiated through should be re-computed in the <code class="docutils literal notranslate"><span class="pre">loss_fn</span></code>.
+Another common reason is that two modules are updated using a shared compuational graph (e.g. the policy and the critic).
+In that case the <code class="docutils literal notranslate"><span class="pre">retain_graph=True</span></code> flag should be used, although one should be careful as this
+may accumulate gradients of one loss onto the other. In general, it’s better practice to
+re-compute each intermediate value for each loss separately while excluding the parameters
+that are not necessary from the specific graph, even if the forward call of some submodules match.
+<strong>Related discussed PyTorch errors</strong>:</p>
+<ul>
+<li><p><a class="reference external" href="https://discuss.pytorch.org/t/runtimeerror-one-of-the-variables-needed-for-gradient-computation-has-been-modified-by-an-inplace-operation-torch-floattensor-3-1-which-is-output-0-of-tanhbackward-is-at-version-1-expected-version-0-instead/87630">here</a></p></li>
+<li><p><a class="reference external" href="https://discuss.pytorch.org/t/in-place-operation-error-while-training-maddpg/151622">here</a></p></li>
+</ul>
+</li>
+<li><p>Algorithm is not learning / <code class="docutils literal notranslate"><span class="pre">param.grad</span></code> is 0 or None.
+An algorithm not learning can have multiple causes. The first thing to look at
+is the value of the parameter gradients, whose norm should be strictly non-negative.
+<strong>Related PyTorch discussed errors</strong>:</p>
+<ul>
+<li><p><a class="reference external" href="https://discuss.pytorch.org/t/multi-threaded-backprop-failing-in-a3c-implementation/157132/5">here</a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="my-training-is-too-slow-newcomers-intermediate">
+<h2>My Training is too slow [Newcomers / intermediate]<a class="headerlink" href="#my-training-is-too-slow-newcomers-intermediate" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>RL is known to be CPU-intensive in some instances. Even when running a few
 environments in parallel, you can see a great speed-up by asking for more cores on your cluster
 than the number of environments you’re working with (twice as much for instance). This
 is also and especially true for environments that are rendered (even if they are rendered on GPU).</p></li>
+<li><p>The speed of training depends upon several factors and there is not a one-fits-all
+solution to every problem. The common bottlnecks are:</p>
+<ul>
+<li><p><strong>data collection</strong>: the simulator speed may affect performance, as can the data
+transformation that follows. Speeding up environment interactions is usually
+done via vectorization (if the simulators enables it, e.g. Brax and other Jax-based
+simulators) or parallelization (which is improperly called vectorized envs in gym
+and other libraries). In TorchRL, transformations can usually be executed on device.</p></li>
+<li><p><strong>Replay buffer storage and sampling</strong>: storing items in a replay buffer can
+take time if the underlying operation requires some heavy memory manipulation
+or tedeious indexing (e.g. with prioritized replay buffers). Sampling can
+also take a considerable amount of time if the data isn’t stored contiguously
+and/or if costly stacking of concatenation operations are performed.
+TorchRL provides efficient contiguous storage solutions and efficient writing
+and sampling solutions in these cases.</p></li>
+<li><p><strong>Advantage computation</strong>: computing advantage functions can also constitute
+a computational bottleneck as these are usually coded using plain for loops.
+If profiling indicates that this operation is taking a considerable amount
+of time, consider using our fully vectorized solutions instead.</p></li>
+<li><p><strong>Loss compuation</strong>: The loss computation and the optimization
+steps are frequently responsible of a significant share of the compute time.
+Some techniques can speed things up. For instance, if multiple target networks
+are being used, using vectorized maps and functional programming (through
+functorch) instead of looping over the model configurations can provide a
+significant speedup.</p></li>
+</ul>
+</li>
 </ul>
 </section>
 </section>
@@ -422,8 +526,9 @@ is also and especially true for environments that are rendered (even if they are
           <div class="pytorch-right-menu" id="pytorch-right-menu">
             <div class="pytorch-side-scroll" id="pytorch-side-scroll-right">
               <ul>
-<li><a class="reference internal" href="#">Pro-tips</a><ul>
-<li><a class="reference internal" href="#training-on-a-cluster">Training on a cluster</a></li>
+<li><a class="reference internal" href="#">Pro-tips and Debugging</a><ul>
+<li><a class="reference internal" href="#gradient-related-errors-newcomers">Gradient-related errors [Newcomers]</a></li>
+<li><a class="reference internal" href="#my-training-is-too-slow-newcomers-intermediate">My Training is too slow [Newcomers / intermediate]</a></li>
 </ul>
 </li>
 </ul>

@@ -606,6 +606,7 @@ Rollout
                 device=cpu,
                 is_shared=False),
             observation: Tensor(torch.Size([100, 67]), dtype=torch.float32),
+            observation_stand: Tensor(torch.Size([100, 67]), dtype=torch.float32),
             reward: Tensor(torch.Size([100, 1]), dtype=torch.float64)},
         batch_size=torch.Size([100]),
         device=cpu,
@@ -616,7 +617,7 @@ Rollout
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  3.338 seconds)
+   **Total running time of the script:** ( 0 minutes  3.349 seconds)
 
 
 .. _sphx_glr_download_tutorials_multi_task.py:

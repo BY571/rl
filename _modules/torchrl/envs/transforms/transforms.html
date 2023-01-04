@@ -1576,7 +1576,7 @@
         <span class="k">return</span> <span class="n">s</span></div>
 
 
-<span class="k">class</span> <span class="nc">SqueezeTransform</span><span class="p">(</span><span class="n">UnsqueezeTransform</span><span class="p">):</span>
+<div class="viewcode-block" id="SqueezeTransform"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.SqueezeTransform.html#torchrl.envs.transforms.SqueezeTransform">[docs]</a><span class="k">class</span> <span class="nc">SqueezeTransform</span><span class="p">(</span><span class="n">UnsqueezeTransform</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes a dimension of size one at the specified position.</span>
 
 <span class="sd">    Args:</span>
@@ -1606,8 +1606,8 @@
     <span class="k">def</span> <span class="nf">squeeze_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">unsqueeze_dim</span>
 
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
+<div class="viewcode-block" id="SqueezeTransform.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.SqueezeTransform.html#torchrl.envs.transforms.SqueezeTransform.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
         <span class="c1"># placeholder for when we&#39;ll move to &#39;next&#39; indexing for steps</span>
@@ -1615,7 +1615,7 @@
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">inv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="GrayScale"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.GrayScale.html#torchrl.envs.transforms.GrayScale">[docs]</a><span class="k">class</span> <span class="nc">GrayScale</span><span class="p">(</span><span class="n">ObservationTransform</span><span class="p">):</span>
@@ -2295,7 +2295,7 @@
         <span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">FrameSkipTransform</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
+<div class="viewcode-block" id="FrameSkipTransform"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.FrameSkipTransform.html#torchrl.envs.transforms.FrameSkipTransform">[docs]</a><span class="k">class</span> <span class="nc">FrameSkipTransform</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A frame-skip transform.</span>
 
 <span class="sd">    This transform applies the same action repeatedly in the parent environment,</span>
@@ -2322,7 +2322,7 @@
             <span class="n">tensordict</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">_step</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
             <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span> <span class="o">+</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">)</span>
         <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">,</span> <span class="n">reward</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">tensordict</span>
+        <span class="k">return</span> <span class="n">tensordict</span></div>
 
 
 <div class="viewcode-block" id="NoopResetEnv"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.NoopResetEnv.html#torchrl.envs.transforms.NoopResetEnv">[docs]</a><span class="k">class</span> <span class="nc">NoopResetEnv</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
@@ -2959,7 +2959,7 @@
         <span class="k">return</span> <span class="n">observation_spec</span></div></div>
 
 
-<span class="k">class</span> <span class="nc">StepCounter</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
+<div class="viewcode-block" id="StepCounter"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.StepCounter.html#torchrl.envs.transforms.StepCounter">[docs]</a><span class="k">class</span> <span class="nc">StepCounter</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Counts the steps from a reset and sets the done state to True after a certain number of steps.</span>
 
 <span class="sd">    Args:</span>
@@ -2978,7 +2978,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span> <span class="o">=</span> <span class="n">max_steps</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">([])</span>
 
-    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+<div class="viewcode-block" id="StepCounter.reset"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.StepCounter.html#torchrl.envs.transforms.StepCounter.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
         <span class="n">workers</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
             <span class="s2">&quot;reset_workers&quot;</span><span class="p">,</span>
             <span class="n">default</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span>
@@ -2998,7 +2998,7 @@
                 <span class="p">),</span>
             <span class="p">),</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">tensordict</span>
+        <span class="k">return</span> <span class="n">tensordict</span></div>
 
     <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
         <span class="n">next_step_count</span> <span class="o">=</span> <span class="p">(</span>
@@ -3021,7 +3021,7 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">tensordict</span>
 
-    <span class="k">def</span> <span class="nf">transform_observation_spec</span><span class="p">(</span>
+<div class="viewcode-block" id="StepCounter.transform_observation_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.StepCounter.html#torchrl.envs.transforms.StepCounter.transform_observation_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_observation_spec</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">observation_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
@@ -3032,7 +3032,7 @@
             <span class="n">shape</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">1</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">device</span>
         <span class="p">)</span>
         <span class="n">observation_spec</span><span class="p">[</span><span class="s2">&quot;step_count&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">minimum</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">return</span> <span class="n">observation_spec</span>
+        <span class="k">return</span> <span class="n">observation_spec</span></div></div>
 </pre></div>
 
              </article>

@@ -375,6 +375,7 @@
     <span class="n">BoundedTensorSpec</span><span class="p">,</span>
     <span class="n">CompositeSpec</span><span class="p">,</span>
     <span class="n">DiscreteTensorSpec</span><span class="p">,</span>
+    <span class="n">MultiDiscreteTensorSpec</span><span class="p">,</span>
     <span class="n">MultOneHotDiscreteTensorSpec</span><span class="p">,</span>
     <span class="n">OneHotDiscreteTensorSpec</span><span class="p">,</span>
     <span class="n">TensorSpec</span><span class="p">,</span>
@@ -430,7 +431,11 @@
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">gym</span><span class="o">.</span><span class="n">spaces</span><span class="o">.</span><span class="n">multi_binary</span><span class="o">.</span><span class="n">MultiBinary</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">BinaryDiscreteTensorSpec</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">gym</span><span class="o">.</span><span class="n">spaces</span><span class="o">.</span><span class="n">multi_discrete</span><span class="o">.</span><span class="n">MultiDiscrete</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">MultOneHotDiscreteTensorSpec</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">nvec</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">MultiDiscreteTensorSpec</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">nvec</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">categorical_action_encoding</span>
+            <span class="k">else</span> <span class="n">MultOneHotDiscreteTensorSpec</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">nvec</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">gym</span><span class="o">.</span><span class="n">spaces</span><span class="o">.</span><span class="n">Box</span><span class="p">):</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">shape</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>

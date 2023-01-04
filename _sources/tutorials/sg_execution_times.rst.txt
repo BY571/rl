@@ -5,20 +5,20 @@
 
 Computation times
 =================
-**01:41.946** total execution time for **tutorials** files:
+**01:49.432** total execution time for **tutorials** files:
 
 +-------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_coding_ddpg.py` (``coding_ddpg.py``)                 | 00:55.937 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_coding_ddpg.py` (``coding_ddpg.py``)                 | 01:00.414 | 0.0 MB |
 +-------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_torch_envs.py` (``torch_envs.py``)                   | 00:26.968 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_torch_envs.py` (``torch_envs.py``)                   | 00:25.333 | 0.0 MB |
 +-------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_coding_dqn.py` (``coding_dqn.py``)                   | 00:11.165 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_coding_dqn.py` (``coding_dqn.py``)                   | 00:16.008 | 0.0 MB |
 +-------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_torchrl_demo.py` (``torchrl_demo.py``)               | 00:04.494 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_torchrl_demo.py` (``torchrl_demo.py``)               | 00:04.288 | 0.0 MB |
 +-------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_multi_task.py` (``multi_task.py``)                   | 00:03.338 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_multi_task.py` (``multi_task.py``)                   | 00:03.349 | 0.0 MB |
 +-------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_tensordict_module.py` (``tensordict_module.py``)     | 00:00.022 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_tensordict_module.py` (``tensordict_module.py``)     | 00:00.020 | 0.0 MB |
 +-------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_tensordict_tutorial.py` (``tensordict_tutorial.py``) | 00:00.021 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_tensordict_tutorial.py` (``tensordict_tutorial.py``) | 00:00.020 | 0.0 MB |
 +-------------------------------------------------------------------------------+-----------+--------+

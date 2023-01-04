@@ -802,6 +802,8 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.R3MTransform.html#torchrl.envs.transforms.R3MTransform.forward">(torchrl.envs.transforms.R3MTransform method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.transforms.SqueezeTransform.html#torchrl.envs.transforms.SqueezeTransform.forward">(torchrl.envs.transforms.SqueezeTransform method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.transforms.Transform.html#torchrl.envs.transforms.Transform.forward">(torchrl.envs.transforms.Transform method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.UnsqueezeTransform.html#torchrl.envs.transforms.UnsqueezeTransform.forward">(torchrl.envs.transforms.UnsqueezeTransform method)</a>
@@ -867,6 +869,10 @@
         <li><a href="reference/generated/torchrl.objectives.value.TDLambdaEstimate.html#torchrl.objectives.value.TDLambdaEstimate.forward">(torchrl.objectives.value.TDLambdaEstimate method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/generated/torchrl.envs.transforms.FrameSkipTransform.html#torchrl.envs.transforms.FrameSkipTransform">FrameSkipTransform (class in torchrl.envs.transforms)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -1519,8 +1525,6 @@
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.register_load_state_dict_post_hook">(torchrl.envs.SerialEnv method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.data.MultiStep.html#torchrl.data.MultiStep.register_module">register_module() (torchrl.data.MultiStep method)</a>
 
       <ul>
@@ -1533,6 +1537,8 @@
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.register_module">(torchrl.envs.SerialEnv method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.data.MultiStep.html#torchrl.data.MultiStep.register_parameter">register_parameter() (torchrl.data.MultiStep method)</a>
 
       <ul>
@@ -1597,6 +1603,8 @@
         <li><a href="reference/generated/torchrl.envs.transforms.R3MTransform.html#torchrl.envs.transforms.R3MTransform.reset">(torchrl.envs.transforms.R3MTransform method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.RewardSum.html#torchrl.envs.transforms.RewardSum.reset">(torchrl.envs.transforms.RewardSum method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.transforms.StepCounter.html#torchrl.envs.transforms.StepCounter.reset">(torchrl.envs.transforms.StepCounter method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.TensorDictPrimer.html#torchrl.envs.transforms.TensorDictPrimer.reset">(torchrl.envs.transforms.TensorDictPrimer method)</a>
 </li>
@@ -1769,6 +1777,8 @@
       </ul></li>
       <li><a href="reference/generated/torchrl.collectors.utils.split_trajectories.html#torchrl.collectors.utils.split_trajectories">split_trajectories() (in module torchrl.collectors.utils)</a>
 </li>
+      <li><a href="reference/generated/torchrl.envs.transforms.SqueezeTransform.html#torchrl.envs.transforms.SqueezeTransform">SqueezeTransform (class in torchrl.envs.transforms)</a>
+</li>
       <li><a href="reference/generated/torchrl.collectors.aSyncDataCollector.html#torchrl.collectors.aSyncDataCollector.state_dict">state_dict() (torchrl.collectors.aSyncDataCollector method)</a>
 
       <ul>
@@ -1804,6 +1814,8 @@
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.utils.step_mdp.html#torchrl.envs.utils.step_mdp">step_mdp() (in module torchrl.envs.utils)</a>
+</li>
+      <li><a href="reference/generated/torchrl.envs.transforms.StepCounter.html#torchrl.envs.transforms.StepCounter">StepCounter (class in torchrl.envs.transforms)</a>
 </li>
       <li><a href="reference/generated/torchrl.data.replay_buffers.storages.Storage.html#torchrl.data.replay_buffers.storages.Storage">Storage (class in torchrl.data.replay_buffers.storages)</a>
 </li>
@@ -1921,8 +1933,6 @@
 </li>
       <li><a href="reference/generated/torchrl.envs.transforms.Transform.html#torchrl.envs.transforms.Transform">Transform (class in torchrl.envs.transforms)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.envs.transforms.Compose.html#torchrl.envs.transforms.Compose.transform_input_spec">transform_input_spec() (torchrl.envs.transforms.Compose method)</a>
 
       <ul>
@@ -1937,6 +1947,8 @@
         <li><a href="reference/generated/torchrl.envs.transforms.VIPTransform.html#torchrl.envs.transforms.VIPTransform.transform_input_spec">(torchrl.envs.transforms.VIPTransform method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.envs.transforms.CatFrames.html#torchrl.envs.transforms.CatFrames.transform_observation_spec">transform_observation_spec() (torchrl.envs.transforms.CatFrames method)</a>
 
       <ul>
@@ -1959,6 +1971,8 @@
         <li><a href="reference/generated/torchrl.envs.transforms.Resize.html#torchrl.envs.transforms.Resize.transform_observation_spec">(torchrl.envs.transforms.Resize method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.RewardSum.html#torchrl.envs.transforms.RewardSum.transform_observation_spec">(torchrl.envs.transforms.RewardSum method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.transforms.StepCounter.html#torchrl.envs.transforms.StepCounter.transform_observation_spec">(torchrl.envs.transforms.StepCounter method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.TensorDictPrimer.html#torchrl.envs.transforms.TensorDictPrimer.transform_observation_spec">(torchrl.envs.transforms.TensorDictPrimer method)</a>
 </li>
