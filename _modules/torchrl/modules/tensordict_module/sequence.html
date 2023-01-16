@@ -254,9 +254,9 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/torchrl_demo.html">Introduction to TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/pretrained_models.html">Using pretrained models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tensordict_tutorial.html">TensorDict</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tensordict_module.html">TensorDictModule</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/torch_envs.html">TorchRL envs</a></li>
@@ -264,9 +264,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/coding_ddpg.html">Coding DDPG using TorchRL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/coding_dqn.html">Coding a pixel-based DQN using TorchRL</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">References:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../reference/index.html">API Reference</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../reference/knowledge_base.html">Knowledge Base</a></li>
 </ul>
 
@@ -374,7 +375,7 @@
 <span class="kn">from</span> <span class="nn">torchrl.modules.tensordict_module.common</span> <span class="kn">import</span> <span class="n">SafeModule</span>
 
 
-<div class="viewcode-block" id="SafeSequential"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.SafeSequential.html#torchrl.modules.SafeSequential">[docs]</a><span class="k">class</span> <span class="nc">SafeSequential</span><span class="p">(</span><span class="n">TensorDictSequential</span><span class="p">,</span> <span class="n">SafeModule</span><span class="p">):</span>
+<div class="viewcode-block" id="SafeSequential"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.SafeSequential.html#torchrl.modules.tensordict_module.SafeSequential">[docs]</a><span class="k">class</span> <span class="nc">SafeSequential</span><span class="p">(</span><span class="n">TensorDictSequential</span><span class="p">,</span> <span class="n">SafeModule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A sequence of SafeModules.</span>
 
 <span class="sd">    Similarly to :obj:`nn.Sequence` which passes a tensor through a chain of mappings that read and write a single tensor</span>

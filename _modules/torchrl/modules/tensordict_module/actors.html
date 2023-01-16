@@ -254,9 +254,9 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/torchrl_demo.html">Introduction to TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/pretrained_models.html">Using pretrained models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tensordict_tutorial.html">TensorDict</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tensordict_module.html">TensorDictModule</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/torch_envs.html">TorchRL envs</a></li>
@@ -264,9 +264,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/coding_ddpg.html">Coding DDPG using TorchRL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/coding_dqn.html">Coding a pixel-based DQN using TorchRL</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">References:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../reference/index.html">API Reference</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../reference/knowledge_base.html">Knowledge Base</a></li>
 </ul>
 
@@ -381,7 +382,7 @@
 <span class="kn">from</span> <span class="nn">torchrl.modules.tensordict_module.sequence</span> <span class="kn">import</span> <span class="n">SafeSequential</span>
 
 
-<div class="viewcode-block" id="Actor"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.Actor.html#torchrl.modules.Actor">[docs]</a><span class="k">class</span> <span class="nc">Actor</span><span class="p">(</span><span class="n">SafeModule</span><span class="p">):</span>
+<div class="viewcode-block" id="Actor"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.Actor.html#torchrl.modules.tensordict_module.Actor">[docs]</a><span class="k">class</span> <span class="nc">Actor</span><span class="p">(</span><span class="n">SafeModule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;General class for deterministic actors in RL.</span>
 
 <span class="sd">    The Actor class comes with default values for the out_keys ([&quot;action&quot;])</span>
@@ -433,7 +434,7 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ProbabilisticActor"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.ProbabilisticActor.html#torchrl.modules.ProbabilisticActor">[docs]</a><span class="k">class</span> <span class="nc">ProbabilisticActor</span><span class="p">(</span><span class="n">SafeProbabilisticSequential</span><span class="p">):</span>
+<div class="viewcode-block" id="ProbabilisticActor"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.ProbabilisticActor.html#torchrl.modules.tensordict_module.ProbabilisticActor">[docs]</a><span class="k">class</span> <span class="nc">ProbabilisticActor</span><span class="p">(</span><span class="n">SafeProbabilisticSequential</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;General class for probabilistic actors in RL.</span>
 
 <span class="sd">    The Actor class comes with default values for the out_keys ([&quot;action&quot;])</span>
@@ -497,7 +498,7 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ValueOperator"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.ValueOperator.html#torchrl.modules.ValueOperator">[docs]</a><span class="k">class</span> <span class="nc">ValueOperator</span><span class="p">(</span><span class="n">SafeModule</span><span class="p">):</span>
+<div class="viewcode-block" id="ValueOperator"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.ValueOperator.html#torchrl.modules.tensordict_module.ValueOperator">[docs]</a><span class="k">class</span> <span class="nc">ValueOperator</span><span class="p">(</span><span class="n">SafeModule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;General class for value functions in RL.</span>
 
 <span class="sd">    The ValueOperator class comes with default values for the in_keys and</span>
@@ -560,7 +561,7 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="QValueHook"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.actors.QValueHook.html#torchrl.modules.QValueHook">[docs]</a><span class="k">class</span> <span class="nc">QValueHook</span><span class="p">:</span>
+<div class="viewcode-block" id="QValueHook"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.actors.QValueHook.html#torchrl.modules.tensordict_module.QValueHook">[docs]</a><span class="k">class</span> <span class="nc">QValueHook</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Q-Value hook for Q-value policies.</span>
 
 <span class="sd">    Given a the output of a regular nn.Module, representing the values of the different discrete actions available,</span>
@@ -674,7 +675,7 @@
         <span class="k">return</span> <span class="n">values</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="n">batch_size</span><span class="p">),</span> <span class="n">action</span><span class="p">]</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="DistributionalQValueHook"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.actors.DistributionalQValueHook.html#torchrl.modules.DistributionalQValueHook">[docs]</a><span class="k">class</span> <span class="nc">DistributionalQValueHook</span><span class="p">(</span><span class="n">QValueHook</span><span class="p">):</span>
+<div class="viewcode-block" id="DistributionalQValueHook"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.actors.DistributionalQValueHook.html#torchrl.modules.tensordict_module.DistributionalQValueHook">[docs]</a><span class="k">class</span> <span class="nc">DistributionalQValueHook</span><span class="p">(</span><span class="n">QValueHook</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Distributional Q-Value hook for Q-value policies.</span>
 
 <span class="sd">    Given a the output of a mapping operator, representing the values of the different discrete actions available,</span>
@@ -797,7 +798,7 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
-<div class="viewcode-block" id="QValueActor"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.QValueActor.html#torchrl.modules.QValueActor">[docs]</a><span class="k">class</span> <span class="nc">QValueActor</span><span class="p">(</span><span class="n">Actor</span><span class="p">):</span>
+<div class="viewcode-block" id="QValueActor"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.QValueActor.html#torchrl.modules.tensordict_module.QValueActor">[docs]</a><span class="k">class</span> <span class="nc">QValueActor</span><span class="p">(</span><span class="n">Actor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;DQN Actor subclass.</span>
 
 <span class="sd">    This class hooks the module such that it returns a one-hot encoding of the argmax value.</span>
@@ -839,7 +840,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">register_forward_hook</span><span class="p">(</span><span class="n">QValueHook</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_space</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="DistributionalQValueActor"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.DistributionalQValueActor.html#torchrl.modules.DistributionalQValueActor">[docs]</a><span class="k">class</span> <span class="nc">DistributionalQValueActor</span><span class="p">(</span><span class="n">QValueActor</span><span class="p">):</span>
+<div class="viewcode-block" id="DistributionalQValueActor"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.DistributionalQValueActor.html#torchrl.modules.tensordict_module.DistributionalQValueActor">[docs]</a><span class="k">class</span> <span class="nc">DistributionalQValueActor</span><span class="p">(</span><span class="n">QValueActor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Distributional DQN Actor subclass.</span>
 
 <span class="sd">    This class hooks the module such that it returns a one-hot encoding of the argmax value on its support.</span>
@@ -891,7 +892,7 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ActorValueOperator"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.ActorValueOperator.html#torchrl.modules.ActorValueOperator">[docs]</a><span class="k">class</span> <span class="nc">ActorValueOperator</span><span class="p">(</span><span class="n">SafeSequential</span><span class="p">):</span>
+<div class="viewcode-block" id="ActorValueOperator"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.ActorValueOperator.html#torchrl.modules.tensordict_module.ActorValueOperator">[docs]</a><span class="k">class</span> <span class="nc">ActorValueOperator</span><span class="p">(</span><span class="n">SafeSequential</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Actor-value operator.</span>
 
 <span class="sd">    This class wraps together an actor and a value model that share a common observation embedding network:</span>
@@ -1014,18 +1015,18 @@
             <span class="n">value_operator</span><span class="p">,</span>
         <span class="p">)</span>
 
-<div class="viewcode-block" id="ActorValueOperator.get_policy_operator"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.ActorValueOperator.html#torchrl.modules.ActorValueOperator.get_policy_operator">[docs]</a>    <span class="k">def</span> <span class="nf">get_policy_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SafeSequential</span><span class="p">:</span>
+<div class="viewcode-block" id="ActorValueOperator.get_policy_operator"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.ActorValueOperator.html#torchrl.modules.tensordict_module.ActorValueOperator.get_policy_operator">[docs]</a>    <span class="k">def</span> <span class="nf">get_policy_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SafeSequential</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a stand-alone policy operator that maps an observation to an action.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">SafeProbabilisticSequential</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">SafeProbabilisticSequential</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">module</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">SafeSequential</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="ActorValueOperator.get_value_operator"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.ActorValueOperator.html#torchrl.modules.ActorValueOperator.get_value_operator">[docs]</a>    <span class="k">def</span> <span class="nf">get_value_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SafeSequential</span><span class="p">:</span>
+<div class="viewcode-block" id="ActorValueOperator.get_value_operator"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.ActorValueOperator.html#torchrl.modules.tensordict_module.ActorValueOperator.get_value_operator">[docs]</a>    <span class="k">def</span> <span class="nf">get_value_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SafeSequential</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a stand-alone value network operator that maps an observation to a value estimate.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">SafeSequential</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span></div></div>
 
 
-<div class="viewcode-block" id="ActorCriticOperator"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.ActorCriticOperator.html#torchrl.modules.ActorCriticOperator">[docs]</a><span class="k">class</span> <span class="nc">ActorCriticOperator</span><span class="p">(</span><span class="n">ActorValueOperator</span><span class="p">):</span>
+<div class="viewcode-block" id="ActorCriticOperator"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.ActorCriticOperator.html#torchrl.modules.tensordict_module.ActorCriticOperator">[docs]</a><span class="k">class</span> <span class="nc">ActorCriticOperator</span><span class="p">(</span><span class="n">ActorValueOperator</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Actor-critic operator.</span>
 
 <span class="sd">    This class wraps together an actor and a value model that share a common observation embedding network:</span>
@@ -1149,11 +1150,11 @@
                 <span class="s2">&quot;user `ActorValueOperator` instead.&quot;</span>
             <span class="p">)</span>
 
-<div class="viewcode-block" id="ActorCriticOperator.get_critic_operator"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.ActorCriticOperator.html#torchrl.modules.ActorCriticOperator.get_critic_operator">[docs]</a>    <span class="k">def</span> <span class="nf">get_critic_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictModuleWrapper</span><span class="p">:</span>
+<div class="viewcode-block" id="ActorCriticOperator.get_critic_operator"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.ActorCriticOperator.html#torchrl.modules.tensordict_module.ActorCriticOperator.get_critic_operator">[docs]</a>    <span class="k">def</span> <span class="nf">get_critic_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictModuleWrapper</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a stand-alone critic network operator that maps a state-action pair to a critic estimate.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="ActorCriticOperator.get_value_operator"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.ActorCriticOperator.html#torchrl.modules.ActorCriticOperator.get_value_operator">[docs]</a>    <span class="k">def</span> <span class="nf">get_value_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictModuleWrapper</span><span class="p">:</span>
+<div class="viewcode-block" id="ActorCriticOperator.get_value_operator"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.ActorCriticOperator.html#torchrl.modules.tensordict_module.ActorCriticOperator.get_value_operator">[docs]</a>    <span class="k">def</span> <span class="nf">get_value_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictModuleWrapper</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
             <span class="s2">&quot;value_operator is the term used for operators that associate a value with a &quot;</span>
             <span class="s2">&quot;state/observation. This class computes the value of a state-action pair: to get the &quot;</span>
@@ -1161,7 +1162,7 @@
         <span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="ActorCriticWrapper"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.ActorCriticWrapper.html#torchrl.modules.ActorCriticWrapper">[docs]</a><span class="k">class</span> <span class="nc">ActorCriticWrapper</span><span class="p">(</span><span class="n">SafeSequential</span><span class="p">):</span>
+<div class="viewcode-block" id="ActorCriticWrapper"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.ActorCriticWrapper.html#torchrl.modules.tensordict_module.ActorCriticWrapper">[docs]</a><span class="k">class</span> <span class="nc">ActorCriticWrapper</span><span class="p">(</span><span class="n">SafeSequential</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Actor-value operator without common module.</span>
 
 <span class="sd">    This class wraps together an actor and a value model that do not share a common observation embedding network:</span>
@@ -1270,11 +1271,11 @@
             <span class="n">value_operator</span><span class="p">,</span>
         <span class="p">)</span>
 
-<div class="viewcode-block" id="ActorCriticWrapper.get_policy_operator"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.ActorCriticWrapper.html#torchrl.modules.ActorCriticWrapper.get_policy_operator">[docs]</a>    <span class="k">def</span> <span class="nf">get_policy_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SafeSequential</span><span class="p">:</span>
+<div class="viewcode-block" id="ActorCriticWrapper.get_policy_operator"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.ActorCriticWrapper.html#torchrl.modules.tensordict_module.ActorCriticWrapper.get_policy_operator">[docs]</a>    <span class="k">def</span> <span class="nf">get_policy_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SafeSequential</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a stand-alone policy operator that maps an observation to an action.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="ActorCriticWrapper.get_value_operator"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.ActorCriticWrapper.html#torchrl.modules.ActorCriticWrapper.get_value_operator">[docs]</a>    <span class="k">def</span> <span class="nf">get_value_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SafeSequential</span><span class="p">:</span>
+<div class="viewcode-block" id="ActorCriticWrapper.get_value_operator"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.ActorCriticWrapper.html#torchrl.modules.tensordict_module.ActorCriticWrapper.get_value_operator">[docs]</a>    <span class="k">def</span> <span class="nf">get_value_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SafeSequential</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a stand-alone value network operator that maps an observation to a value estimate.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div></div>
 </pre></div>

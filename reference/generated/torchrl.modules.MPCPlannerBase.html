@@ -38,7 +38,7 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Delta" href="torchrl.modules.Delta.html" />
+    <link rel="next" title="MPPIPlanner" href="torchrl.modules.MPPIPlanner.html" />
     <link rel="prev" title="CEMPlanner" href="torchrl.modules.CEMPlanner.html" />
   <!-- Google Analytics -->
   
@@ -257,9 +257,9 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/torchrl_demo.html">Introduction to TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/pretrained_models.html">Using pretrained models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/tensordict_tutorial.html">TensorDict</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/tensordict_module.html">TensorDictModule</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/torch_envs.html">TorchRL envs</a></li>
@@ -267,9 +267,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/coding_ddpg.html">Coding DDPG using TorchRL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/coding_dqn.html">Coding a pixel-based DQN using TorchRL</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">References:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../knowledge_base.html">Knowledge Base</a></li>
 </ul>
 
@@ -374,7 +375,7 @@
 <dt class="sig sig-object py" id="torchrl.modules.MPCPlannerBase">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.modules.</span></span><span class="sig-name descname"><span class="pre">MPCPlannerBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="torchrl.envs.EnvBase.html#torchrl.envs.EnvBase" title="torchrl.envs.common.EnvBase"><span class="pre">EnvBase</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">action_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'action'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/modules/planners/common.html#MPCPlannerBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.MPCPlannerBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>MPCPlannerBase abstract Module.</p>
-<p>This class inherits from <a class="reference internal" href="torchrl.modules.SafeModule.html#torchrl.modules.SafeModule" title="torchrl.modules.SafeModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SafeModule</span></code></a>. Provided a <code class="xref py py-obj docutils literal notranslate"><span class="pre">TensorDict</span></code>, this module will perform a Model Predictive Control (MPC) planning step.
+<p>This class inherits from <code class="xref py py-obj docutils literal notranslate"><span class="pre">SafeModule</span></code>. Provided a <code class="xref py py-obj docutils literal notranslate"><span class="pre">TensorDict</span></code>, this module will perform a Model Predictive Control (MPC) planning step.
 At the end of the planning step, the <code class="xref py py-obj docutils literal notranslate"><span class="pre">MPCPlanner</span></code> will return a proposed action.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -413,7 +414,7 @@ At the end of the planning step, the <code class="xref py py-obj docutils litera
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="torchrl.modules.Delta.html" class="btn btn-neutral float-right" title="Delta" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
+        <a href="torchrl.modules.MPPIPlanner.html" class="btn btn-neutral float-right" title="MPPIPlanner" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
       
       
         <a href="torchrl.modules.CEMPlanner.html" class="btn btn-neutral" title="CEMPlanner" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>

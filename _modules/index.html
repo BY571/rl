@@ -254,9 +254,9 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/torchrl_demo.html">Introduction to TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/pretrained_models.html">Using pretrained models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/tensordict_tutorial.html">TensorDict</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/tensordict_module.html">TensorDictModule</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/torch_envs.html">TorchRL envs</a></li>
@@ -264,9 +264,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/coding_ddpg.html">Coding DDPG using TorchRL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/coding_dqn.html">Coding a pixel-based DQN using TorchRL</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">References:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../reference/index.html">API Reference</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../reference/knowledge_base.html">Knowledge Base</a></li>
 </ul>
 
@@ -363,18 +364,20 @@
 <li><a href="torchrl/collectors/collectors.html">torchrl.collectors.collectors</a></li>
 <li><a href="torchrl/collectors/utils.html">torchrl.collectors.utils</a></li>
 <li><a href="torchrl/data/postprocs/postprocs.html">torchrl.data.postprocs.postprocs</a></li>
-<li><a href="torchrl/data/replay_buffers/rb_prototype.html">torchrl.data.replay_buffers.rb_prototype</a></li>
 <li><a href="torchrl/data/replay_buffers/replay_buffers.html">torchrl.data.replay_buffers.replay_buffers</a></li>
 <li><a href="torchrl/data/replay_buffers/samplers.html">torchrl.data.replay_buffers.samplers</a></li>
 <li><a href="torchrl/data/replay_buffers/storages.html">torchrl.data.replay_buffers.storages</a></li>
 <li><a href="torchrl/data/replay_buffers/writers.html">torchrl.data.replay_buffers.writers</a></li>
 <li><a href="torchrl/data/tensor_specs.html">torchrl.data.tensor_specs</a></li>
 <li><a href="torchrl/envs/common.html">torchrl.envs.common</a></li>
+<li><a href="torchrl/envs/env_creator.html">torchrl.envs.env_creator</a></li>
 <li><a href="torchrl/envs/gym_like.html">torchrl.envs.gym_like</a></li>
+<li><a href="torchrl/envs/libs/brax.html">torchrl.envs.libs.brax</a></li>
 <li><a href="torchrl/envs/libs/dm_control.html">torchrl.envs.libs.dm_control</a></li>
 <li><a href="torchrl/envs/libs/gym.html">torchrl.envs.libs.gym</a></li>
 <li><a href="torchrl/envs/libs/habitat.html">torchrl.envs.libs.habitat</a></li>
 <li><a href="torchrl/envs/libs/jumanji.html">torchrl.envs.libs.jumanji</a></li>
+<li><a href="torchrl/envs/libs/vmas.html">torchrl.envs.libs.vmas</a></li>
 <li><a href="torchrl/envs/model_based/common.html">torchrl.envs.model_based.common</a></li>
 <li><a href="torchrl/envs/model_based/dreamer.html">torchrl.envs.model_based.dreamer</a></li>
 <li><a href="torchrl/envs/transforms/r3m.html">torchrl.envs.transforms.r3m</a></li>
@@ -389,26 +392,38 @@
 <li><a href="torchrl/modules/models/models.html">torchrl.modules.models.models</a></li>
 <li><a href="torchrl/modules/planners/cem.html">torchrl.modules.planners.cem</a></li>
 <li><a href="torchrl/modules/planners/common.html">torchrl.modules.planners.common</a></li>
+<li><a href="torchrl/modules/planners/mppi.html">torchrl.modules.planners.mppi</a></li>
 <li><a href="torchrl/modules/tensordict_module/actors.html">torchrl.modules.tensordict_module.actors</a></li>
 <li><a href="torchrl/modules/tensordict_module/common.html">torchrl.modules.tensordict_module.common</a></li>
+<li><a href="torchrl/modules/tensordict_module/exploration.html">torchrl.modules.tensordict_module.exploration</a></li>
 <li><a href="torchrl/modules/tensordict_module/probabilistic.html">torchrl.modules.tensordict_module.probabilistic</a></li>
 <li><a href="torchrl/modules/tensordict_module/sequence.html">torchrl.modules.tensordict_module.sequence</a></li>
+<li><a href="torchrl/modules/tensordict_module/world_models.html">torchrl.modules.tensordict_module.world_models</a></li>
 <li><a href="torchrl/modules/utils/mappings.html">torchrl.modules.utils.mappings</a></li>
 <li><a href="torchrl/objectives/a2c.html">torchrl.objectives.a2c</a></li>
 <li><a href="torchrl/objectives/ddpg.html">torchrl.objectives.ddpg</a></li>
 <li><a href="torchrl/objectives/dqn.html">torchrl.objectives.dqn</a></li>
+<li><a href="torchrl/objectives/dreamer.html">torchrl.objectives.dreamer</a></li>
 <li><a href="torchrl/objectives/ppo.html">torchrl.objectives.ppo</a></li>
 <li><a href="torchrl/objectives/redq.html">torchrl.objectives.redq</a></li>
+<li><a href="torchrl/objectives/reinforce.html">torchrl.objectives.reinforce</a></li>
 <li><a href="torchrl/objectives/sac.html">torchrl.objectives.sac</a></li>
 <li><a href="torchrl/objectives/utils.html">torchrl.objectives.utils</a></li>
 <li><a href="torchrl/objectives/value/advantages.html">torchrl.objectives.value.advantages</a></li>
 <li><a href="torchrl/objectives/value/functional.html">torchrl.objectives.value.functional</a></li>
+<li><a href="torchrl/record/recorder.html">torchrl.record.recorder</a></li>
 <li><a href="torchrl/trainers/helpers/collectors.html">torchrl.trainers.helpers.collectors</a></li>
 <li><a href="torchrl/trainers/helpers/envs.html">torchrl.trainers.helpers.envs</a></li>
 <li><a href="torchrl/trainers/helpers/losses.html">torchrl.trainers.helpers.losses</a></li>
 <li><a href="torchrl/trainers/helpers/models.html">torchrl.trainers.helpers.models</a></li>
 <li><a href="torchrl/trainers/helpers/replay_buffer.html">torchrl.trainers.helpers.replay_buffer</a></li>
 <li><a href="torchrl/trainers/helpers/trainers.html">torchrl.trainers.helpers.trainers</a></li>
+<li><a href="torchrl/trainers/loggers/common.html">torchrl.trainers.loggers.common</a></li>
+<li><a href="torchrl/trainers/loggers/csv.html">torchrl.trainers.loggers.csv</a></li>
+<li><a href="torchrl/trainers/loggers/mlflow.html">torchrl.trainers.loggers.mlflow</a></li>
+<li><a href="torchrl/trainers/loggers/tensorboard.html">torchrl.trainers.loggers.tensorboard</a></li>
+<li><a href="torchrl/trainers/loggers/utils.html">torchrl.trainers.loggers.utils</a></li>
+<li><a href="torchrl/trainers/loggers/wandb.html">torchrl.trainers.loggers.wandb</a></li>
 <li><a href="torchrl/trainers/trainers.html">torchrl.trainers.trainers</a></li>
 </ul>
 

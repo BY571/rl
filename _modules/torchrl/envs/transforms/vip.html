@@ -254,9 +254,9 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/torchrl_demo.html">Introduction to TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/pretrained_models.html">Using pretrained models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tensordict_tutorial.html">TensorDict</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tensordict_module.html">TensorDictModule</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/torch_envs.html">TorchRL envs</a></li>
@@ -264,9 +264,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/coding_ddpg.html">Coding DDPG using TorchRL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/coding_dqn.html">Coding a pixel-based DQN using TorchRL</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">References:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../reference/index.html">API Reference</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../reference/knowledge_base.html">Knowledge Base</a></li>
 </ul>
 
@@ -378,7 +379,7 @@
     <span class="n">UnboundedContinuousTensorSpec</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.utils</span> <span class="kn">import</span> <span class="n">DEVICE_TYPING</span>
-<span class="kn">from</span> <span class="nn">torchrl.envs.transforms</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">torchrl.envs.transforms.transforms</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">CatTensors</span><span class="p">,</span>
     <span class="n">Compose</span><span class="p">,</span>
     <span class="n">FlattenObservation</span><span class="p">,</span>
@@ -446,7 +447,7 @@
         <span class="n">device</span> <span class="o">=</span> <span class="n">observation_spec</span><span class="p">[</span><span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">device</span>
         <span class="n">dim</span> <span class="o">=</span> <span class="n">observation_spec</span><span class="p">[</span><span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
 
-        <span class="n">observation_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="o">**</span><span class="n">observation_spec</span><span class="p">)</span>
+        <span class="n">observation_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">del_keys</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">in_key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
                 <span class="k">del</span> <span class="n">observation_spec</span><span class="p">[</span><span class="n">in_key</span><span class="p">]</span>
@@ -504,6 +505,9 @@
 <span class="sd">             &quot;vip_vec&quot; is assumed.</span>
 <span class="sd">        size (int, optional): Size of the image to feed to resnet.</span>
 <span class="sd">            Defaults to 244.</span>
+<span class="sd">        stack_images (bool, optional): if False, the images given in the :obj:`in_keys`</span>
+<span class="sd">             argument will be treaded separetely and each will be given a single,</span>
+<span class="sd">             separated entry in the output tensordict. Defaults to :obj:`True`.</span>
 <span class="sd">        download (bool, optional): if True, the weights will be downloaded using</span>
 <span class="sd">            the torch.hub download API (i.e. weights will be cached for future use).</span>
 <span class="sd">            Defaults to False.</span>
@@ -516,7 +520,6 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">cls</span><span class="o">.</span><span class="n">_is_3d</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">initialized</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">_device</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="kc">None</span>
@@ -534,7 +537,7 @@
         <span class="n">tensor_pixels_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span> <span class="o">=</span> <span class="n">in_keys</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span> <span class="o">=</span> <span class="n">in_keys</span> <span class="k">if</span> <span class="n">in_keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="s2">&quot;pixels&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">download</span> <span class="o">=</span> <span class="n">download</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">download_path</span> <span class="o">=</span> <span class="n">download_path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model_name</span> <span class="o">=</span> <span class="n">model_name</span>
@@ -542,8 +545,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stack_images</span> <span class="o">=</span> <span class="n">stack_images</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tensor_pixels_keys</span> <span class="o">=</span> <span class="n">tensor_pixels_keys</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializer for VIP.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialized</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">in_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span>
         <span class="n">model_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_name</span>
         <span class="n">out_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span>
@@ -590,6 +596,7 @@
                 <span class="n">out_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;vip_vec&quot;</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">out_keys</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;vip_vec_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">in_keys</span><span class="p">))]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span> <span class="o">=</span> <span class="n">out_keys</span>
         <span class="k">elif</span> <span class="n">stack_images</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_keys</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;out_key must be of length 1 if stack_images is True. Got out_keys=</span><span class="si">{</span><span class="n">out_keys</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -600,13 +607,12 @@
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">stack_images</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">in_keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_3d</span><span class="p">:</span>
-                <span class="n">unsqueeze</span> <span class="o">=</span> <span class="n">UnsqueezeTransform</span><span class="p">(</span>
-                    <span class="n">in_keys</span><span class="o">=</span><span class="n">in_keys</span><span class="p">,</span>
-                    <span class="n">out_keys</span><span class="o">=</span><span class="n">in_keys</span><span class="p">,</span>
-                    <span class="n">unsqueeze_dim</span><span class="o">=-</span><span class="mi">4</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="n">transforms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unsqueeze</span><span class="p">)</span>
+            <span class="n">unsqueeze</span> <span class="o">=</span> <span class="n">UnsqueezeTransform</span><span class="p">(</span>
+                <span class="n">in_keys</span><span class="o">=</span><span class="n">in_keys</span><span class="p">,</span>
+                <span class="n">out_keys</span><span class="o">=</span><span class="n">in_keys</span><span class="p">,</span>
+                <span class="n">unsqueeze_dim</span><span class="o">=-</span><span class="mi">4</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">transforms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unsqueeze</span><span class="p">)</span>
 
             <span class="n">cattensors</span> <span class="o">=</span> <span class="n">CatTensors</span><span class="p">(</span>
                 <span class="n">in_keys</span><span class="p">,</span>
@@ -634,7 +640,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">download</span><span class="p">:</span>
             <span class="bp">self</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">load_weights</span><span class="p">(</span><span class="n">dir_prefix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">download_path</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">initialized</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_device</span><span class="p">)</span>
@@ -643,8 +648,19 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the input image has 3 dims (no-batched) or more.</span>
+
+<span class="sd">        If no parent environment exists, it defaults to True.</span>
+
+<span class="sd">        The main usage is this: if there are more than one image and they need to be</span>
+<span class="sd">        stacked, we must know if the input image has dim 3 or 4. If 3, we need to unsqueeze</span>
+<span class="sd">        before stacking. If 4, we can cat along the first dimension.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_3d</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span>
+            <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">parent</span><span class="o">.</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_is_3d</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">observation_spec</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
                 <span class="k">break</span>
@@ -663,14 +679,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span>
-
-    <span class="n">forward</span> <span class="o">=</span> <span class="n">_init_first</span><span class="p">(</span><span class="n">Compose</span><span class="o">.</span><span class="n">forward</span><span class="p">)</span>
-    <span class="n">transform_observation_spec</span> <span class="o">=</span> <span class="n">_init_first</span><span class="p">(</span><span class="n">Compose</span><span class="o">.</span><span class="n">transform_observation_spec</span><span class="p">)</span>
-    <span class="n">transform_input_spec</span> <span class="o">=</span> <span class="n">_init_first</span><span class="p">(</span><span class="n">Compose</span><span class="o">.</span><span class="n">transform_input_spec</span><span class="p">)</span>
-    <span class="n">transform_reward_spec</span> <span class="o">=</span> <span class="n">_init_first</span><span class="p">(</span><span class="n">Compose</span><span class="o">.</span><span class="n">transform_reward_spec</span><span class="p">)</span>
-    <span class="n">reset</span> <span class="o">=</span> <span class="n">_init_first</span><span class="p">(</span><span class="n">Compose</span><span class="o">.</span><span class="n">reset</span><span class="p">)</span>
-    <span class="n">init</span> <span class="o">=</span> <span class="n">_init_first</span><span class="p">(</span><span class="n">Compose</span><span class="o">.</span><span class="n">init</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span></div>
 
 
 <div class="viewcode-block" id="VIPRewardTransform"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.VIPRewardTransform.html#torchrl.envs.transforms.VIPRewardTransform">[docs]</a><span class="k">class</span> <span class="nc">VIPRewardTransform</span><span class="p">(</span><span class="n">VIPTransform</span><span class="p">):</span>

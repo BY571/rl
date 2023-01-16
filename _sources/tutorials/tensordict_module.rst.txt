@@ -614,7 +614,7 @@ then the value according to this action.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 315-338
+.. GENERATED FROM PYTHON SOURCE LINES 315-337
 
 Other blocks exist such as:
 
@@ -637,37 +637,185 @@ The following figure shows the classical transformer architecture
 
 We have let the positional encoders aside for simplicity.
 
-Let's first import the classical transformers blocks
-(see ``src/transformer.py`` for more details.)
+Let's re-write the classical transformers blocks:
 
-.. GENERATED FROM PYTHON SOURCE LINES 338-347
+.. GENERATED FROM PYTHON SOURCE LINES 337-502
 
 .. code-block:: default
 
 
-    from tutorials.src.transformer import (
-        Attention,
-        FFN,
-        SkipLayerNorm,
-        SplitHeads,
-        TokensToQKV,
-    )
+
+    class TokensToQKV(nn.Module):
+        def __init__(self, to_dim, from_dim, latent_dim):
+            super().__init__()
+            self.q = nn.Linear(to_dim, latent_dim)
+            self.k = nn.Linear(from_dim, latent_dim)
+            self.v = nn.Linear(from_dim, latent_dim)
+
+        def forward(self, X_to, X_from):
+            Q = self.q(X_to)
+            K = self.k(X_from)
+            V = self.v(X_from)
+            return Q, K, V
+
+
+    class SplitHeads(nn.Module):
+        def __init__(self, num_heads):
+            super().__init__()
+            self.num_heads = num_heads
+
+        def forward(self, Q, K, V):
+            batch_size, to_num, latent_dim = Q.shape
+            _, from_num, _ = K.shape
+            d_tensor = latent_dim // self.num_heads
+            Q = Q.reshape(batch_size, to_num, self.num_heads, d_tensor).transpose(1, 2)
+            K = K.reshape(batch_size, from_num, self.num_heads, d_tensor).transpose(1, 2)
+            V = V.reshape(batch_size, from_num, self.num_heads, d_tensor).transpose(1, 2)
+            return Q, K, V
+
+
+    class Attention(nn.Module):
+        def __init__(self, latent_dim, to_dim):
+            super().__init__()
+            self.softmax = nn.Softmax(dim=-1)
+            self.out = nn.Linear(latent_dim, to_dim)
+
+        def forward(self, Q, K, V):
+            batch_size, n_heads, to_num, d_in = Q.shape
+            attn = self.softmax(Q @ K.transpose(2, 3) / d_in)
+            out = attn @ V
+            out = self.out(out.transpose(1, 2).reshape(batch_size, to_num, n_heads * d_in))
+            return out, attn
+
+
+    class SkipLayerNorm(nn.Module):
+        def __init__(self, to_len, to_dim):
+            super().__init__()
+            self.layer_norm = nn.LayerNorm((to_len, to_dim))
+
+        def forward(self, x_0, x_1):
+            return self.layer_norm(x_0 + x_1)
+
+
+    class FFN(nn.Module):
+        def __init__(self, to_dim, hidden_dim, dropout_rate=0.2):
+            super().__init__()
+            self.FFN = nn.Sequential(
+                nn.Linear(to_dim, hidden_dim),
+                nn.ReLU(),
+                nn.Linear(hidden_dim, to_dim),
+                nn.Dropout(dropout_rate),
+            )
+
+        def forward(self, X):
+            return self.FFN(X)
+
+
+    class AttentionBlock(nn.Module):
+        def __init__(self, to_dim, to_len, from_dim, latent_dim, num_heads):
+            super().__init__()
+            self.tokens_to_qkv = TokensToQKV(to_dim, from_dim, latent_dim)
+            self.split_heads = SplitHeads(num_heads)
+            self.attention = Attention(latent_dim, to_dim)
+            self.skip = SkipLayerNorm(to_len, to_dim)
+
+        def forward(self, X_to, X_from):
+            Q, K, V = self.tokens_to_qkv(X_to, X_from)
+            Q, K, V = self.split_heads(Q, K, V)
+            out, attention = self.attention(Q, K, V)
+            out = self.skip(X_to, out)
+            return out
+
+
+    class EncoderTransformerBlock(nn.Module):
+        def __init__(self, to_dim, to_len, latent_dim, num_heads):
+            super().__init__()
+            self.attention_block = AttentionBlock(
+                to_dim, to_len, to_dim, latent_dim, num_heads
+            )
+            self.FFN = FFN(to_dim, 4 * to_dim)
+            self.skip = SkipLayerNorm(to_len, to_dim)
+
+        def forward(self, X_to):
+            X_to = self.attention_block(X_to, X_to)
+            X_out = self.FFN(X_to)
+            return self.skip(X_out, X_to)
+
+
+    class DecoderTransformerBlock(nn.Module):
+        def __init__(self, to_dim, to_len, from_dim, latent_dim, num_heads):
+            super().__init__()
+            self.attention_block = AttentionBlock(
+                to_dim, to_len, from_dim, latent_dim, num_heads
+            )
+            self.encoder_block = EncoderTransformerBlock(
+                to_dim, to_len, latent_dim, num_heads
+            )
+
+        def forward(self, X_to, X_from):
+            X_to = self.attention_block(X_to, X_from)
+            X_to = self.encoder_block(X_to)
+            return X_to
+
+
+    class TransformerEncoder(nn.Module):
+        def __init__(self, num_blocks, to_dim, to_len, latent_dim, num_heads):
+            super().__init__()
+            self.encoder = nn.ModuleList(
+                [
+                    EncoderTransformerBlock(to_dim, to_len, latent_dim, num_heads)
+                    for i in range(num_blocks)
+                ]
+            )
+
+        def forward(self, X_to):
+            for i in range(len(self.encoder)):
+                X_to = self.encoder[i](X_to)
+            return X_to
+
+
+    class TransformerDecoder(nn.Module):
+        def __init__(self, num_blocks, to_dim, to_len, from_dim, latent_dim, num_heads):
+            super().__init__()
+            self.decoder = nn.ModuleList(
+                [
+                    DecoderTransformerBlock(to_dim, to_len, from_dim, latent_dim, num_heads)
+                    for i in range(num_blocks)
+                ]
+            )
+
+        def forward(self, X_to, X_from):
+            for i in range(len(self.decoder)):
+                X_to = self.decoder[i](X_to, X_from)
+            return X_to
+
+
+    class Transformer(nn.Module):
+        def __init__(
+            self, num_blocks, to_dim, to_len, from_dim, from_len, latent_dim, num_heads
+        ):
+            super().__init__()
+            self.encoder = TransformerEncoder(
+                num_blocks, to_dim, to_len, latent_dim, num_heads
+            )
+            self.decoder = TransformerDecoder(
+                num_blocks, from_dim, from_len, to_dim, latent_dim, num_heads
+            )
+
+        def forward(self, X_to, X_from):
+            X_to = self.encoder(X_to)
+            X_out = self.decoder(X_from, X_to)
+            return X_out
 
 
 
-.. rst-class:: sphx-glr-script-out
-
-.. code-block:: pytb
-
-    Traceback (most recent call last):
-      File "/__w/rl/rl/docs/source/reference/generated/tutorials/tensordict_module.py", line 339, in <module>
-        from tutorials.src.transformer import (
-    ModuleNotFoundError: No module named 'tutorials.src'
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 348-356
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 503-511
 
 We first create the ``AttentionBlockTensorDict``, the attention block using
 ``TensorDictModule`` and ``TensorDictSequential``.
@@ -678,7 +826,7 @@ to indicate which key each of them must read and write. Unlike
 input/output. Moreover, its components inputs need not be identical to the
 previous layers outputs, allowing us to code complicated neural architecture.
 
-.. GENERATED FROM PYTHON SOURCE LINES 356-393
+.. GENERATED FROM PYTHON SOURCE LINES 511-548
 
 .. code-block:: default
 
@@ -720,12 +868,18 @@ previous layers outputs, allowing us to code complicated neural architecture.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 394-396
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 549-551
 
 We build the encoder and decoder blocks that will be part of the transformer
 thanks to ``TensorDictModule``.
 
-.. GENERATED FROM PYTHON SOURCE LINES 396-465
+.. GENERATED FROM PYTHON SOURCE LINES 551-620
 
 .. code-block:: default
 
@@ -799,7 +953,13 @@ thanks to ``TensorDictModule``.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 466-473
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 621-628
 
 We create the transformer encoder and decoder.
 
@@ -809,7 +969,7 @@ keys and values.
 For a decoder, we now can extract info from ``X_from`` into ``X_to``.
 ``X_from`` will map to queries whereas ``X_from`` will map to keys and values.
 
-.. GENERATED FROM PYTHON SOURCE LINES 473-568
+.. GENERATED FROM PYTHON SOURCE LINES 628-723
 
 .. code-block:: default
 
@@ -909,11 +1069,17 @@ For a decoder, we now can extract info from ``X_from`` into ``X_to``.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 569-570
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 724-725
 
 We now test our new ``TransformerTensorDict``.
 
-.. GENERATED FROM PYTHON SOURCE LINES 570-603
+.. GENERATED FROM PYTHON SOURCE LINES 725-758
 
 .. code-block:: default
 
@@ -951,7 +1117,30 @@ We now test our new ``TransformerTensorDict``.
     tokens
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 604-610
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+
+    TensorDict(
+        fields={
+            Attn: Tensor(torch.Size([8, 2, 10, 3]), dtype=torch.float32),
+            K: Tensor(torch.Size([8, 2, 3, 5]), dtype=torch.float32),
+            Q: Tensor(torch.Size([8, 2, 10, 5]), dtype=torch.float32),
+            V: Tensor(torch.Size([8, 2, 3, 5]), dtype=torch.float32),
+            X_decode: Tensor(torch.Size([8, 10, 6]), dtype=torch.float32),
+            X_encode: Tensor(torch.Size([8, 3, 5]), dtype=torch.float32),
+            X_out: Tensor(torch.Size([8, 10, 6]), dtype=torch.float32)},
+        batch_size=torch.Size([8]),
+        device=None,
+        is_shared=False)
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 759-765
 
 We've achieved to create a transformer with ``TensorDictModule``. This
 shows that ``TensorDictModule`` is a flexible module that can implement
@@ -960,15 +1149,7 @@ complex operarations.
 Benchmarking
 ------------------------------
 
-.. GENERATED FROM PYTHON SOURCE LINES 610-613
-
-.. code-block:: default
-
-
-    from tutorials.src.transformer import Transformer
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 614-624
+.. GENERATED FROM PYTHON SOURCE LINES 767-777
 
 .. code-block:: default
 
@@ -983,7 +1164,13 @@ Benchmarking
     num_blocks = 6
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 625-634
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 778-787
 
 .. code-block:: default
 
@@ -997,7 +1184,13 @@ Benchmarking
     )
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 635-639
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 788-792
 
 .. code-block:: default
 
@@ -1006,7 +1199,13 @@ Benchmarking
     X_decode = torch.randn(batch_size, from_len, from_dim)
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 640-653
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 793-806
 
 .. code-block:: default
 
@@ -1024,7 +1223,13 @@ Benchmarking
     )
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 654-659
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 807-812
 
 .. code-block:: default
 
@@ -1034,11 +1239,17 @@ Benchmarking
     )
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 660-661
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 813-814
 
 **Inference Time**
 
-.. GENERATED FROM PYTHON SOURCE LINES 661-664
+.. GENERATED FROM PYTHON SOURCE LINES 814-817
 
 .. code-block:: default
 
@@ -1046,7 +1257,13 @@ Benchmarking
     import time
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 665-671
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 818-824
 
 .. code-block:: default
 
@@ -1057,7 +1274,19 @@ Benchmarking
     print("Execution time:", t2 - t1, "seconds")
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 672-678
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    Execution time: 0.015843629837036133 seconds
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 825-831
 
 .. code-block:: default
 
@@ -1068,7 +1297,19 @@ Benchmarking
     print("Execution time:", t4 - t3, "seconds")
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 679-683
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    Execution time: 0.009774923324584961 seconds
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 832-836
 
 We can see on this minimal example that the overhead introduced by
 ``TensorDictModule`` is marginal.
@@ -1078,7 +1319,7 @@ Have fun with TensorDictModule!
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.020 seconds)
+   **Total running time of the script:** ( 0 minutes  0.119 seconds)
 
 
 .. _sphx_glr_download_tutorials_tensordict_module.py:

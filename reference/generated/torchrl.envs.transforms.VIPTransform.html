@@ -38,8 +38,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="VIPRewardTransform" href="torchrl.envs.transforms.VIPRewardTransform.html" />
-    <link rel="prev" title="R3MTransform" href="torchrl.envs.transforms.R3MTransform.html" />
+    <link rel="next" title="TensorDictRecorder" href="torchrl.record.TensorDictRecorder.html" />
+    <link rel="prev" title="VIPRewardTransform" href="torchrl.envs.transforms.VIPRewardTransform.html" />
   <!-- Google Analytics -->
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-117752657-2"></script>
@@ -257,9 +257,9 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/torchrl_demo.html">Introduction to TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/pretrained_models.html">Using pretrained models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/tensordict_tutorial.html">TensorDict</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/tensordict_module.html">TensorDictModule</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/torch_envs.html">TorchRL envs</a></li>
@@ -267,9 +267,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/coding_ddpg.html">Coding DDPG using TorchRL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/coding_dqn.html">Coding a pixel-based DQN using TorchRL</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">References:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../knowledge_base.html">Knowledge Base</a></li>
 </ul>
 
@@ -393,6 +394,9 @@ See the paper:</p>
 “vip_vec” is assumed.</p></li>
 <li><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – Size of the image to feed to resnet.
 Defaults to 244.</p></li>
+<li><p><strong>stack_images</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if False, the images given in the <code class="xref py py-obj docutils literal notranslate"><span class="pre">in_keys</span></code>
+argument will be treaded separetely and each will be given a single,
+separated entry in the output tensordict. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>.</p></li>
 <li><p><strong>download</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if True, the weights will be downloaded using
 the torch.hub download API (i.e. weights will be cached for future use).
 Defaults to False.</p></li>
@@ -404,24 +408,14 @@ If no value is provided, this won’t be collected.</p></li>
 </ul>
 </dd>
 </dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="torchrl.envs.transforms.VIPTransform.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#torchrl.envs.transforms.VIPTransform.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="torchrl.envs.transforms.VIPTransform.reset">
-<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#torchrl.envs.transforms.VIPTransform.reset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Resets a tranform if it is stateful.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="torchrl.envs.transforms.VIPTransform.is_3d">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_3d</span></span><a class="headerlink" href="#torchrl.envs.transforms.VIPTransform.is_3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the input image has 3 dims (no-batched) or more.</p>
+<p>If no parent environment exists, it defaults to True.</p>
+<p>The main usage is this: if there are more than one image and they need to be
+stacked, we must know if the input image has dim 3 or 4. If 3, we need to unsqueeze
+before stacking. If 4, we can cat along the first dimension.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -525,48 +519,6 @@ only argument)</p></li>
 </div>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="torchrl.envs.transforms.VIPTransform.transform_input_spec">
-<span class="sig-name descname"><span class="pre">transform_input_spec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#torchrl.envs.transforms.VIPTransform.transform_input_spec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transforms the input spec such that the resulting spec matches transform mapping.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>input_spec</strong> (<a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.TensorSpec"><em>TensorSpec</em></a>) – spec before the transform</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>expected spec after the transform</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="torchrl.envs.transforms.VIPTransform.transform_observation_spec">
-<span class="sig-name descname"><span class="pre">transform_observation_spec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#torchrl.envs.transforms.VIPTransform.transform_observation_spec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transforms the observation spec such that the resulting spec matches transform mapping.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>observation_spec</strong> (<a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.TensorSpec"><em>TensorSpec</em></a>) – spec before the transform</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>expected spec after the transform</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="torchrl.envs.transforms.VIPTransform.transform_reward_spec">
-<span class="sig-name descname"><span class="pre">transform_reward_spec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#torchrl.envs.transforms.VIPTransform.transform_reward_spec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transforms the reward spec such that the resulting spec matches transform mapping.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>reward_spec</strong> (<a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.TensorSpec"><em>TensorSpec</em></a>) – spec before the transform</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>expected spec after the transform</p>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 </section>
@@ -579,10 +531,10 @@ only argument)</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="torchrl.envs.transforms.VIPRewardTransform.html" class="btn btn-neutral float-right" title="VIPRewardTransform" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
+        <a href="torchrl.record.TensorDictRecorder.html" class="btn btn-neutral float-right" title="TensorDictRecorder" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
       
       
-        <a href="torchrl.envs.transforms.R3MTransform.html" class="btn btn-neutral" title="R3MTransform" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
+        <a href="torchrl.envs.transforms.VIPRewardTransform.html" class="btn btn-neutral" title="VIPRewardTransform" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
       
     </div>
   
@@ -616,12 +568,8 @@ only argument)</p></li>
               <ul>
 <li><a class="reference internal" href="#">VIPTransform</a><ul>
 <li><a class="reference internal" href="#torchrl.envs.transforms.VIPTransform"><code class="docutils literal notranslate"><span class="pre">VIPTransform</span></code></a><ul>
-<li><a class="reference internal" href="#torchrl.envs.transforms.VIPTransform.forward"><code class="docutils literal notranslate"><span class="pre">VIPTransform.forward()</span></code></a></li>
-<li><a class="reference internal" href="#torchrl.envs.transforms.VIPTransform.reset"><code class="docutils literal notranslate"><span class="pre">VIPTransform.reset()</span></code></a></li>
+<li><a class="reference internal" href="#torchrl.envs.transforms.VIPTransform.is_3d"><code class="docutils literal notranslate"><span class="pre">VIPTransform.is_3d</span></code></a></li>
 <li><a class="reference internal" href="#torchrl.envs.transforms.VIPTransform.to"><code class="docutils literal notranslate"><span class="pre">VIPTransform.to()</span></code></a></li>
-<li><a class="reference internal" href="#torchrl.envs.transforms.VIPTransform.transform_input_spec"><code class="docutils literal notranslate"><span class="pre">VIPTransform.transform_input_spec()</span></code></a></li>
-<li><a class="reference internal" href="#torchrl.envs.transforms.VIPTransform.transform_observation_spec"><code class="docutils literal notranslate"><span class="pre">VIPTransform.transform_observation_spec()</span></code></a></li>
-<li><a class="reference internal" href="#torchrl.envs.transforms.VIPTransform.transform_reward_spec"><code class="docutils literal notranslate"><span class="pre">VIPTransform.transform_reward_spec()</span></code></a></li>
 </ul>
 </li>
 </ul>

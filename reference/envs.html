@@ -257,9 +257,9 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/torchrl_demo.html">Introduction to TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/pretrained_models.html">Using pretrained models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/tensordict_tutorial.html">TensorDict</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/tensordict_module.html">TensorDictModule</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/torch_envs.html">TorchRL envs</a></li>
@@ -267,9 +267,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/coding_ddpg.html">Coding DDPG using TorchRL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/coding_dqn.html">Coding a pixel-based DQN using TorchRL</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">References:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="knowledge_base.html">Knowledge Base</a></li>
 </ul>
 
@@ -424,6 +425,12 @@ The policy should be coded using a <code class="xref py py-obj docutils literal 
 <tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.GymLikeEnv.html#torchrl.envs.GymLikeEnv" title="torchrl.envs.GymLikeEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GymLikeEnv</span></code></a>(*args, **kwargs)</p></td>
 <td><p>A gym-like env is an environment.</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.EnvMetaData.html#torchrl.envs.EnvMetaData" title="torchrl.envs.EnvMetaData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EnvMetaData</span></code></a>(tensordict, specs, batch_size, ...)</p></td>
+<td><p>A class for environment meta-data storage and passing in multiprocessed settings.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.Specs.html#torchrl.envs.Specs" title="torchrl.envs.Specs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Specs</span></code></a>(env)</p></td>
+<td><p>Container for action, observation and reward specs.</p></td>
+</tr>
 </tbody>
 </table>
 <section id="vectorized-envs">
@@ -438,10 +445,14 @@ Therefore, TorchRL offers its own, generic <a class="reference internal" href="g
 environments in parallel.
 As this class inherits from <a class="reference internal" href="generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase" title="torchrl.envs.EnvBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EnvBase</span></code></a>, it enjoys the exact same API as other environment.
 Of course, a <a class="reference internal" href="generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv" title="torchrl.envs.ParallelEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParallelEnv</span></code></a> will have a batch size that corresponds to its environment count:</p>
+<p>It is important that your environment specs match the input and output that it sends and receives, as
+<a class="reference internal" href="generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv" title="torchrl.envs.ParallelEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParallelEnv</span></code></a> will create buffers from these specs to communicate with the spawn processes.
+Check the <a class="reference internal" href="generated/torchrl.envs.utils.check_env_specs.html#torchrl.envs.utils.check_env_specs" title="torchrl.envs.utils.check_env_specs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">torchrl.envs.utils.check_env_specs</span></code></a> method for a sanity check.</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Parallel environment</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     <span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">make_env</span><span class="p">():</span>
      <span class="o">...</span>     <span class="k">return</span> <span class="n">GymEnv</span><span class="p">(</span><span class="s2">&quot;Pendulum-v1&quot;</span><span class="p">,</span> <span class="n">from_pixels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="mf">9.81</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cuda:0&quot;</span><span class="p">)</span>
+     <span class="o">&gt;&gt;&gt;</span> <span class="n">check_env_specs</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>  <span class="c1"># this must pass for ParallelEnv to work</span>
      <span class="o">&gt;&gt;&gt;</span> <span class="n">env</span> <span class="o">=</span> <span class="n">ParallelEnv</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">make_env</span><span class="p">)</span>
      <span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
      <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">4</span><span class="p">])</span>
@@ -496,6 +507,9 @@ behaviour of a <a class="reference internal" href="generated/torchrl.envs.Parall
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv" title="torchrl.envs.ParallelEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParallelEnv</span></code></a>(*args[, _inplace_update, ...])</p></td>
 <td><p>Creates one environment per process.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.EnvCreator.html#torchrl.envs.EnvCreator" title="torchrl.envs.EnvCreator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EnvCreator</span></code></a>(create_env_fn[, ...])</p></td>
+<td><p>Environment creator class.</p></td>
 </tr>
 </tbody>
 </table>
@@ -567,13 +581,19 @@ in the environment. The keys to be included in this inverse transform are passed
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.Compose.html#torchrl.envs.transforms.Compose" title="torchrl.envs.transforms.Compose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Compose</span></code></a>(*transforms)</p></td>
 <td><p>Composes a chain of transforms.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.DoubleToFloat.html#torchrl.envs.transforms.DoubleToFloat" title="torchrl.envs.transforms.DoubleToFloat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DoubleToFloat</span></code></a>([in_keys, in_keys_inv])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.DiscreteActionProjection.html#torchrl.envs.transforms.DiscreteActionProjection" title="torchrl.envs.transforms.DiscreteActionProjection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DiscreteActionProjection</span></code></a>(max_n, m[, action_key])</p></td>
+<td><p>Projects discrete actions from a high dimensional space to a low dimensional space.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.DoubleToFloat.html#torchrl.envs.transforms.DoubleToFloat" title="torchrl.envs.transforms.DoubleToFloat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DoubleToFloat</span></code></a>([in_keys, in_keys_inv])</p></td>
 <td><p>Maps actions float to double before they are called on the environment.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.ExcludeTransform.html#torchrl.envs.transforms.ExcludeTransform" title="torchrl.envs.transforms.ExcludeTransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExcludeTransform</span></code></a>(*excluded_keys)</p></td>
+<td><p>Excludes keys from the input tensordict.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.FiniteTensorDictCheck.html#torchrl.envs.transforms.FiniteTensorDictCheck" title="torchrl.envs.transforms.FiniteTensorDictCheck"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FiniteTensorDictCheck</span></code></a>()</p></td>
 <td><p>This transform will check that all the items of the tensordict are finite, and raise an exception if they are not.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.FlattenObservation.html#torchrl.envs.transforms.FlattenObservation" title="torchrl.envs.transforms.FlattenObservation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlattenObservation</span></code></a>(first_dim[, last_dim, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.FlattenObservation.html#torchrl.envs.transforms.FlattenObservation" title="torchrl.envs.transforms.FlattenObservation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlattenObservation</span></code></a>(first_dim, last_dim[, ...])</p></td>
 <td><p>Flatten adjacent dimensions of a tensor.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.FrameSkipTransform.html#torchrl.envs.transforms.FrameSkipTransform" title="torchrl.envs.transforms.FrameSkipTransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FrameSkipTransform</span></code></a>([frame_skip])</p></td>
@@ -597,17 +617,23 @@ in the environment. The keys to be included in this inverse transform are passed
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.PinMemoryTransform.html#torchrl.envs.transforms.PinMemoryTransform" title="torchrl.envs.transforms.PinMemoryTransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PinMemoryTransform</span></code></a>()</p></td>
 <td><p>Calls pin_memory on the tensordict to facilitate writing on CUDA devices.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.Resize.html#torchrl.envs.transforms.Resize" title="torchrl.envs.transforms.Resize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Resize</span></code></a>(w, h[, interpolation, in_keys, out_keys])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.R3MTransform.html#torchrl.envs.transforms.R3MTransform" title="torchrl.envs.transforms.R3MTransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">R3MTransform</span></code></a>(*args, **kwargs)</p></td>
+<td><p>R3M Transform class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.Resize.html#torchrl.envs.transforms.Resize" title="torchrl.envs.transforms.Resize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Resize</span></code></a>(w, h[, interpolation, in_keys, out_keys])</p></td>
 <td><p>Resizes an pixel observation.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.RewardClipping.html#torchrl.envs.transforms.RewardClipping" title="torchrl.envs.transforms.RewardClipping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RewardClipping</span></code></a>([clamp_min, clamp_max, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.RewardClipping.html#torchrl.envs.transforms.RewardClipping" title="torchrl.envs.transforms.RewardClipping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RewardClipping</span></code></a>([clamp_min, clamp_max, ...])</p></td>
 <td><p>Clips the reward between <cite>clamp_min</cite> and <cite>clamp_max</cite>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.RewardScaling.html#torchrl.envs.transforms.RewardScaling" title="torchrl.envs.transforms.RewardScaling"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RewardScaling</span></code></a>(loc, scale[, in_keys, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.RewardScaling.html#torchrl.envs.transforms.RewardScaling" title="torchrl.envs.transforms.RewardScaling"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RewardScaling</span></code></a>(loc, scale[, in_keys, ...])</p></td>
 <td><p>Affine transform of the reward.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.RewardSum.html#torchrl.envs.transforms.RewardSum" title="torchrl.envs.transforms.RewardSum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RewardSum</span></code></a>([in_keys, out_keys])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.RewardSum.html#torchrl.envs.transforms.RewardSum" title="torchrl.envs.transforms.RewardSum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RewardSum</span></code></a>([in_keys, out_keys])</p></td>
 <td><p>Tracks episode cumulative rewards.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.SelectTransform.html#torchrl.envs.transforms.SelectTransform" title="torchrl.envs.transforms.SelectTransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SelectTransform</span></code></a>(*selected_keys)</p></td>
+<td><p>Select keys from the input tensordict.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.SqueezeTransform.html#torchrl.envs.transforms.SqueezeTransform" title="torchrl.envs.transforms.SqueezeTransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SqueezeTransform</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Removes a dimension of size one at the specified position.</p></td>
@@ -627,14 +653,25 @@ in the environment. The keys to be included in this inverse transform are passed
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.VecNorm.html#torchrl.envs.transforms.VecNorm" title="torchrl.envs.transforms.VecNorm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VecNorm</span></code></a>([in_keys, shared_td, lock, decay, eps])</p></td>
 <td><p>Moving average normalization layer for torchrl environments.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.R3MTransform.html#torchrl.envs.transforms.R3MTransform" title="torchrl.envs.transforms.R3MTransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">R3MTransform</span></code></a>(*args, **kwargs)</p></td>
-<td><p>R3M Transform class.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.VIPRewardTransform.html#torchrl.envs.transforms.VIPRewardTransform" title="torchrl.envs.transforms.VIPRewardTransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VIPRewardTransform</span></code></a>(*args, **kwargs)</p></td>
+<td><p>A VIP transform to compute rewards based on embedded similarity.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.VIPTransform.html#torchrl.envs.transforms.VIPTransform" title="torchrl.envs.transforms.VIPTransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VIPTransform</span></code></a>(*args, **kwargs)</p></td>
 <td><p>VIP Transform class.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.VIPRewardTransform.html#torchrl.envs.transforms.VIPRewardTransform" title="torchrl.envs.transforms.VIPRewardTransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VIPRewardTransform</span></code></a>(*args, **kwargs)</p></td>
-<td><p>A VIP transform to compute rewards based on embedded similarity.</p></td>
+</tbody>
+</table>
+</section>
+<section id="recorders">
+<h2>Recorders<a class="headerlink" href="#recorders" title="Permalink to this heading">¶</a></h2>
+<p>Recorders are transforms that register data as they come in, for logging purposes.</p>
+<table class="autosummary longtable docutils # Necessary for the table generated by autosummary to look decent align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.record.TensorDictRecorder.html#torchrl.record.TensorDictRecorder" title="torchrl.record.TensorDictRecorder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TensorDictRecorder</span></code></a>(out_file_base[, ...])</p></td>
+<td><p>TensorDict recorder.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.record.VideoRecorder.html#torchrl.record.VideoRecorder" title="torchrl.record.VideoRecorder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VideoRecorder</span></code></a>(logger, tag[, in_keys, skip, ...])</p></td>
+<td><p>Video Recorder transform.</p></td>
 </tr>
 </tbody>
 </table>
@@ -655,7 +692,7 @@ in the environment. The keys to be included in this inverse transform are passed
 <tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.utils.exploration_mode.html#torchrl.envs.utils.exploration_mode" title="torchrl.envs.utils.exploration_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exploration_mode</span></code></a>()</p></td>
 <td><p>Returns the current sampling mode.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.utils.check_env_specs.html#torchrl.envs.utils.check_env_specs" title="torchrl.envs.utils.check_env_specs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_env_specs</span></code></a>(env)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.utils.check_env_specs.html#torchrl.envs.utils.check_env_specs" title="torchrl.envs.utils.check_env_specs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_env_specs</span></code></a>(env[, return_contiguous, ...])</p></td>
 <td><p>Tests an environment specs against the results of short rollout.</p></td>
 </tr>
 </tbody>
@@ -678,11 +715,11 @@ in the environment. The keys to be included in this inverse transform are passed
 <h2>Libraries<a class="headerlink" href="#libraries" title="Permalink to this heading">¶</a></h2>
 <table class="autosummary longtable docutils # Necessary for the table generated by autosummary to look decent align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.libs.gym.GymEnv.html#torchrl.envs.libs.gym.GymEnv" title="torchrl.envs.libs.gym.GymEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gym.GymEnv</span></code></a>(*args, **kwargs)</p></td>
-<td><p>OpenAI Gym environment wrapper.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.libs.brax.BraxEnv.html#torchrl.envs.libs.brax.BraxEnv" title="torchrl.envs.libs.brax.BraxEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">brax.BraxEnv</span></code></a>(*args[, _inplace_update, ...])</p></td>
+<td><p>Google Brax environment wrapper.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.libs.gym.GymWrapper.html#torchrl.envs.libs.gym.GymWrapper" title="torchrl.envs.libs.gym.GymWrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gym.GymWrapper</span></code></a>(*args, **kwargs)</p></td>
-<td><p>OpenAI Gym environment wrapper.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.libs.brax.BraxWrapper.html#torchrl.envs.libs.brax.BraxWrapper" title="torchrl.envs.libs.brax.BraxWrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">brax.BraxWrapper</span></code></a>(*args[, _inplace_update, ...])</p></td>
+<td><p>Google Brax environment wrapper.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.libs.dm_control.DMControlEnv.html#torchrl.envs.libs.dm_control.DMControlEnv" title="torchrl.envs.libs.dm_control.DMControlEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dm_control.DMControlEnv</span></code></a>(*args, **kwargs)</p></td>
 <td><p>DeepMind Control lab environment wrapper.</p></td>
@@ -690,14 +727,26 @@ in the environment. The keys to be included in this inverse transform are passed
 <tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.libs.dm_control.DMControlWrapper.html#torchrl.envs.libs.dm_control.DMControlWrapper" title="torchrl.envs.libs.dm_control.DMControlWrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dm_control.DMControlWrapper</span></code></a>(*args, **kwargs)</p></td>
 <td><p>DeepMind Control lab environment wrapper.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.libs.jumanji.JumanjiEnv.html#torchrl.envs.libs.jumanji.JumanjiEnv" title="torchrl.envs.libs.jumanji.JumanjiEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jumanji.JumanjiEnv</span></code></a>(*args, **kwargs)</p></td>
-<td><p>Jumanji environment wrapper.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.libs.gym.GymEnv.html#torchrl.envs.libs.gym.GymEnv" title="torchrl.envs.libs.gym.GymEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gym.GymEnv</span></code></a>(*args, **kwargs)</p></td>
+<td><p>OpenAI Gym environment wrapper.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.libs.jumanji.JumanjiWrapper.html#torchrl.envs.libs.jumanji.JumanjiWrapper" title="torchrl.envs.libs.jumanji.JumanjiWrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jumanji.JumanjiWrapper</span></code></a>(*args, **kwargs)</p></td>
-<td><p>Jumanji environment wrapper.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.libs.gym.GymWrapper.html#torchrl.envs.libs.gym.GymWrapper" title="torchrl.envs.libs.gym.GymWrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gym.GymWrapper</span></code></a>(*args, **kwargs)</p></td>
+<td><p>OpenAI Gym environment wrapper.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.libs.habitat.HabitatEnv.html#torchrl.envs.libs.habitat.HabitatEnv" title="torchrl.envs.libs.habitat.HabitatEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">habitat.HabitatEnv</span></code></a>(*args, **kwargs)</p></td>
 <td><p>A wrapper for habitat envs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.libs.jumanji.JumanjiEnv.html#torchrl.envs.libs.jumanji.JumanjiEnv" title="torchrl.envs.libs.jumanji.JumanjiEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jumanji.JumanjiEnv</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Jumanji environment wrapper.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.libs.jumanji.JumanjiWrapper.html#torchrl.envs.libs.jumanji.JumanjiWrapper" title="torchrl.envs.libs.jumanji.JumanjiWrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jumanji.JumanjiWrapper</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Jumanji environment wrapper.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.libs.vmas.VmasEnv.html#torchrl.envs.libs.vmas.VmasEnv" title="torchrl.envs.libs.vmas.VmasEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vmas.VmasEnv</span></code></a>(*args[, _inplace_update, ...])</p></td>
+<td><p>Vmas environment wrapper.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.libs.vmas.VmasWrapper.html#torchrl.envs.libs.vmas.VmasWrapper" title="torchrl.envs.libs.vmas.VmasWrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vmas.VmasWrapper</span></code></a>(*args[, _inplace_update, ...])</p></td>
+<td><p>Vmas environment wrapper.</p></td>
 </tr>
 </tbody>
 </table>
@@ -750,6 +799,7 @@ in the environment. The keys to be included in this inverse transform are passed
 <li><a class="reference internal" href="#">torchrl.envs package</a><ul>
 <li><a class="reference internal" href="#vectorized-envs">Vectorized envs</a></li>
 <li><a class="reference internal" href="#transforms">Transforms</a></li>
+<li><a class="reference internal" href="#recorders">Recorders</a></li>
 <li><a class="reference internal" href="#helpers">Helpers</a></li>
 <li><a class="reference internal" href="#domain-specific">Domain-specific</a></li>
 <li><a class="reference internal" href="#libraries">Libraries</a></li>

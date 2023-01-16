@@ -1,0 +1,7 @@
+﻿.. currentmodule:: torchrl.trainers.loggers
+
+
+get_logger
+==========
+
+.. autofunction:: get_logger

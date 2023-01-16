@@ -254,9 +254,9 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/torchrl_demo.html">Introduction to TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/pretrained_models.html">Using pretrained models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tensordict_tutorial.html">TensorDict</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tensordict_module.html">TensorDictModule</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/torch_envs.html">TorchRL envs</a></li>
@@ -264,9 +264,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/coding_ddpg.html">Coding DDPG using TorchRL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/coding_dqn.html">Coding a pixel-based DQN using TorchRL</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">References:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../reference/index.html">API Reference</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../reference/knowledge_base.html">Knowledge Base</a></li>
 </ul>
 
@@ -412,8 +413,8 @@
             <span class="k">return</span> <span class="p">[</span><span class="n">_check_all_str</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">list_of_str</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Expected a list of strings but got: </span><span class="si">{</span><span class="n">list_of_str</span><span class="si">}</span><span class="s2"> that raised the following error: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">.&quot;</span>
-            <span class="p">)</span>
+                <span class="sa">f</span><span class="s2">&quot;Expected a list of strings but got: </span><span class="si">{</span><span class="n">list_of_str</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
 
 
 <span class="k">def</span> <span class="nf">_forward_hook_safe_action</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">tensordict_in</span><span class="p">,</span> <span class="n">tensordict_out</span><span class="p">):</span>
@@ -451,13 +452,13 @@
         <span class="p">):</span>
             <span class="c1"># &quot;_is_stateless&quot; in module.__dict__ and module._is_stateless:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;vmap cannot be used with safe=True, consider turning the safe mode off. (original error message: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">)&quot;</span>
-            <span class="p">)</span>
+                <span class="s2">&quot;vmap cannot be used with safe=True, consider turning the safe mode off.&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">err</span>
 
 
-<div class="viewcode-block" id="SafeModule"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.SafeModule.html#torchrl.modules.SafeModule">[docs]</a><span class="k">class</span> <span class="nc">SafeModule</span><span class="p">(</span><span class="n">TensorDictModule</span><span class="p">):</span>
+<div class="viewcode-block" id="SafeModule"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.SafeModule.html#torchrl.modules.tensordict_module.SafeModule">[docs]</a><span class="k">class</span> <span class="nc">SafeModule</span><span class="p">(</span><span class="n">TensorDictModule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An :obj:``SafeModule`` is a :obj:``tensordict.nn.TensorDictModule`` subclass that accepts a :obj:``TensorSpec`` as argument to control the output domain.</span>
 
 <span class="sd">    Args:</span>
@@ -605,7 +606,7 @@
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="n">spec</span>
 
-<div class="viewcode-block" id="SafeModule.random"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.SafeModule.html#torchrl.modules.SafeModule.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+<div class="viewcode-block" id="SafeModule.random"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.SafeModule.html#torchrl.modules.tensordict_module.SafeModule.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Samples a random element in the target space, irrespective of any input.</span>
 
 <span class="sd">        If multiple output keys are present, only the first will be written in the input :obj:`tensordict`.</span>
@@ -621,18 +622,18 @@
         <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">tensordict</span></div>
 
-<div class="viewcode-block" id="SafeModule.random_sample"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.SafeModule.html#torchrl.modules.SafeModule.random_sample">[docs]</a>    <span class="k">def</span> <span class="nf">random_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+<div class="viewcode-block" id="SafeModule.random_sample"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.SafeModule.html#torchrl.modules.tensordict_module.SafeModule.random_sample">[docs]</a>    <span class="k">def</span> <span class="nf">random_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;See :obj:`SafeModule.random(...)`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SafeModule.to"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.SafeModule.html#torchrl.modules.SafeModule.to">[docs]</a>    <span class="k">def</span> <span class="nf">to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">DEVICE_TYPING</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">SafeModule</span><span class="p">:</span>
+<div class="viewcode-block" id="SafeModule.to"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.SafeModule.html#torchrl.modules.tensordict_module.SafeModule.to">[docs]</a>    <span class="k">def</span> <span class="nf">to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">DEVICE_TYPING</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">SafeModule</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;spec&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span>
         <span class="n">out</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">out</span></div></div>
 
 
-<div class="viewcode-block" id="is_tensordict_compatible"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.common.is_tensordict_compatible.html#torchrl.modules.is_tensordict_compatible">[docs]</a><span class="k">def</span> <span class="nf">is_tensordict_compatible</span><span class="p">(</span><span class="n">module</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SafeModule</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]):</span>
+<div class="viewcode-block" id="is_tensordict_compatible"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.common.is_tensordict_compatible.html#torchrl.modules.tensordict_module.is_tensordict_compatible">[docs]</a><span class="k">def</span> <span class="nf">is_tensordict_compatible</span><span class="p">(</span><span class="n">module</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SafeModule</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns `True` if a module can be used as a SafeModule, and False if it can&#39;t.</span>
 
 <span class="sd">    If the signature is misleading an error is raised.</span>
@@ -698,7 +699,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ensure_tensordict_compatible"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.common.ensure_tensordict_compatible.html#torchrl.modules.ensure_tensordict_compatible">[docs]</a><span class="k">def</span> <span class="nf">ensure_tensordict_compatible</span><span class="p">(</span>
+<div class="viewcode-block" id="ensure_tensordict_compatible"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.common.ensure_tensordict_compatible.html#torchrl.modules.tensordict_module.ensure_tensordict_compatible">[docs]</a><span class="k">def</span> <span class="nf">ensure_tensordict_compatible</span><span class="p">(</span>
     <span class="n">module</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">FunctionalModule</span><span class="p">,</span> <span class="n">FunctionalModuleWithBuffers</span><span class="p">,</span> <span class="n">SafeModule</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">],</span>
     <span class="n">in_keys</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out_keys</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>

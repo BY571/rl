@@ -257,9 +257,9 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
-<ul class="current">
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="torchrl_demo.html">Introduction to TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pretrained_models.html">Using pretrained models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tensordict_tutorial.html">TensorDict</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tensordict_module.html">TensorDictModule</a></li>
 <li class="toctree-l1"><a class="reference internal" href="torch_envs.html">TorchRL envs</a></li>
@@ -267,9 +267,10 @@
 <li class="toctree-l1"><a class="reference internal" href="coding_ddpg.html">Coding DDPG using TorchRL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="coding_dqn.html">Coding a pixel-based DQN using TorchRL</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">References:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../reference/index.html">API Reference</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../reference/knowledge_base.html">Knowledge Base</a></li>
 </ul>
 
@@ -376,38 +377,38 @@ to download the full example code</p>
 can compute actions in diverse settings using a distinct set of weights.
 You will also be able to execute diverse environments in parallel.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="n">TensorDictModule</span><span class="p">,</span> <span class="n">TensorDictSequential</span>
+<span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TensorDictModule</span></a><span class="p">,</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TensorDictSequential</span></a>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">CatTensors</span><span class="p">,</span> <span class="n">Compose</span><span class="p">,</span> <span class="n">DoubleToFloat</span><span class="p">,</span> <span class="n">ParallelEnv</span><span class="p">,</span> <span class="n">TransformedEnv</span>
-<span class="kn">from</span> <span class="nn">torchrl.envs.libs.dm_control</span> <span class="kn">import</span> <span class="n">DMControlEnv</span>
-<span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="n">MLP</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">CatTensors</span></a><span class="p">,</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">Compose</span></a><span class="p">,</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">DoubleToFloat</span></a><span class="p">,</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ParallelEnv</span></a><span class="p">,</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TransformedEnv</span></a>
+<span class="kn">from</span> <span class="nn">torchrl.envs.libs.dm_control</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">DMControlEnv</span></a>
+<span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html#torch.nn.Sequential" title="torch.nn.Sequential" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">MLP</span></a>
 </pre></div>
 </div>
 <p>We design two environments, one humanoid that must complete the stand task
 and another that must learn to walk.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">env1</span> <span class="o">=</span> <span class="n">DMControlEnv</span><span class="p">(</span><span class="s2">&quot;humanoid&quot;</span><span class="p">,</span> <span class="s2">&quot;stand&quot;</span><span class="p">)</span>
-<span class="n">env1_obs_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">env1</span><span class="o">.</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-<span class="n">env1</span> <span class="o">=</span> <span class="n">TransformedEnv</span><span class="p">(</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">env1</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">DMControlEnv</span></a><span class="p">(</span><span class="s2">&quot;humanoid&quot;</span><span class="p">,</span> <span class="s2">&quot;stand&quot;</span><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">env1_obs_keys</span></a> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">env1</span><span class="o">.</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="n">env1</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TransformedEnv</span></a><span class="p">(</span>
     <span class="n">env1</span><span class="p">,</span>
-    <span class="n">Compose</span><span class="p">(</span>
-        <span class="n">CatTensors</span><span class="p">(</span><span class="n">env1_obs_keys</span><span class="p">,</span> <span class="s2">&quot;observation_stand&quot;</span><span class="p">,</span> <span class="n">del_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-        <span class="n">CatTensors</span><span class="p">(</span><span class="n">env1_obs_keys</span><span class="p">,</span> <span class="s2">&quot;observation&quot;</span><span class="p">),</span>
-        <span class="n">DoubleToFloat</span><span class="p">(</span>
+    <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">Compose</span></a><span class="p">(</span>
+        <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">CatTensors</span></a><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">env1_obs_keys</span></a><span class="p">,</span> <span class="s2">&quot;observation_stand&quot;</span><span class="p">,</span> <span class="n">del_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+        <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">CatTensors</span></a><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">env1_obs_keys</span></a><span class="p">,</span> <span class="s2">&quot;observation&quot;</span><span class="p">),</span>
+        <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">DoubleToFloat</span></a><span class="p">(</span>
             <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;observation_stand&quot;</span><span class="p">,</span> <span class="s2">&quot;observation&quot;</span><span class="p">],</span>
             <span class="n">in_keys_inv</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">],</span>
         <span class="p">),</span>
     <span class="p">),</span>
 <span class="p">)</span>
-<span class="n">env2</span> <span class="o">=</span> <span class="n">DMControlEnv</span><span class="p">(</span><span class="s2">&quot;humanoid&quot;</span><span class="p">,</span> <span class="s2">&quot;walk&quot;</span><span class="p">)</span>
-<span class="n">env2_obs_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">env2</span><span class="o">.</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-<span class="n">env2</span> <span class="o">=</span> <span class="n">TransformedEnv</span><span class="p">(</span>
+<span class="n">env2</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">DMControlEnv</span></a><span class="p">(</span><span class="s2">&quot;humanoid&quot;</span><span class="p">,</span> <span class="s2">&quot;walk&quot;</span><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">env2_obs_keys</span></a> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">env2</span><span class="o">.</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="n">env2</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TransformedEnv</span></a><span class="p">(</span>
     <span class="n">env2</span><span class="p">,</span>
-    <span class="n">Compose</span><span class="p">(</span>
-        <span class="n">CatTensors</span><span class="p">(</span><span class="n">env2_obs_keys</span><span class="p">,</span> <span class="s2">&quot;observation_walk&quot;</span><span class="p">,</span> <span class="n">del_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-        <span class="n">CatTensors</span><span class="p">(</span><span class="n">env2_obs_keys</span><span class="p">,</span> <span class="s2">&quot;observation&quot;</span><span class="p">),</span>
-        <span class="n">DoubleToFloat</span><span class="p">(</span>
+    <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">Compose</span></a><span class="p">(</span>
+        <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">CatTensors</span></a><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">env2_obs_keys</span></a><span class="p">,</span> <span class="s2">&quot;observation_walk&quot;</span><span class="p">,</span> <span class="n">del_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+        <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">CatTensors</span></a><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">env2_obs_keys</span></a><span class="p">,</span> <span class="s2">&quot;observation&quot;</span><span class="p">),</span>
+        <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">DoubleToFloat</span></a><span class="p">(</span>
             <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;observation_walk&quot;</span><span class="p">,</span> <span class="s2">&quot;observation&quot;</span><span class="p">],</span>
             <span class="n">in_keys_inv</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">],</span>
         <span class="p">),</span>
@@ -420,7 +421,7 @@ and another that must learn to walk.</p>
 
 <span class="c1"># In TorchRL, stacking is done in a lazy manner: the original tensordicts</span>
 <span class="c1"># can still be recovered by indexing the main tensordict</span>
-<span class="n">tdreset</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">tdreset1</span><span class="p">,</span> <span class="n">tdreset2</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">tdreset</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.stack.html#torch.stack" title="torch.stack" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-function"><span class="n">torch</span><span class="o">.</span><span class="n">stack</span></a><span class="p">([</span><span class="n">tdreset1</span><span class="p">,</span> <span class="n">tdreset2</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">tdreset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="n">tdreset1</span>
 </pre></div>
 </div>
@@ -443,23 +444,23 @@ and another that must learn to walk.</p>
 Then specific sub-components will ready the “observation_stand” and
 “observation_walk” keys of the stacked tensordicts, if they are present,
 and pass them through the dedicated sub-network.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">action_dim</span> <span class="o">=</span> <span class="n">env1</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">action_dim</span></a> <span class="o">=</span> <span class="n">env1</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">policy_common</span> <span class="o">=</span> <span class="n">TensorDictModule</span><span class="p">(</span>
-    <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">67</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span> <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;observation&quot;</span><span class="p">],</span> <span class="n">out_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;hidden&quot;</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">policy_common</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TensorDictModule</span></a><span class="p">(</span>
+    <a href="https://pytorch.org/docs/stable/generated/torch.nn.Linear.html#torch.nn.Linear" title="torch.nn.Linear" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span></a><span class="p">(</span><span class="mi">67</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span> <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;observation&quot;</span><span class="p">],</span> <span class="n">out_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;hidden&quot;</span><span class="p">]</span>
 <span class="p">)</span>
-<span class="n">policy_stand</span> <span class="o">=</span> <span class="n">TensorDictModule</span><span class="p">(</span>
-    <span class="n">MLP</span><span class="p">(</span><span class="mi">67</span> <span class="o">+</span> <span class="mi">64</span><span class="p">,</span> <span class="n">action_dim</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+<span class="n">policy_stand</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TensorDictModule</span></a><span class="p">(</span>
+    <a href="https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html#torch.nn.Sequential" title="torch.nn.Sequential" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">MLP</span></a><span class="p">(</span><span class="mi">67</span> <span class="o">+</span> <span class="mi">64</span><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">action_dim</span></a><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
     <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;observation_stand&quot;</span><span class="p">,</span> <span class="s2">&quot;hidden&quot;</span><span class="p">],</span>
     <span class="n">out_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">],</span>
 <span class="p">)</span>
-<span class="n">policy_walk</span> <span class="o">=</span> <span class="n">TensorDictModule</span><span class="p">(</span>
-    <span class="n">MLP</span><span class="p">(</span><span class="mi">67</span> <span class="o">+</span> <span class="mi">64</span><span class="p">,</span> <span class="n">action_dim</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+<span class="n">policy_walk</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TensorDictModule</span></a><span class="p">(</span>
+    <a href="https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html#torch.nn.Sequential" title="torch.nn.Sequential" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">MLP</span></a><span class="p">(</span><span class="mi">67</span> <span class="o">+</span> <span class="mi">64</span><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">action_dim</span></a><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
     <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;observation_walk&quot;</span><span class="p">,</span> <span class="s2">&quot;hidden&quot;</span><span class="p">],</span>
     <span class="n">out_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">],</span>
 <span class="p">)</span>
-<span class="n">seq</span> <span class="o">=</span> <span class="n">TensorDictSequential</span><span class="p">(</span>
+<span class="n">seq</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TensorDictSequential</span></a><span class="p">(</span>
     <span class="n">policy_common</span><span class="p">,</span> <span class="n">policy_stand</span><span class="p">,</span> <span class="n">policy_walk</span><span class="p">,</span> <span class="n">partial_tolerant</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 </pre></div>
@@ -525,12 +526,12 @@ same key).</p>
 a single task has to be performed. If a list of functions is provided, then
 it will assume that we are in a multi-task setting.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">env1_maker</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">TransformedEnv</span><span class="p">(</span>
-        <span class="n">DMControlEnv</span><span class="p">(</span><span class="s2">&quot;humanoid&quot;</span><span class="p">,</span> <span class="s2">&quot;stand&quot;</span><span class="p">),</span>
-        <span class="n">Compose</span><span class="p">(</span>
-            <span class="n">CatTensors</span><span class="p">(</span><span class="n">env1_obs_keys</span><span class="p">,</span> <span class="s2">&quot;observation_stand&quot;</span><span class="p">,</span> <span class="n">del_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-            <span class="n">CatTensors</span><span class="p">(</span><span class="n">env1_obs_keys</span><span class="p">,</span> <span class="s2">&quot;observation&quot;</span><span class="p">),</span>
-            <span class="n">DoubleToFloat</span><span class="p">(</span>
+    <span class="k">return</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TransformedEnv</span></a><span class="p">(</span>
+        <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">DMControlEnv</span></a><span class="p">(</span><span class="s2">&quot;humanoid&quot;</span><span class="p">,</span> <span class="s2">&quot;stand&quot;</span><span class="p">),</span>
+        <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">Compose</span></a><span class="p">(</span>
+            <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">CatTensors</span></a><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">env1_obs_keys</span></a><span class="p">,</span> <span class="s2">&quot;observation_stand&quot;</span><span class="p">,</span> <span class="n">del_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+            <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">CatTensors</span></a><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">env1_obs_keys</span></a><span class="p">,</span> <span class="s2">&quot;observation&quot;</span><span class="p">),</span>
+            <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">DoubleToFloat</span></a><span class="p">(</span>
                 <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;observation_stand&quot;</span><span class="p">,</span> <span class="s2">&quot;observation&quot;</span><span class="p">],</span>
                 <span class="n">in_keys_inv</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">],</span>
             <span class="p">),</span>
@@ -539,12 +540,12 @@ it will assume that we are in a multi-task setting.</p>
 
 
 <span class="k">def</span> <span class="nf">env2_maker</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">TransformedEnv</span><span class="p">(</span>
-        <span class="n">DMControlEnv</span><span class="p">(</span><span class="s2">&quot;humanoid&quot;</span><span class="p">,</span> <span class="s2">&quot;walk&quot;</span><span class="p">),</span>
-        <span class="n">Compose</span><span class="p">(</span>
-            <span class="n">CatTensors</span><span class="p">(</span><span class="n">env2_obs_keys</span><span class="p">,</span> <span class="s2">&quot;observation_walk&quot;</span><span class="p">,</span> <span class="n">del_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-            <span class="n">CatTensors</span><span class="p">(</span><span class="n">env2_obs_keys</span><span class="p">,</span> <span class="s2">&quot;observation&quot;</span><span class="p">),</span>
-            <span class="n">DoubleToFloat</span><span class="p">(</span>
+    <span class="k">return</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TransformedEnv</span></a><span class="p">(</span>
+        <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">DMControlEnv</span></a><span class="p">(</span><span class="s2">&quot;humanoid&quot;</span><span class="p">,</span> <span class="s2">&quot;walk&quot;</span><span class="p">),</span>
+        <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">Compose</span></a><span class="p">(</span>
+            <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">CatTensors</span></a><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">env2_obs_keys</span></a><span class="p">,</span> <span class="s2">&quot;observation_walk&quot;</span><span class="p">,</span> <span class="n">del_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+            <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">CatTensors</span></a><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">env2_obs_keys</span></a><span class="p">,</span> <span class="s2">&quot;observation&quot;</span><span class="p">),</span>
+            <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">DoubleToFloat</span></a><span class="p">(</span>
                 <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;observation_walk&quot;</span><span class="p">,</span> <span class="s2">&quot;observation&quot;</span><span class="p">],</span>
                 <span class="n">in_keys_inv</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">],</span>
             <span class="p">),</span>
@@ -552,8 +553,8 @@ it will assume that we are in a multi-task setting.</p>
     <span class="p">)</span>
 
 
-<span class="n">env</span> <span class="o">=</span> <span class="n">ParallelEnv</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="n">env1_maker</span><span class="p">,</span> <span class="n">env2_maker</span><span class="p">])</span>
-<span class="k">assert</span> <span class="ow">not</span> <span class="n">env</span><span class="o">.</span><span class="n">_single_task</span>
+<span class="n">env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ParallelEnv</span></a><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="n">env1_maker</span><span class="p">,</span> <span class="n">env2_maker</span><span class="p">])</span>
+<span class="k">assert</span> <span class="ow">not</span> <a href="https://docs.python.org/3/library/functions.html#bool" title="builtins.bool" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">env</span><span class="o">.</span><span class="n">_single_task</span></a>
 
 <span class="n">tdreset</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">tdreset</span><span class="p">)</span>
@@ -734,7 +735,7 @@ TensorDict(
     is_shared=False)
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  3.349 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  5.309 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-multi-task-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/fe94dedecc2afb14d9227db6afb81c3f/multi_task.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">multi_task.py</span></code></a></p>

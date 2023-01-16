@@ -38,7 +38,7 @@
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="MultiSyncDataCollector" href="generated/torchrl.collectors.MultiSyncDataCollector.html" />
+    <link rel="next" title="MultiSyncDataCollector" href="generated/torchrl.collectors.collectors.MultiSyncDataCollector.html" />
     <link rel="prev" title="API Reference" href="index.html" />
   <!-- Google Analytics -->
   
@@ -257,9 +257,9 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/torchrl_demo.html">Introduction to TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/pretrained_models.html">Using pretrained models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/tensordict_tutorial.html">TensorDict</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/tensordict_module.html">TensorDictModule</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/torch_envs.html">TorchRL envs</a></li>
@@ -267,9 +267,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/coding_ddpg.html">Coding DDPG using TorchRL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/coding_dqn.html">Coding a pixel-based DQN using TorchRL</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">References:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="knowledge_base.html">Knowledge Base</a></li>
 </ul>
 
@@ -379,10 +380,10 @@ state, and/or after a predifined number of steps.</p>
 <p>Because data collection is a potentially compute heavy process, it is crucial to
 configure the execution hyperparameters appropriately.
 The first parameter to take into consideration is whether the data collection should
-occur serially with the optimization step or in parallel. The <a class="reference internal" href="generated/torchrl.collectors.SyncDataCollector.html#torchrl.collectors.SyncDataCollector" title="torchrl.collectors.SyncDataCollector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SyncDataCollector</span></code></a>
-class will execute the data collection on the training worker. The <a class="reference internal" href="generated/torchrl.collectors.MultiSyncDataCollector.html#torchrl.collectors.MultiSyncDataCollector" title="torchrl.collectors.MultiSyncDataCollector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiSyncDataCollector</span></code></a>
+occur serially with the optimization step or in parallel. The <code class="xref py py-obj docutils literal notranslate"><span class="pre">SyncDataCollector</span></code>
+class will execute the data collection on the training worker. The <code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiSyncDataCollector</span></code>
 will split the workload across an number of workers and aggregate the results that
-will be delivered to the training worker. Finally, the <a class="reference internal" href="generated/torchrl.collectors.MultiaSyncDataCollector.html#torchrl.collectors.MultiaSyncDataCollector" title="torchrl.collectors.MultiaSyncDataCollector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiaSyncDataCollector</span></code></a> will
+will be delivered to the training worker. Finally, the <code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiaSyncDataCollector</span></code> will
 execute the data collection on several workers and deliver the first batch of results
 that it can gather. This execution will occur continuously and concomittantly with
 the training of the networks: this implies that the weights of the policy that
@@ -390,7 +391,7 @@ is used for the data collection may slightly lag the configuration of the policy
 on the training worker. Therefore, although this class may be the fastest to collect
 data, it comes at the price of being suitable only in settings where it is acceptable
 to gather data asynchronously (e.g. off-policy RL or curriculum RL).
-For remotely executed rollouts (<a class="reference internal" href="generated/torchrl.collectors.MultiSyncDataCollector.html#torchrl.collectors.MultiSyncDataCollector" title="torchrl.collectors.MultiSyncDataCollector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiSyncDataCollector</span></code></a> or <a class="reference internal" href="generated/torchrl.collectors.MultiaSyncDataCollector.html#torchrl.collectors.MultiaSyncDataCollector" title="torchrl.collectors.MultiaSyncDataCollector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiaSyncDataCollector</span></code></a>)
+For remotely executed rollouts (<code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiSyncDataCollector</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiaSyncDataCollector</span></code>)
 it is necessary to synchronise the weights of the remote policy with the weights
 from the training worker using either the <cite>collector.update_policy_weights_()</cite> or
 by setting <cite>update_at_each_batch=True</cite> in the constructor.</p>
@@ -422,16 +423,19 @@ along with a <code class="xref py py-obj docutils literal notranslate"><span cla
 <h2>Data collectors<a class="headerlink" href="#data-collectors" title="Permalink to this heading">¶</a></h2>
 <table class="autosummary longtable docutils # Necessary for the table generated by autosummary to look decent align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.collectors.MultiSyncDataCollector.html#torchrl.collectors.MultiSyncDataCollector" title="torchrl.collectors.MultiSyncDataCollector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiSyncDataCollector</span></code></a>(create_env_fn[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.collectors.collectors.MultiSyncDataCollector.html#torchrl.collectors.collectors.MultiSyncDataCollector" title="torchrl.collectors.collectors.MultiSyncDataCollector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiSyncDataCollector</span></code></a>(create_env_fn[, ...])</p></td>
 <td><p>Runs a given number of DataCollectors on separate processes synchronously.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.collectors.MultiaSyncDataCollector.html#torchrl.collectors.MultiaSyncDataCollector" title="torchrl.collectors.MultiaSyncDataCollector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiaSyncDataCollector</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.collectors.collectors.MultiaSyncDataCollector.html#torchrl.collectors.collectors.MultiaSyncDataCollector" title="torchrl.collectors.collectors.MultiaSyncDataCollector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiaSyncDataCollector</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Runs a given number of DataCollectors on separate processes asynchronously.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.collectors.SyncDataCollector.html#torchrl.collectors.SyncDataCollector" title="torchrl.collectors.SyncDataCollector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SyncDataCollector</span></code></a>(create_env_fn[, policy, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.collectors.collectors.RandomPolicy.html#torchrl.collectors.collectors.RandomPolicy" title="torchrl.collectors.collectors.RandomPolicy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomPolicy</span></code></a>(action_spec)</p></td>
+<td><p>A random policy for data collectors.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.collectors.collectors.SyncDataCollector.html#torchrl.collectors.collectors.SyncDataCollector" title="torchrl.collectors.collectors.SyncDataCollector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SyncDataCollector</span></code></a>(create_env_fn[, policy, ...])</p></td>
 <td><p>Generic data collector for RL problems.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.collectors.aSyncDataCollector.html#torchrl.collectors.aSyncDataCollector" title="torchrl.collectors.aSyncDataCollector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">aSyncDataCollector</span></code></a>(create_env_fn[, policy, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.collectors.collectors.aSyncDataCollector.html#torchrl.collectors.collectors.aSyncDataCollector" title="torchrl.collectors.collectors.aSyncDataCollector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">aSyncDataCollector</span></code></a>(create_env_fn[, policy, ...])</p></td>
 <td><p>Runs a single DataCollector on a separate process.</p></td>
 </tr>
 </tbody>
@@ -457,7 +461,7 @@ along with a <code class="xref py py-obj docutils literal notranslate"><span cla
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="generated/torchrl.collectors.MultiSyncDataCollector.html" class="btn btn-neutral float-right" title="MultiSyncDataCollector" accesskey="n" rel="next">Next <img src="../_static/images/chevron-right-orange.svg" class="next-page"></a>
+        <a href="generated/torchrl.collectors.collectors.MultiSyncDataCollector.html" class="btn btn-neutral float-right" title="MultiSyncDataCollector" accesskey="n" rel="next">Next <img src="../_static/images/chevron-right-orange.svg" class="next-page"></a>
       
       
         <a href="index.html" class="btn btn-neutral" title="API Reference" accesskey="p" rel="prev"><img src="../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>

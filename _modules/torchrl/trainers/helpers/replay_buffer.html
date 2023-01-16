@@ -254,9 +254,9 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/torchrl_demo.html">Introduction to TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/pretrained_models.html">Using pretrained models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tensordict_tutorial.html">TensorDict</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tensordict_module.html">TensorDictModule</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/torch_envs.html">TorchRL envs</a></li>
@@ -264,9 +264,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/coding_ddpg.html">Coding DDPG using TorchRL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/coding_dqn.html">Coding a pixel-based DQN using TorchRL</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">References:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../reference/index.html">API Reference</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../reference/knowledge_base.html">Knowledge Base</a></li>
 </ul>
 
@@ -369,11 +370,8 @@
 
 <span class="kn">import</span> <span class="nn">torch</span>
 
-<span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">ReplayBuffer</span><span class="p">,</span>
-    <span class="n">TensorDictPrioritizedReplayBuffer</span><span class="p">,</span>
-    <span class="n">TensorDictReplayBuffer</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">ReplayBuffer</span><span class="p">,</span> <span class="n">TensorDictReplayBuffer</span>
+<span class="kn">from</span> <span class="nn">torchrl.data.replay_buffers.samplers</span> <span class="kn">import</span> <span class="n">PrioritizedSampler</span><span class="p">,</span> <span class="n">RandomSampler</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.replay_buffers.storages</span> <span class="kn">import</span> <span class="n">LazyMemmapStorage</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.utils</span> <span class="kn">import</span> <span class="n">DEVICE_TYPING</span>
 
@@ -384,29 +382,23 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Builds a replay buffer using the config built from ReplayArgsConfig.&quot;&quot;&quot;</span>
     <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">cfg</span><span class="o">.</span><span class="n">prb</span><span class="p">:</span>
-        <span class="n">buffer</span> <span class="o">=</span> <span class="n">TensorDictReplayBuffer</span><span class="p">(</span>
-            <span class="n">cfg</span><span class="o">.</span><span class="n">buffer_size</span><span class="p">,</span>
-            <span class="n">pin_memory</span><span class="o">=</span><span class="n">device</span> <span class="o">!=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">),</span>
-            <span class="n">prefetch</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">buffer_prefetch</span><span class="p">,</span>
-            <span class="n">storage</span><span class="o">=</span><span class="n">LazyMemmapStorage</span><span class="p">(</span>
-                <span class="n">cfg</span><span class="o">.</span><span class="n">buffer_size</span><span class="p">,</span>
-                <span class="n">scratch_dir</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">buffer_scratch_dir</span><span class="p">,</span>
-                <span class="c1"># device=device,  # when using prefetch, this can overload the GPU memory</span>
-            <span class="p">),</span>
-        <span class="p">)</span>
+        <span class="n">sampler</span> <span class="o">=</span> <span class="n">RandomSampler</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">buffer</span> <span class="o">=</span> <span class="n">TensorDictPrioritizedReplayBuffer</span><span class="p">(</span>
-            <span class="n">cfg</span><span class="o">.</span><span class="n">buffer_size</span><span class="p">,</span>
+        <span class="n">sampler</span> <span class="o">=</span> <span class="n">PrioritizedSampler</span><span class="p">(</span>
+            <span class="n">max_capacity</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">buffer_size</span><span class="p">,</span>
             <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
             <span class="n">beta</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-            <span class="n">pin_memory</span><span class="o">=</span><span class="n">device</span> <span class="o">!=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">),</span>
-            <span class="n">prefetch</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">buffer_prefetch</span><span class="p">,</span>
-            <span class="n">storage</span><span class="o">=</span><span class="n">LazyMemmapStorage</span><span class="p">(</span>
-                <span class="n">cfg</span><span class="o">.</span><span class="n">buffer_size</span><span class="p">,</span>
-                <span class="n">scratch_dir</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">buffer_scratch_dir</span><span class="p">,</span>
-                <span class="c1"># device=device,  # when using prefetch, this can overload the GPU memory</span>
-            <span class="p">),</span>
         <span class="p">)</span>
+    <span class="n">buffer</span> <span class="o">=</span> <span class="n">TensorDictReplayBuffer</span><span class="p">(</span>
+        <span class="n">storage</span><span class="o">=</span><span class="n">LazyMemmapStorage</span><span class="p">(</span>
+            <span class="n">cfg</span><span class="o">.</span><span class="n">buffer_size</span><span class="p">,</span>
+            <span class="n">scratch_dir</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">buffer_scratch_dir</span><span class="p">,</span>
+            <span class="c1"># device=device,  # when using prefetch, this can overload the GPU memory</span>
+        <span class="p">),</span>
+        <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">,</span>
+        <span class="n">pin_memory</span><span class="o">=</span><span class="n">device</span> <span class="o">!=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">),</span>
+        <span class="n">prefetch</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">buffer_prefetch</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">buffer</span></div>
 
 

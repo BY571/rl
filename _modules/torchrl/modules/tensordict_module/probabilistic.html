@@ -254,9 +254,9 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/torchrl_demo.html">Introduction to TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/pretrained_models.html">Using pretrained models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tensordict_tutorial.html">TensorDict</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tensordict_module.html">TensorDictModule</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/torch_envs.html">TorchRL envs</a></li>
@@ -264,9 +264,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/coding_ddpg.html">Coding DDPG using TorchRL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/coding_dqn.html">Coding a pixel-based DQN using TorchRL</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">References:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../reference/index.html">API Reference</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../reference/knowledge_base.html">Knowledge Base</a></li>
 </ul>
 
@@ -381,7 +382,7 @@
 <span class="kn">from</span> <span class="nn">torchrl.modules.tensordict_module.sequence</span> <span class="kn">import</span> <span class="n">SafeSequential</span>
 
 
-<div class="viewcode-block" id="SafeProbabilisticModule"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.SafeProbabilisticModule.html#torchrl.modules.SafeProbabilisticModule">[docs]</a><span class="k">class</span> <span class="nc">SafeProbabilisticModule</span><span class="p">(</span><span class="n">ProbabilisticTensorDictModule</span><span class="p">):</span>
+<div class="viewcode-block" id="SafeProbabilisticModule"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.SafeProbabilisticModule.html#torchrl.modules.tensordict_module.SafeProbabilisticModule">[docs]</a><span class="k">class</span> <span class="nc">SafeProbabilisticModule</span><span class="p">(</span><span class="n">ProbabilisticTensorDictModule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A :obj:``SafeProbabilisticModule`` is an :obj:``tensordict.nn.ProbabilisticTensorDictModule`` subclass that accepts a :obj:``TensorSpec`` as argument to control the output domain.</span>
 
 <span class="sd">    `SafeProbabilisticModule` is a non-parametric module representing a</span>
@@ -530,7 +531,7 @@
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="n">spec</span>
 
-<div class="viewcode-block" id="SafeProbabilisticModule.random"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.SafeProbabilisticModule.html#torchrl.modules.SafeProbabilisticModule.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+<div class="viewcode-block" id="SafeProbabilisticModule.random"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.SafeProbabilisticModule.html#torchrl.modules.tensordict_module.SafeProbabilisticModule.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Samples a random element in the target space, irrespective of any input.</span>
 
 <span class="sd">        If multiple output keys are present, only the first will be written in the input :obj:`tensordict`.</span>
@@ -546,12 +547,12 @@
         <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">tensordict</span></div>
 
-<div class="viewcode-block" id="SafeProbabilisticModule.random_sample"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.SafeProbabilisticModule.html#torchrl.modules.SafeProbabilisticModule.random_sample">[docs]</a>    <span class="k">def</span> <span class="nf">random_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+<div class="viewcode-block" id="SafeProbabilisticModule.random_sample"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.SafeProbabilisticModule.html#torchrl.modules.tensordict_module.SafeProbabilisticModule.random_sample">[docs]</a>    <span class="k">def</span> <span class="nf">random_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;See :obj:`SafeModule.random(...)`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="SafeProbabilisticSequential"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.SafeProbabilisticSequential.html#torchrl.modules.SafeProbabilisticSequential">[docs]</a><span class="k">class</span> <span class="nc">SafeProbabilisticSequential</span><span class="p">(</span><span class="n">ProbabilisticTensorDictSequential</span><span class="p">,</span> <span class="n">SafeSequential</span><span class="p">):</span>
+<div class="viewcode-block" id="SafeProbabilisticSequential"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.SafeProbabilisticSequential.html#torchrl.modules.tensordict_module.SafeProbabilisticSequential">[docs]</a><span class="k">class</span> <span class="nc">SafeProbabilisticSequential</span><span class="p">(</span><span class="n">ProbabilisticTensorDictSequential</span><span class="p">,</span> <span class="n">SafeSequential</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A :obj:``SafeProbabilisticSequential`` is an :obj:``tensordict.nn.ProbabilisticTensorDictSequential`` subclass that accepts a :obj:``TensorSpec`` as argument to control the output domain.</span>
 
 <span class="sd">    Similarly to :obj:`TensorDictSequential`, but enforces that the final module in the</span>

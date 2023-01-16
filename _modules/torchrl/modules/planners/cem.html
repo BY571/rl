@@ -254,9 +254,9 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/torchrl_demo.html">Introduction to TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/pretrained_models.html">Using pretrained models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tensordict_tutorial.html">TensorDict</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tensordict_module.html">TensorDictModule</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/torch_envs.html">TorchRL envs</a></li>
@@ -264,9 +264,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/coding_ddpg.html">Coding DDPG using TorchRL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/coding_dqn.html">Coding a pixel-based DQN using TorchRL</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">References:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../reference/index.html">API Reference</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../reference/knowledge_base.html">Knowledge Base</a></li>
 </ul>
 
@@ -366,7 +367,7 @@
 <span class="c1"># LICENSE file in the root directory of this source tree.</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">tensordict.tensordict</span> <span class="kn">import</span> <span class="n">TensorDictBase</span>
+<span class="kn">from</span> <span class="nn">tensordict.tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">TensorDictBase</span>
 
 <span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">EnvBase</span>
 <span class="kn">from</span> <span class="nn">torchrl.modules.planners.common</span> <span class="kn">import</span> <span class="n">MPCPlannerBase</span>
@@ -398,7 +399,7 @@
 <span class="sd">            planner</span>
 <span class="sd">        num_candidates (int): The number of candidates to sample from the</span>
 <span class="sd">            Gaussian distributions.</span>
-<span class="sd">        num_top_k_candidates (int): The number of top candidates to use to</span>
+<span class="sd">        top_k (int): The number of top candidates to use to</span>
 <span class="sd">            update the mean and standard deviation of the Gaussian distribution.</span>
 <span class="sd">        reward_key (str, optional): The key in the TensorDict to use to</span>
 <span class="sd">            retrieve the reward. Defaults to &quot;reward&quot;.</span>
@@ -423,13 +424,17 @@
 <span class="sd">        ...         self.reward_spec = UnboundedContinuousTensorSpec((1,))</span>
 <span class="sd">        ...</span>
 <span class="sd">        ...     def _reset(self, tensordict: TensorDict) -&gt; TensorDict:</span>
-<span class="sd">        ...         tensordict = TensorDict({},</span>
+<span class="sd">        ...         tensordict = TensorDict(</span>
+<span class="sd">        ...             {},</span>
 <span class="sd">        ...             batch_size=self.batch_size,</span>
 <span class="sd">        ...             device=self.device,</span>
 <span class="sd">        ...         )</span>
-<span class="sd">        ...         tensordict = tensordict.update(self.input_spec.rand(self.batch_size))</span>
-<span class="sd">        ...         tensordict = tensordict.update(self.observation_spec.rand(self.batch_size))</span>
+<span class="sd">        ...         tensordict = tensordict.update(</span>
+<span class="sd">        ...             self.input_spec.rand(self.batch_size))</span>
+<span class="sd">        ...         tensordict = tensordict.update(</span>
+<span class="sd">        ...             self.observation_spec.rand(self.batch_size))</span>
 <span class="sd">        ...         return tensordict</span>
+<span class="sd">        ...</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules import MLP, WorldModelWrapper</span>
 <span class="sd">        &gt;&gt;&gt; import torch.nn as nn</span>
 <span class="sd">        &gt;&gt;&gt; world_model = WorldModelWrapper(</span>
@@ -453,7 +458,12 @@
 <span class="sd">                action: Tensor(torch.Size([5, 1]), dtype=torch.float32),</span>
 <span class="sd">                done: Tensor(torch.Size([5, 1]), dtype=torch.bool),</span>
 <span class="sd">                hidden_observation: Tensor(torch.Size([5, 4]), dtype=torch.float32),</span>
-<span class="sd">                next_hidden_observation: Tensor(torch.Size([5, 4]), dtype=torch.float32),</span>
+<span class="sd">                next: LazyStackedTensorDict(</span>
+<span class="sd">                    fields={</span>
+<span class="sd">                        hidden_observation: Tensor(torch.Size([5, 4]), dtype=torch.float32)},</span>
+<span class="sd">                    batch_size=torch.Size([5]),</span>
+<span class="sd">                    device=cpu,</span>
+<span class="sd">                    is_shared=False),</span>
 <span class="sd">                reward: Tensor(torch.Size([5, 1]), dtype=torch.float32)},</span>
 <span class="sd">            batch_size=torch.Size([5]),</span>
 <span class="sd">            device=cpu,</span>
@@ -466,7 +476,7 @@
         <span class="n">planning_horizon</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">optim_steps</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">num_candidates</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">num_top_k_candidates</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">top_k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">reward_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;reward&quot;</span><span class="p">,</span>
         <span class="n">action_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;action&quot;</span><span class="p">,</span>
     <span class="p">):</span>
@@ -474,46 +484,66 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">planning_horizon</span> <span class="o">=</span> <span class="n">planning_horizon</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">optim_steps</span> <span class="o">=</span> <span class="n">optim_steps</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_candidates</span> <span class="o">=</span> <span class="n">num_candidates</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">num_top_k_candidates</span> <span class="o">=</span> <span class="n">num_top_k_candidates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">top_k</span> <span class="o">=</span> <span class="n">top_k</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reward_key</span> <span class="o">=</span> <span class="n">reward_key</span>
 
 <div class="viewcode-block" id="CEMPlanner.planning"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.CEMPlanner.html#torchrl.modules.CEMPlanner.planning">[docs]</a>    <span class="k">def</span> <span class="nf">planning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
         <span class="n">batch_size</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span>
+        <span class="n">action_shape</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="o">*</span><span class="n">batch_size</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_candidates</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">planning_horizon</span><span class="p">,</span>
+            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">action_stats_shape</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="o">*</span><span class="n">batch_size</span><span class="p">,</span>
+            <span class="mi">1</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">planning_horizon</span><span class="p">,</span>
+            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">action_topk_shape</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="o">*</span><span class="n">batch_size</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">top_k</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">planning_horizon</span><span class="p">,</span>
+            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">TIME_DIM</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">-</span> <span class="mi">3</span>
+        <span class="n">K_DIM</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">-</span> <span class="mi">4</span>
         <span class="n">expanded_original_tensordict</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">tensordict</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
             <span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="o">*</span><span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_candidates</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">to_tensordict</span><span class="p">()</span>
         <span class="p">)</span>
-        <span class="n">flatten_batch_size</span> <span class="o">=</span> <span class="n">batch_size</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span>
-        <span class="n">actions_means</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-            <span class="n">flatten_batch_size</span><span class="p">,</span>
-            <span class="mi">1</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">planning_horizon</span><span class="p">,</span>
-            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+        <span class="n">_action_means</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">action_stats_shape</span><span class="p">,</span>
             <span class="n">device</span><span class="o">=</span><span class="n">tensordict</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
             <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">actions_stds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span>
-            <span class="n">flatten_batch_size</span><span class="p">,</span>
-            <span class="mi">1</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">planning_horizon</span><span class="p">,</span>
-            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
-            <span class="n">device</span><span class="o">=</span><span class="n">tensordict</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
-            <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+        <span class="n">_action_stds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">_action_means</span><span class="p">)</span>
+        <span class="n">container</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;tensordict&quot;</span><span class="p">:</span> <span class="n">expanded_original_tensordict</span><span class="p">,</span>
+                <span class="s2">&quot;stats&quot;</span><span class="p">:</span> <span class="n">TensorDict</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;_action_means&quot;</span><span class="p">:</span> <span class="n">_action_means</span><span class="p">,</span>
+                        <span class="s2">&quot;_action_stds&quot;</span><span class="p">:</span> <span class="n">_action_stds</span><span class="p">,</span>
+                    <span class="p">},</span>
+                    <span class="p">[</span><span class="o">*</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">planning_horizon</span><span class="p">],</span>
+                <span class="p">),</span>
+            <span class="p">},</span>
+            <span class="n">batch_size</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optim_steps</span><span class="p">):</span>
+            <span class="n">actions_means</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="s2">&quot;stats&quot;</span><span class="p">,</span> <span class="s2">&quot;_action_means&quot;</span><span class="p">))</span>
+            <span class="n">actions_stds</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="s2">&quot;stats&quot;</span><span class="p">,</span> <span class="s2">&quot;_action_stds&quot;</span><span class="p">))</span>
             <span class="n">actions</span> <span class="o">=</span> <span class="n">actions_means</span> <span class="o">+</span> <span class="n">actions_stds</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span>
-                <span class="n">flatten_batch_size</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">num_candidates</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">planning_horizon</span><span class="p">,</span>
-                <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
-                <span class="n">device</span><span class="o">=</span><span class="n">tensordict</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
-                <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+                <span class="o">*</span><span class="n">action_shape</span><span class="p">,</span>
+                <span class="n">device</span><span class="o">=</span><span class="n">actions_means</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">actions_means</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="n">actions</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="n">actions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">project</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span>
-            <span class="n">optim_tensordict</span> <span class="o">=</span> <span class="n">expanded_original_tensordict</span><span class="o">.</span><span class="n">to_tensordict</span><span class="p">()</span>
+            <span class="n">optim_tensordict</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tensordict&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
             <span class="n">policy</span> <span class="o">=</span> <span class="n">_PrecomputedActionsSequentialSetter</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span>
             <span class="n">optim_tensordict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">rollout</span><span class="p">(</span>
                 <span class="n">max_steps</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">planning_horizon</span><span class="p">,</span>
@@ -521,23 +551,21 @@
                 <span class="n">auto_reset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="n">tensordict</span><span class="o">=</span><span class="n">optim_tensordict</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="n">rewards</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">optim_tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_key</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">flatten_batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_candidates</span><span class="p">)</span>
-            <span class="p">)</span>
-            <span class="n">_</span><span class="p">,</span> <span class="n">top_k</span> <span class="o">=</span> <span class="n">rewards</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_top_k_candidates</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-            <span class="n">best_actions</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">unflatten</span><span class="p">(</span>
-                <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">flatten_batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_candidates</span><span class="p">)</span>
+            <span class="n">sum_rewards</span> <span class="o">=</span> <span class="n">optim_tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_key</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+                <span class="n">dim</span><span class="o">=</span><span class="n">TIME_DIM</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span>
-            <span class="n">best_actions</span> <span class="o">=</span> <span class="n">best_actions</span><span class="p">[</span>
-                <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">flatten_batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">tensordict</span><span class="o">.</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-                <span class="n">top_k</span><span class="p">,</span>
-            <span class="p">]</span>
-            <span class="n">actions_means</span> <span class="o">=</span> <span class="n">best_actions</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">actions_stds</span> <span class="o">=</span> <span class="n">best_actions</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">actions_means</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div></div>
+            <span class="n">_</span><span class="p">,</span> <span class="n">top_k</span> <span class="o">=</span> <span class="n">sum_rewards</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_k</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">K_DIM</span><span class="p">)</span>
+            <span class="n">top_k</span> <span class="o">=</span> <span class="n">top_k</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">action_topk_shape</span><span class="p">)</span>
+            <span class="n">best_actions</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">K_DIM</span><span class="p">,</span> <span class="n">top_k</span><span class="p">)</span>
+            <span class="n">container</span><span class="o">.</span><span class="n">set_</span><span class="p">(</span>
+                <span class="p">(</span><span class="s2">&quot;stats&quot;</span><span class="p">,</span> <span class="s2">&quot;_action_means&quot;</span><span class="p">),</span> <span class="n">best_actions</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">K_DIM</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">container</span><span class="o">.</span><span class="n">set_</span><span class="p">(</span>
+                <span class="p">(</span><span class="s2">&quot;stats&quot;</span><span class="p">,</span> <span class="s2">&quot;_action_stds&quot;</span><span class="p">),</span> <span class="n">best_actions</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">K_DIM</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="n">action_means</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="s2">&quot;stats&quot;</span><span class="p">,</span> <span class="s2">&quot;_action_means&quot;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">action_means</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span></div></div>
 
 
 <span class="k">class</span> <span class="nc">_PrecomputedActionsSequentialSetter</span><span class="p">:</span>
@@ -545,12 +573,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">actions</span> <span class="o">=</span> <span class="n">actions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cmpt</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">td</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmpt</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Precomputed actions are too short&quot;</span><span class="p">)</span>
-        <span class="n">td</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;action&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmpt</span><span class="p">])</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">):</span>
+        <span class="c1"># checks that the step count is lower or equal to the horizon</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmpt</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Precomputed actions sequence is too short&quot;</span><span class="p">)</span>
+        <span class="n">tensordict</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;action&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmpt</span><span class="p">,</span> <span class="p">:])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cmpt</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="n">td</span>
+        <span class="k">return</span> <span class="n">tensordict</span>
 </pre></div>
 
              </article>

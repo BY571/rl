@@ -1,9 +1,0 @@
-﻿.. currentmodule:: torchrl.data.replay_buffers.rb_prototype
-
-
-RemoteTensorDictReplayBuffer
-============================
-
-.. autoclass:: RemoteTensorDictReplayBuffer
-    :members:
-    :inherited-members:

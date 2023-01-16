@@ -257,9 +257,9 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/torchrl_demo.html">Introduction to TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/pretrained_models.html">Using pretrained models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/tensordict_tutorial.html">TensorDict</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/tensordict_module.html">TensorDictModule</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/torch_envs.html">TorchRL envs</a></li>
@@ -267,9 +267,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/coding_ddpg.html">Coding DDPG using TorchRL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/coding_dqn.html">Coding a pixel-based DQN using TorchRL</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">References:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="knowledge_base.html">Knowledge Base</a></li>
 </ul>
 
@@ -370,10 +371,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="collectors.html">torchrl.collectors package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="collectors.html#data-collectors">Data collectors</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.collectors.MultiSyncDataCollector.html">MultiSyncDataCollector</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.collectors.MultiaSyncDataCollector.html">MultiaSyncDataCollector</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.collectors.SyncDataCollector.html">SyncDataCollector</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.collectors.aSyncDataCollector.html">aSyncDataCollector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.collectors.collectors.MultiSyncDataCollector.html">MultiSyncDataCollector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.collectors.collectors.MultiaSyncDataCollector.html">MultiaSyncDataCollector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.collectors.collectors.RandomPolicy.html">RandomPolicy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.collectors.collectors.SyncDataCollector.html">SyncDataCollector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.collectors.collectors.aSyncDataCollector.html">aSyncDataCollector</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="collectors.html#helper-functions">Helper functions</a><ul>
@@ -390,10 +392,7 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.data.TensorDictPrioritizedReplayBuffer.html">TensorDictPrioritizedReplayBuffer</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="data.html#composable-replay-buffers-prototype">Composable Replay Buffers (Prototype)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.data.replay_buffers.rb_prototype.ReplayBuffer.html">ReplayBuffer</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.data.replay_buffers.rb_prototype.TensorDictReplayBuffer.html">TensorDictReplayBuffer</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.data.replay_buffers.rb_prototype.RemoteTensorDictReplayBuffer.html">RemoteTensorDictReplayBuffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#composable-replay-buffers">Composable Replay Buffers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.data.replay_buffers.samplers.Sampler.html">Sampler</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.data.replay_buffers.samplers.RandomSampler.html">RandomSampler</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.data.replay_buffers.samplers.PrioritizedSampler.html">PrioritizedSampler</a></li>
@@ -433,9 +432,18 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.GymLikeEnv.html#torchrl.envs.GymLikeEnv"><code class="docutils literal notranslate"><span class="pre">GymLikeEnv</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="generated/torchrl.envs.EnvMetaData.html">EnvMetaData</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.EnvMetaData.html#torchrl.envs.EnvMetaData"><code class="docutils literal notranslate"><span class="pre">EnvMetaData</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="generated/torchrl.envs.Specs.html">Specs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.Specs.html#torchrl.envs.Specs"><code class="docutils literal notranslate"><span class="pre">Specs</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="envs.html#vectorized-envs">Vectorized envs</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.SerialEnv.html">SerialEnv</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.ParallelEnv.html">ParallelEnv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.EnvCreator.html">EnvCreator</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="envs.html#transforms">Transforms</a><ul>
@@ -446,7 +454,9 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.CatTensors.html">CatTensors</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.CenterCrop.html">CenterCrop</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.Compose.html">Compose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.DiscreteActionProjection.html">DiscreteActionProjection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.DoubleToFloat.html">DoubleToFloat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.ExcludeTransform.html">ExcludeTransform</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.FiniteTensorDictCheck.html">FiniteTensorDictCheck</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.FlattenObservation.html">FlattenObservation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.FrameSkipTransform.html">FrameSkipTransform</a></li>
@@ -456,19 +466,25 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.ObservationNorm.html">ObservationNorm</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.ObservationTransform.html">ObservationTransform</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.PinMemoryTransform.html">PinMemoryTransform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.R3MTransform.html">R3MTransform</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.Resize.html">Resize</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.RewardClipping.html">RewardClipping</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.RewardScaling.html">RewardScaling</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.RewardSum.html">RewardSum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.SelectTransform.html">SelectTransform</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.SqueezeTransform.html">SqueezeTransform</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.StepCounter.html">StepCounter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.TensorDictPrimer.html">TensorDictPrimer</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.ToTensorImage.html">ToTensorImage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.UnsqueezeTransform.html">UnsqueezeTransform</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.VecNorm.html">VecNorm</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.R3MTransform.html">R3MTransform</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.VIPTransform.html">VIPTransform</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.VIPRewardTransform.html">VIPRewardTransform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.transforms.VIPTransform.html">VIPTransform</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="envs.html#recorders">Recorders</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.record.TensorDictRecorder.html">TensorDictRecorder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.record.VideoRecorder.html">VideoRecorder</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="envs.html#helpers">Helpers</a><ul>
@@ -485,31 +501,39 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="envs.html#libraries">Libraries</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.libs.gym.GymEnv.html">GymEnv</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.libs.gym.GymWrapper.html">GymWrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.libs.brax.BraxEnv.html">BraxEnv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.libs.brax.BraxWrapper.html">BraxWrapper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.libs.dm_control.DMControlEnv.html">DMControlEnv</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.libs.dm_control.DMControlWrapper.html">DMControlWrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.libs.gym.GymEnv.html">GymEnv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.libs.gym.GymWrapper.html">GymWrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.libs.habitat.HabitatEnv.html">HabitatEnv</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.libs.jumanji.JumanjiEnv.html">JumanjiEnv</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.libs.jumanji.JumanjiWrapper.html">JumanjiWrapper</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.libs.habitat.HabitatEnv.html">HabitatEnv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.libs.vmas.VmasEnv.html">VmasEnv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.envs.libs.vmas.VmasWrapper.html">VmasWrapper</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">torchrl.modules package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="modules.html#tensordict-modules">TensorDict modules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.SafeModule.html">SafeModule</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.SafeProbabilisticModule.html">SafeProbabilisticModule</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.SafeSequential.html">SafeSequential</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.SafeProbabilisticSequential.html">SafeProbabilisticSequential</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.Actor.html">Actor</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.ProbabilisticActor.html">ProbabilisticActor</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.ValueOperator.html">ValueOperator</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.QValueActor.html">QValueActor</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.DistributionalQValueActor.html">DistributionalQValueActor</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.ActorValueOperator.html">ActorValueOperator</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.ActorCriticOperator.html">ActorCriticOperator</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.ActorCriticWrapper.html">ActorCriticWrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.tensordict_module.Actor.html">Actor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.tensordict_module.ActorCriticOperator.html">ActorCriticOperator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.tensordict_module.ActorCriticWrapper.html">ActorCriticWrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.tensordict_module.ActorValueOperator.html">ActorValueOperator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.tensordict_module.DistributionalQValueActor.html">DistributionalQValueActor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.tensordict_module.ProbabilisticActor.html">ProbabilisticActor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.tensordict_module.QValueActor.html">QValueActor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.tensordict_module.ValueOperator.html">ValueOperator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.tensordict_module.SafeModule.html">SafeModule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.tensordict_module.AdditiveGaussianWrapper.html">AdditiveGaussianWrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.tensordict_module.EGreedyWrapper.html">EGreedyWrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper.html">OrnsteinUhlenbeckProcessWrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.tensordict_module.SafeProbabilisticModule.html">SafeProbabilisticModule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.tensordict_module.SafeProbabilisticSequential.html">SafeProbabilisticSequential</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.tensordict_module.SafeSequential.html">SafeSequential</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.tensordict_module.WorldModelWrapper.html">WorldModelWrapper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.tensordict_module.common.is_tensordict_compatible.html">is_tensordict_compatible</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.tensordict_module.common.ensure_tensordict_compatible.html">ensure_tensordict_compatible</a></li>
 </ul>
@@ -545,10 +569,13 @@
 <li class="toctree-l2"><a class="reference internal" href="modules.html#planners">Planners</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.CEMPlanner.html">CEMPlanner</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.MPCPlannerBase.html">MPCPlannerBase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.MPPIPlanner.html">MPPIPlanner</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modules.html#distributions">Distributions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.Delta.html">Delta</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.IndependentNormal.html">IndependentNormal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.NormalParamWrapper.html">NormalParamWrapper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.TanhNormal.html">TanhNormal</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.TruncatedNormal.html">TruncatedNormal</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.modules.TanhDelta.html">TanhDelta</a></li>
@@ -591,6 +618,16 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.objectives.A2CLoss.html">A2CLoss</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="objectives.html#reinforce">Reinforce</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.objectives.ReinforceLoss.html">ReinforceLoss</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="objectives.html#dreamer">Dreamer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.objectives.DreamerActorLoss.html">DreamerActorLoss</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.objectives.DreamerModelLoss.html">DreamerModelLoss</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.objectives.DreamerValueLoss.html">DreamerValueLoss</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="objectives.html#returns">Returns</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.objectives.value.GAE.html">GAE</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.objectives.value.TDLambdaEstimate.html">TDLambdaEstimate</a></li>
@@ -618,46 +655,55 @@
 <li class="toctree-l1"><a class="reference internal" href="trainers.html">torchrl.trainers package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="trainers.html#checkpointing">Checkpointing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="trainers.html#trainer-and-hooks">Trainer and hooks</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.Trainer.html">Trainer</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.BatchSubSampler.html">BatchSubSampler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.ClearCudaCache.html">ClearCudaCache</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.CountFramesLog.html">CountFramesLog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.LogReward.html">LogReward</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.OptimizerHook.html">OptimizerHook</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.Recorder.html">Recorder</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.ReplayBuffer.html">ReplayBuffer</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.RewardNormalizer.html">RewardNormalizer</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.SelectKeys.html">SelectKeys</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.Trainer.html">Trainer</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.UpdateWeights.html">UpdateWeights</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.ClearCudaCache.html">ClearCudaCache</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="trainers.html#builders">Builders</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_trainer.html">make_trainer</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.sync_sync_collector.html">sync_sync_collector</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.sync_async_collector.html">sync_async_collector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_a2c_loss.html">make_a2c_loss</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_a2c_model.html">make_a2c_model</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_collector_offpolicy.html">make_collector_offpolicy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_collector_onpolicy.html">make_collector_onpolicy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.transformed_env_constructor.html">transformed_env_constructor</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.parallel_env_constructor.html">parallel_env_constructor</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_sac_loss.html">make_sac_loss</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_a2c_loss.html">make_a2c_loss</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_dqn_loss.html">make_dqn_loss</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_ddpg_loss.html">make_ddpg_loss</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_target_updater.html">make_target_updater</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_ppo_loss.html">make_ppo_loss</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_redq_loss.html">make_redq_loss</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_dqn_actor.html">make_dqn_actor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_ddpg_actor.html">make_ddpg_actor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_ddpg_loss.html">make_ddpg_loss</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_dqn_actor.html">make_dqn_actor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_dqn_loss.html">make_dqn_loss</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_ppo_loss.html">make_ppo_loss</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_ppo_model.html">make_ppo_model</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_a2c_model.html">make_a2c_model</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_sac_model.html">make_sac_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_redq_loss.html">make_redq_loss</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_redq_model.html">make_redq_model</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_replay_buffer.html">make_replay_buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_sac_loss.html">make_sac_loss</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_sac_model.html">make_sac_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_target_updater.html">make_target_updater</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.make_trainer.html">make_trainer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.parallel_env_constructor.html">parallel_env_constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.sync_async_collector.html">sync_async_collector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.sync_sync_collector.html">sync_sync_collector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.transformed_env_constructor.html">transformed_env_constructor</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="trainers.html#utils">Utils</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.correct_for_frame_skip.html">correct_for_frame_skip</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.helpers.get_stats_random_rollout.html">get_stats_random_rollout</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="trainers.html#loggers">Loggers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.loggers.Logger.html">Logger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.loggers.CSVLogger.html">CSVLogger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.loggers.MLFlowLogger.html">MLFlowLogger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.loggers.TensorboardLogger.html">TensorboardLogger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.loggers.WandbLogger.html">WandbLogger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.loggers.get_logger.html">get_logger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/torchrl.trainers.loggers.generate_exp_name.html">generate_exp_name</a></li>
 </ul>
 </li>
 </ul>

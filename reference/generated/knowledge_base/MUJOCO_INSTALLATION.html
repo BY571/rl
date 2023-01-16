@@ -257,9 +257,9 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Tutorials:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/torchrl_demo.html">Introduction to TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/pretrained_models.html">Using pretrained models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/tensordict_tutorial.html">TensorDict</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/tensordict_module.html">TensorDictModule</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/torch_envs.html">TorchRL envs</a></li>
@@ -267,9 +267,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/coding_ddpg.html">Coding DDPG using TorchRL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/coding_dqn.html">Coding a pixel-based DQN using TorchRL</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">References:</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../index.html">API Reference</a></li>
+</ul>
+<ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../../knowledge_base.html">Knowledge Base</a></li>
 </ul>
 
@@ -573,6 +574,12 @@ To check that your mujoco-py has been built against the GPU, run</p>
 <blockquote>
 <div><p>Make sure to set <code class="docutils literal notranslate"><span class="pre">DISPLAY</span></code> environment variable correctly.</p>
 </div></blockquote>
+<ol class="arabic simple" start="5">
+<li><p><code class="docutils literal notranslate"><span class="pre">ImportError:</span> <span class="pre">Cannot</span> <span class="pre">initialize</span> <span class="pre">a</span> <span class="pre">headless</span> <span class="pre">EGL</span> <span class="pre">display.</span></code>
+Make sure you have installed mujoco and all its dependencies (see instructions above).
+Make sure you have set the <code class="docutils literal notranslate"><span class="pre">MUJOCO_GL=egl</span></code>.
+Make sure you have a GPU accessible on your machine.</p></li>
+</ol>
 </section>
 
 
