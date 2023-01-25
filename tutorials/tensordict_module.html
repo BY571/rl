@@ -402,9 +402,9 @@ value associated with <code class="docutils literal notranslate"><span class="pr
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
     fields={
-        a: Tensor(torch.Size([5, 3]), dtype=torch.float32),
-        a_out: Tensor(torch.Size([5, 10]), dtype=torch.float32),
-        b: Tensor(torch.Size([5, 4, 3]), dtype=torch.float32)},
+        a: Tensor(shape=torch.Size([5, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+        a_out: Tensor(shape=torch.Size([5, 10]), device=cpu, dtype=torch.float32, is_shared=False),
+        b: Tensor(shape=torch.Size([5, 4, 3]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([5]),
     device=None,
     is_shared=False)
@@ -444,9 +444,9 @@ instance read multiple input values, one must register them in the
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
     fields={
-        a: Tensor(torch.Size([5, 3]), dtype=torch.float32),
-        b: Tensor(torch.Size([5, 4]), dtype=torch.float32),
-        output: Tensor(torch.Size([5, 10]), dtype=torch.float32)},
+        a: Tensor(shape=torch.Size([5, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+        b: Tensor(shape=torch.Size([5, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        output: Tensor(shape=torch.Size([5, 10]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([5]),
     device=None,
     is_shared=False)
@@ -481,9 +481,9 @@ of the constructor.</p>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
     fields={
-        a: Tensor(torch.Size([5, 3]), dtype=torch.float32),
-        output_1: Tensor(torch.Size([5, 4]), dtype=torch.float32),
-        output_2: Tensor(torch.Size([5, 10]), dtype=torch.float32)},
+        a: Tensor(shape=torch.Size([5, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+        output_1: Tensor(shape=torch.Size([5, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        output_2: Tensor(shape=torch.Size([5, 10]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([5]),
     device=None,
     is_shared=False)
@@ -544,9 +544,9 @@ utilities. Let us have a look:</p>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
     fields={
-        a: Tensor(torch.Size([5, 3]), dtype=torch.float32),
-        output_1: Tensor(torch.Size([5, 4]), dtype=torch.float32),
-        output_2: Tensor(torch.Size([5, 10]), dtype=torch.float32)},
+        a: Tensor(shape=torch.Size([5, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+        output_1: Tensor(shape=torch.Size([5, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        output_2: Tensor(shape=torch.Size([5, 10]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([5]),
     device=None,
     is_shared=False)
@@ -562,9 +562,9 @@ of data:</p>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
     fields={
-        a: Tensor(torch.Size([3, 5, 3]), dtype=torch.float32),
-        output_1: Tensor(torch.Size([3, 5, 4]), dtype=torch.float32),
-        output_2: Tensor(torch.Size([3, 5, 10]), dtype=torch.float32)},
+        a: Tensor(shape=torch.Size([3, 5, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+        output_1: Tensor(shape=torch.Size([3, 5, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        output_2: Tensor(shape=torch.Size([3, 5, 10]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([3, 5]),
     device=None,
     is_shared=False)
@@ -645,19 +645,19 @@ probability if needed.</p>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict before going through module: TensorDict(
     fields={
-        hidden: Tensor(torch.Size([3, 8]), dtype=torch.float32),
-        input: Tensor(torch.Size([3, 4]), dtype=torch.float32)},
+        hidden: Tensor(shape=torch.Size([3, 8]), device=cpu, dtype=torch.float32, is_shared=False),
+        input: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([3]),
     device=None,
     is_shared=False)
 TensorDict after going through module now as keys action, loc and scale: TensorDict(
     fields={
-        action: Tensor(torch.Size([3, 4]), dtype=torch.float32),
-        hidden: Tensor(torch.Size([3, 8]), dtype=torch.float32),
-        input: Tensor(torch.Size([3, 4]), dtype=torch.float32),
-        loc: Tensor(torch.Size([3, 4]), dtype=torch.float32),
-        sample_log_prob: Tensor(torch.Size([3]), dtype=torch.float32),
-        scale: Tensor(torch.Size([3, 4]), dtype=torch.float32)},
+        action: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        hidden: Tensor(shape=torch.Size([3, 8]), device=cpu, dtype=torch.float32, is_shared=False),
+        input: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        loc: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        sample_log_prob: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
+        scale: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([3]),
     device=None,
     is_shared=False)
@@ -726,42 +726,42 @@ then the value according to this action.</p>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
     fields={
-        observation: Tensor(torch.Size([3, 4]), dtype=torch.float32)},
+        observation: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([3]),
     device=None,
     is_shared=False)
 TensorDict(
     fields={
-        action: Tensor(torch.Size([3, 4]), dtype=torch.float32),
-        hidden: Tensor(torch.Size([3, 4]), dtype=torch.float32),
-        loc: Tensor(torch.Size([3, 4]), dtype=torch.float32),
-        observation: Tensor(torch.Size([3, 4]), dtype=torch.float32),
-        sample_log_prob: Tensor(torch.Size([3]), dtype=torch.float32),
-        scale: Tensor(torch.Size([3, 4]), dtype=torch.float32),
-        state_action_value: Tensor(torch.Size([3, 1]), dtype=torch.float32)},
+        action: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        hidden: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        loc: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        observation: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        sample_log_prob: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
+        scale: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        state_action_value: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([3]),
     device=None,
     is_shared=False)
 Policy: TensorDict(
     fields={
-        action: Tensor(torch.Size([3, 4]), dtype=torch.float32),
-        hidden: Tensor(torch.Size([3, 4]), dtype=torch.float32),
-        loc: Tensor(torch.Size([3, 4]), dtype=torch.float32),
-        observation: Tensor(torch.Size([3, 4]), dtype=torch.float32),
-        sample_log_prob: Tensor(torch.Size([3]), dtype=torch.float32),
-        scale: Tensor(torch.Size([3, 4]), dtype=torch.float32)},
+        action: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        hidden: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        loc: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        observation: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        sample_log_prob: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
+        scale: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([3]),
     device=None,
     is_shared=False)
 Critic: TensorDict(
     fields={
-        action: Tensor(torch.Size([3, 4]), dtype=torch.float32),
-        hidden: Tensor(torch.Size([3, 4]), dtype=torch.float32),
-        loc: Tensor(torch.Size([3, 4]), dtype=torch.float32),
-        observation: Tensor(torch.Size([3, 4]), dtype=torch.float32),
-        sample_log_prob: Tensor(torch.Size([3]), dtype=torch.float32),
-        scale: Tensor(torch.Size([3, 4]), dtype=torch.float32),
-        state_action_value: Tensor(torch.Size([3, 1]), dtype=torch.float32)},
+        action: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        hidden: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        loc: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        observation: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        sample_log_prob: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
+        scale: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        state_action_value: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([3]),
     device=None,
     is_shared=False)
@@ -1194,13 +1194,13 @@ keys and values.</p>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
     fields={
-        Attn: Tensor(torch.Size([8, 2, 10, 3]), dtype=torch.float32),
-        K: Tensor(torch.Size([8, 2, 3, 5]), dtype=torch.float32),
-        Q: Tensor(torch.Size([8, 2, 10, 5]), dtype=torch.float32),
-        V: Tensor(torch.Size([8, 2, 3, 5]), dtype=torch.float32),
-        X_decode: Tensor(torch.Size([8, 10, 6]), dtype=torch.float32),
-        X_encode: Tensor(torch.Size([8, 3, 5]), dtype=torch.float32),
-        X_out: Tensor(torch.Size([8, 10, 6]), dtype=torch.float32)},
+        Attn: Tensor(shape=torch.Size([8, 2, 10, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+        K: Tensor(shape=torch.Size([8, 2, 3, 5]), device=cpu, dtype=torch.float32, is_shared=False),
+        Q: Tensor(shape=torch.Size([8, 2, 10, 5]), device=cpu, dtype=torch.float32, is_shared=False),
+        V: Tensor(shape=torch.Size([8, 2, 3, 5]), device=cpu, dtype=torch.float32, is_shared=False),
+        X_decode: Tensor(shape=torch.Size([8, 10, 6]), device=cpu, dtype=torch.float32, is_shared=False),
+        X_encode: Tensor(shape=torch.Size([8, 3, 5]), device=cpu, dtype=torch.float32, is_shared=False),
+        X_out: Tensor(shape=torch.Size([8, 10, 6]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([8]),
     device=None,
     is_shared=False)
@@ -1262,7 +1262,7 @@ complex operarations.</p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Execution time:&quot;</span><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">t2</span></a> <span class="o">-</span> <a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">t1</span></a><span class="p">,</span> <span class="s2">&quot;seconds&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Execution time: 0.015843629837036133 seconds
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Execution time: 0.01019740104675293 seconds
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">t3</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span><span class="o">.</span><span class="n">time</span></a><span class="p">()</span>
@@ -1271,13 +1271,13 @@ complex operarations.</p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Execution time:&quot;</span><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">t4</span></a> <span class="o">-</span> <a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">t3</span></a><span class="p">,</span> <span class="s2">&quot;seconds&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Execution time: 0.009774923324584961 seconds
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Execution time: 0.0069162845611572266 seconds
 </pre></div>
 </div>
 <p>We can see on this minimal example that the overhead introduced by
 <code class="docutils literal notranslate"><span class="pre">TensorDictModule</span></code> is marginal.</p>
 <p>Have fun with TensorDictModule!</p>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.119 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.096 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-tensordict-module-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/3e61c81f224cb8cecc06413ef124320a/tensordict_module.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">tensordict_module.py</span></code></a></p>

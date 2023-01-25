@@ -38,8 +38,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="CompositeSpec" href="torchrl.data.CompositeSpec.html" />
-    <link rel="prev" title="MultOneHotDiscreteTensorSpec" href="torchrl.data.MultOneHotDiscreteTensorSpec.html" />
+    <link rel="next" title="MultiDiscreteTensorSpec" href="torchrl.data.MultiDiscreteTensorSpec.html" />
+    <link rel="prev" title="CompositeSpec" href="torchrl.data.CompositeSpec.html" />
   <!-- Google Analytics -->
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-117752657-2"></script>
@@ -392,7 +392,7 @@ computation and reduce memory cost for large categorical variables.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of possible outcomes.</p></li>
-<li><p><strong>shape</strong> – (torch.Size, optional): shape of the variable, default is “(1,)”.</p></li>
+<li><p><strong>shape</strong> – (torch.Size, optional): shape of the variable, default is “torch.Size([])”.</p></li>
 <li><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="(in PyTorch v1.13)"><em>torch.device</em></a><em>, </em><em>optional</em>) – device of the tensors.</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.dtype" title="(in PyTorch v1.13)"><em>torch.dtype</em></a><em>, </em><em>optional</em>) – dtype of the tensors.</p></li>
 </ul>
@@ -419,6 +419,20 @@ computation and reduce memory cost for large categorical variables.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>torch.Tensor matching the required tensor specs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torchrl.data.DiscreteTensorSpec.expand">
+<span class="sig-name descname"><span class="pre">expand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">shape</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/data/tensor_specs.html#DiscreteTensorSpec.expand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.data.DiscreteTensorSpec.expand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new Spec with the extended shape.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*shape</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a><em> or </em><em>iterable</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the new shape of the Spec. Must comply with the current shape:
+its length must be at least as long as the current shape length,
+and its last values must be complient too; ie they can only differ
+from it if the current dimension is a singleton.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -542,10 +556,10 @@ indicated key.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="torchrl.data.CompositeSpec.html" class="btn btn-neutral float-right" title="CompositeSpec" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
+        <a href="torchrl.data.MultiDiscreteTensorSpec.html" class="btn btn-neutral float-right" title="MultiDiscreteTensorSpec" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
       
       
-        <a href="torchrl.data.MultOneHotDiscreteTensorSpec.html" class="btn btn-neutral" title="MultOneHotDiscreteTensorSpec" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
+        <a href="torchrl.data.CompositeSpec.html" class="btn btn-neutral" title="CompositeSpec" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
       
     </div>
   
@@ -581,6 +595,7 @@ indicated key.</p></li>
 <li><a class="reference internal" href="#torchrl.data.DiscreteTensorSpec"><code class="docutils literal notranslate"><span class="pre">DiscreteTensorSpec</span></code></a><ul>
 <li><a class="reference internal" href="#torchrl.data.DiscreteTensorSpec.assert_is_in"><code class="docutils literal notranslate"><span class="pre">DiscreteTensorSpec.assert_is_in()</span></code></a></li>
 <li><a class="reference internal" href="#torchrl.data.DiscreteTensorSpec.encode"><code class="docutils literal notranslate"><span class="pre">DiscreteTensorSpec.encode()</span></code></a></li>
+<li><a class="reference internal" href="#torchrl.data.DiscreteTensorSpec.expand"><code class="docutils literal notranslate"><span class="pre">DiscreteTensorSpec.expand()</span></code></a></li>
 <li><a class="reference internal" href="#torchrl.data.DiscreteTensorSpec.index"><code class="docutils literal notranslate"><span class="pre">DiscreteTensorSpec.index()</span></code></a></li>
 <li><a class="reference internal" href="#torchrl.data.DiscreteTensorSpec.is_in"><code class="docutils literal notranslate"><span class="pre">DiscreteTensorSpec.is_in()</span></code></a></li>
 <li><a class="reference internal" href="#torchrl.data.DiscreteTensorSpec.project"><code class="docutils literal notranslate"><span class="pre">DiscreteTensorSpec.project()</span></code></a></li>

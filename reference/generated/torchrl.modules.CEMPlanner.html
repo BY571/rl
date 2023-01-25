@@ -430,9 +430,9 @@ the action. Defaults to “action”</p></li>
 <span class="gp">... </span>            <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
 <span class="gp">... </span>        <span class="p">)</span>
 <span class="gp">... </span>        <span class="n">tensordict</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-<span class="gp">... </span>            <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">))</span>
+<span class="gp">... </span>            <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="o">.</span><span class="n">rand</span><span class="p">())</span>
 <span class="gp">... </span>        <span class="n">tensordict</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-<span class="gp">... </span>            <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">))</span>
+<span class="gp">... </span>            <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">rand</span><span class="p">())</span>
 <span class="gp">... </span>        <span class="k">return</span> <span class="n">tensordict</span>
 <span class="gp">...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="n">MLP</span><span class="p">,</span> <span class="n">WorldModelWrapper</span>

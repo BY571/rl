@@ -482,6 +482,19 @@ significant speedup.</p></li>
 </li>
 </ul>
 </section>
+<section id="common-bugs">
+<h2>Common bugs<a class="headerlink" href="#common-bugs" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>For bugs related to mujoco (incl. DeepMind Control suite and other libraries),
+refer to the <a class="reference internal" href="MUJOCO_INSTALLATION.html"><span class="doc std std-doc">MUJOCO_INSTALLATION</span></a> file.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ValueError:</span> <span class="pre">bad</span> <span class="pre">value(s)</span> <span class="pre">in</span> <span class="pre">fds_to_keep</span></code>: this can have multiple reasons. One that is common in torchrl
+is that you are trying to send a tensor across processes that is a view of another tensor.
+For instance, when sending the tensor <code class="docutils literal notranslate"><span class="pre">b</span> <span class="pre">=</span> <span class="pre">tensor.expand(new_shape)</span></code> across processes, the reference to the original
+content will be lost (as the <code class="docutils literal notranslate"><span class="pre">expand</span></code> operation keeps the reference to the original tensor).
+To debug this, look for such operations (<code class="docutils literal notranslate"><span class="pre">view</span></code>, <code class="docutils literal notranslate"><span class="pre">permute</span></code>, <code class="docutils literal notranslate"><span class="pre">expand</span></code>, etc.) and call <code class="docutils literal notranslate"><span class="pre">clone()</span></code> or <code class="docutils literal notranslate"><span class="pre">contiguous()</span></code> after
+the call to the function.</p></li>
+</ul>
+</section>
 </section>
 
 
@@ -530,6 +543,7 @@ significant speedup.</p></li>
 <li><a class="reference internal" href="#">Pro-tips and Debugging</a><ul>
 <li><a class="reference internal" href="#gradient-related-errors-newcomers">Gradient-related errors [Newcomers]</a></li>
 <li><a class="reference internal" href="#my-training-is-too-slow-newcomers-intermediate">My Training is too slow [Newcomers / intermediate]</a></li>
+<li><a class="reference internal" href="#common-bugs">Common bugs</a></li>
 </ul>
 </li>
 </ul>

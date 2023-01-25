@@ -458,32 +458,32 @@ Check the <a class="reference internal" href="generated/torchrl.envs.utils.check
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.TensorSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TensorSpec</span></code></a>(shape, space[, device, dtype, domain])</p></td>
 <td><p>Parent class of the tensor meta-data containers for observation, actions and rewards.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.BoundedTensorSpec.html#torchrl.data.BoundedTensorSpec" title="torchrl.data.BoundedTensorSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BoundedTensorSpec</span></code></a>(minimum, maximum[, shape, ...])</p></td>
-<td><p>A bounded continuous tensor spec.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.OneHotDiscreteTensorSpec.html#torchrl.data.OneHotDiscreteTensorSpec" title="torchrl.data.OneHotDiscreteTensorSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OneHotDiscreteTensorSpec</span></code></a>(n[, device, dtype, ...])</p></td>
-<td><p>A unidimensional, one-hot discrete tensor spec.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec" title="torchrl.data.UnboundedContinuousTensorSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnboundedContinuousTensorSpec</span></code></a>([shape, ...])</p></td>
-<td><p>An unbounded continuous tensor spec.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.BinaryDiscreteTensorSpec.html#torchrl.data.BinaryDiscreteTensorSpec" title="torchrl.data.BinaryDiscreteTensorSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinaryDiscreteTensorSpec</span></code></a>(n[, shape, device, ...])</p></td>
+<td><p>A binary discrete tensor spec.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.BoundedTensorSpec.html#torchrl.data.BoundedTensorSpec" title="torchrl.data.BoundedTensorSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BoundedTensorSpec</span></code></a>(minimum, maximum[, shape, ...])</p></td>
 <td><p>A bounded continuous tensor spec.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec" title="torchrl.data.UnboundedContinuousTensorSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnboundedContinuousTensorSpec</span></code></a>([shape, ...])</p></td>
-<td><p>An unbounded continuous tensor spec.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.BinaryDiscreteTensorSpec.html#torchrl.data.BinaryDiscreteTensorSpec" title="torchrl.data.BinaryDiscreteTensorSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinaryDiscreteTensorSpec</span></code></a>(n[, device, dtype])</p></td>
-<td><p>A binary discrete tensor spec.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.MultOneHotDiscreteTensorSpec.html#torchrl.data.MultOneHotDiscreteTensorSpec" title="torchrl.data.MultOneHotDiscreteTensorSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultOneHotDiscreteTensorSpec</span></code></a>(nvec[, device, ...])</p></td>
-<td><p>A concatenation of one-hot discrete tensor spec.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.CompositeSpec.html#torchrl.data.CompositeSpec" title="torchrl.data.CompositeSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CompositeSpec</span></code></a>(*args, **kwargs)</p></td>
+<td><p>A composition of TensorSpecs.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.DiscreteTensorSpec.html#torchrl.data.DiscreteTensorSpec" title="torchrl.data.DiscreteTensorSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DiscreteTensorSpec</span></code></a>(n[, shape, device, dtype])</p></td>
 <td><p>A discrete tensor spec.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.CompositeSpec.html#torchrl.data.CompositeSpec" title="torchrl.data.CompositeSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CompositeSpec</span></code></a>(*args, **kwargs)</p></td>
-<td><p>A composition of TensorSpecs.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.MultiDiscreteTensorSpec.html#torchrl.data.MultiDiscreteTensorSpec" title="torchrl.data.MultiDiscreteTensorSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiDiscreteTensorSpec</span></code></a>(nvec[, shape, ...])</p></td>
+<td><p>A concatenation of discrete tensor spec.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.MultiOneHotDiscreteTensorSpec.html#torchrl.data.MultiOneHotDiscreteTensorSpec" title="torchrl.data.MultiOneHotDiscreteTensorSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiOneHotDiscreteTensorSpec</span></code></a>(nvec[, shape, ...])</p></td>
+<td><p>A concatenation of one-hot discrete tensor spec.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.OneHotDiscreteTensorSpec.html#torchrl.data.OneHotDiscreteTensorSpec" title="torchrl.data.OneHotDiscreteTensorSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OneHotDiscreteTensorSpec</span></code></a>(n[, shape, device, ...])</p></td>
+<td><p>A unidimensional, one-hot discrete tensor spec.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec" title="torchrl.data.UnboundedContinuousTensorSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnboundedContinuousTensorSpec</span></code></a>([shape, ...])</p></td>
+<td><p>An unbounded continuous tensor spec.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.UnboundedDiscreteTensorSpec.html#torchrl.data.UnboundedDiscreteTensorSpec" title="torchrl.data.UnboundedDiscreteTensorSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnboundedDiscreteTensorSpec</span></code></a>([shape, device, ...])</p></td>
+<td><p>An unbounded discrete tensor spec.</p></td>
 </tr>
 </tbody>
 </table>

@@ -215,7 +215,7 @@
               
               
                 <div class="version">
-                  main (0.0.1c+58e55c5 )
+                  main (0.0.2a+65b0f7f )
                 </div>
               
             
@@ -251,6 +251,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="distributed.html">TensorDict in distributed settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="saving.html">Saving TensorDict and tensorclass objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/index.html">API Reference</a></li>
 </ul>
 
@@ -387,10 +388,10 @@
         <li><a href="reference/generated/tensordict.TensorDict.html#tensordict.TensorDict.any">(tensordict.TensorDict method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/tensordict.LazyStackedTensorDict.html#tensordict.LazyStackedTensorDict.append">append() (tensordict.LazyStackedTensorDict method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/tensordict.LazyStackedTensorDict.html#tensordict.LazyStackedTensorDict.apply">apply() (tensordict.LazyStackedTensorDict method)</a>
 
       <ul>
@@ -407,6 +408,8 @@
         <li><a href="reference/generated/tensordict.TensorDict.html#tensordict.TensorDict.apply_">(tensordict.TensorDict method)</a>
 </li>
       </ul></li>
+      <li><a href="reference/generated/tensordict.MemmapTensor.html#tensordict.MemmapTensor.as_tensor">as_tensor() (tensordict.MemmapTensor method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -450,6 +453,8 @@
       <li><a href="reference/generated/tensordict.LazyStackedTensorDict.html#tensordict.LazyStackedTensorDict.clone">clone() (tensordict.LazyStackedTensorDict method)</a>
 
       <ul>
+        <li><a href="reference/generated/tensordict.MemmapTensor.html#tensordict.MemmapTensor.clone">(tensordict.MemmapTensor method)</a>
+</li>
         <li><a href="reference/generated/tensordict.SubTensorDict.html#tensordict.SubTensorDict.clone">(tensordict.SubTensorDict method)</a>
 </li>
         <li><a href="reference/generated/tensordict.TensorDict.html#tensordict.TensorDict.clone">(tensordict.TensorDict method)</a>
@@ -458,6 +463,8 @@
       <li><a href="reference/generated/tensordict.LazyStackedTensorDict.html#tensordict.LazyStackedTensorDict.contiguous">contiguous() (tensordict.LazyStackedTensorDict method)</a>
 
       <ul>
+        <li><a href="reference/generated/tensordict.MemmapTensor.html#tensordict.MemmapTensor.contiguous">(tensordict.MemmapTensor method)</a>
+</li>
         <li><a href="reference/generated/tensordict.SubTensorDict.html#tensordict.SubTensorDict.contiguous">(tensordict.SubTensorDict method)</a>
 </li>
         <li><a href="reference/generated/tensordict.TensorDict.html#tensordict.TensorDict.contiguous">(tensordict.TensorDict method)</a>
@@ -484,6 +491,8 @@
       <li><a href="reference/generated/tensordict.LazyStackedTensorDict.html#tensordict.LazyStackedTensorDict.cpu">cpu() (tensordict.LazyStackedTensorDict method)</a>
 
       <ul>
+        <li><a href="reference/generated/tensordict.MemmapTensor.html#tensordict.MemmapTensor.cpu">(tensordict.MemmapTensor method)</a>
+</li>
         <li><a href="reference/generated/tensordict.SubTensorDict.html#tensordict.SubTensorDict.cpu">(tensordict.SubTensorDict method)</a>
 </li>
         <li><a href="reference/generated/tensordict.TensorDict.html#tensordict.TensorDict.cpu">(tensordict.TensorDict method)</a>
@@ -492,6 +501,8 @@
       <li><a href="reference/generated/tensordict.LazyStackedTensorDict.html#tensordict.LazyStackedTensorDict.cuda">cuda() (tensordict.LazyStackedTensorDict method)</a>
 
       <ul>
+        <li><a href="reference/generated/tensordict.MemmapTensor.html#tensordict.MemmapTensor.cuda">(tensordict.MemmapTensor method)</a>
+</li>
         <li><a href="reference/generated/tensordict.SubTensorDict.html#tensordict.SubTensorDict.cuda">(tensordict.SubTensorDict method)</a>
 </li>
         <li><a href="reference/generated/tensordict.TensorDict.html#tensordict.TensorDict.cuda">(tensordict.TensorDict method)</a>
@@ -553,6 +564,16 @@
         <li><a href="reference/generated/tensordict.TensorDict.html#tensordict.TensorDict.empty">(tensordict.TensorDict method)</a>
 </li>
       </ul></li>
+      <li><a href="reference/generated/tensordict.LazyStackedTensorDict.html#tensordict.LazyStackedTensorDict.entry_class">entry_class() (tensordict.LazyStackedTensorDict method)</a>
+
+      <ul>
+        <li><a href="reference/generated/tensordict.SubTensorDict.html#tensordict.SubTensorDict.entry_class">(tensordict.SubTensorDict method)</a>
+</li>
+        <li><a href="reference/generated/tensordict.TensorDict.html#tensordict.TensorDict.entry_class">(tensordict.TensorDict method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/tensordict.LazyStackedTensorDict.html#tensordict.LazyStackedTensorDict.expand">expand() (tensordict.LazyStackedTensorDict method)</a>
 
       <ul>
@@ -561,8 +582,6 @@
         <li><a href="reference/generated/tensordict.TensorDict.html#tensordict.TensorDict.expand">(tensordict.TensorDict method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/tensordict.utils.expand_as_right.html#tensordict.utils.expand_as_right">expand_as_right (class in tensordict.utils)</a>
 </li>
       <li><a href="reference/generated/tensordict.utils.expand_right.html#tensordict.utils.expand_right">expand_right (class in tensordict.utils)</a>
@@ -671,14 +690,6 @@
         <li><a href="reference/generated/tensordict.TensorDict.html#tensordict.TensorDict.items">(tensordict.TensorDict method)</a>
 </li>
       </ul></li>
-      <li><a href="reference/generated/tensordict.LazyStackedTensorDict.html#tensordict.LazyStackedTensorDict.items_meta">items_meta() (tensordict.LazyStackedTensorDict method)</a>
-
-      <ul>
-        <li><a href="reference/generated/tensordict.SubTensorDict.html#tensordict.SubTensorDict.items_meta">(tensordict.SubTensorDict method)</a>
-</li>
-        <li><a href="reference/generated/tensordict.TensorDict.html#tensordict.TensorDict.items_meta">(tensordict.TensorDict method)</a>
-</li>
-      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -745,6 +756,8 @@
         <li><a href="reference/generated/tensordict.TensorDict.html#tensordict.TensorDict.memmap_">(tensordict.TensorDict method)</a>
 </li>
       </ul></li>
+      <li><a href="reference/generated/tensordict.MemmapTensor.html#tensordict.MemmapTensor">MemmapTensor (class in tensordict)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -859,9 +872,11 @@
         <li><a href="reference/generated/tensordict.TensorDict.html#tensordict.TensorDict.set_default">(tensordict.TensorDict method)</a>
 </li>
       </ul></li>
+      <li><a href="reference/generated/tensordict.nn.set_interaction_mode.html#tensordict.nn.set_interaction_mode">set_interaction_mode (class in tensordict.nn)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/generated/tensordict.nn.set_interaction_mode.html#tensordict.nn.set_interaction_mode">set_interaction_mode (class in tensordict.nn)</a>
+      <li><a href="reference/generated/tensordict.MemmapTensor.html#tensordict.MemmapTensor.set_transfer_ownership">set_transfer_ownership() (tensordict.MemmapTensor method)</a>
 </li>
       <li><a href="reference/generated/tensordict.LazyStackedTensorDict.html#tensordict.LazyStackedTensorDict.shape">shape (tensordict.LazyStackedTensorDict property)</a>
 
@@ -922,6 +937,8 @@
       <li><a href="reference/generated/tensordict.LazyStackedTensorDict.html#tensordict.LazyStackedTensorDict.to">to() (tensordict.LazyStackedTensorDict method)</a>
 
       <ul>
+        <li><a href="reference/generated/tensordict.MemmapTensor.html#tensordict.MemmapTensor.to">(tensordict.MemmapTensor method)</a>
+</li>
         <li><a href="reference/generated/tensordict.SubTensorDict.html#tensordict.SubTensorDict.to">(tensordict.SubTensorDict method)</a>
 </li>
         <li><a href="reference/generated/tensordict.TensorDict.html#tensordict.TensorDict.to">(tensordict.TensorDict method)</a>
@@ -954,6 +971,8 @@
       <li><a href="reference/generated/tensordict.LazyStackedTensorDict.html#tensordict.LazyStackedTensorDict.unbind">unbind() (tensordict.LazyStackedTensorDict method)</a>
 
       <ul>
+        <li><a href="reference/generated/tensordict.MemmapTensor.html#tensordict.MemmapTensor.unbind">(tensordict.MemmapTensor method)</a>
+</li>
         <li><a href="reference/generated/tensordict.SubTensorDict.html#tensordict.SubTensorDict.unbind">(tensordict.SubTensorDict method)</a>
 </li>
         <li><a href="reference/generated/tensordict.TensorDict.html#tensordict.TensorDict.unbind">(tensordict.TensorDict method)</a>
@@ -1005,14 +1024,6 @@
         <li><a href="reference/generated/tensordict.SubTensorDict.html#tensordict.SubTensorDict.values">(tensordict.SubTensorDict method)</a>
 </li>
         <li><a href="reference/generated/tensordict.TensorDict.html#tensordict.TensorDict.values">(tensordict.TensorDict method)</a>
-</li>
-      </ul></li>
-      <li><a href="reference/generated/tensordict.LazyStackedTensorDict.html#tensordict.LazyStackedTensorDict.values_meta">values_meta() (tensordict.LazyStackedTensorDict method)</a>
-
-      <ul>
-        <li><a href="reference/generated/tensordict.SubTensorDict.html#tensordict.SubTensorDict.values_meta">(tensordict.SubTensorDict method)</a>
-</li>
-        <li><a href="reference/generated/tensordict.TensorDict.html#tensordict.TensorDict.values_meta">(tensordict.TensorDict method)</a>
 </li>
       </ul></li>
   </ul></td>

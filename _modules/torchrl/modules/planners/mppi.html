@@ -429,9 +429,9 @@
 <span class="sd">        ...             device=self.device,</span>
 <span class="sd">        ...         )</span>
 <span class="sd">        ...         tensordict = tensordict.update(</span>
-<span class="sd">        ...             self.input_spec.rand(self.batch_size))</span>
+<span class="sd">        ...             self.input_spec.rand())</span>
 <span class="sd">        ...         tensordict = tensordict.update(</span>
-<span class="sd">        ...             self.observation_spec.rand(self.batch_size))</span>
+<span class="sd">        ...             self.observation_spec.rand())</span>
 <span class="sd">        ...         return tensordict</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules import MLP, WorldModelWrapper</span>
 <span class="sd">        &gt;&gt;&gt; import torch.nn as nn</span>

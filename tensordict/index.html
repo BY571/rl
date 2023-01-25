@@ -217,7 +217,7 @@
               
               
                 <div class="version">
-                  main (0.0.1c+58e55c5 )
+                  main (0.0.2a+65b0f7f )
                 </div>
               
             
@@ -253,6 +253,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="distributed.html">TensorDict in distributed settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="saving.html">Saving TensorDict and tensorclass objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/index.html">API Reference</a></li>
 </ul>
 
@@ -382,7 +383,10 @@ For instance, the above example can be easily used across classification and seg
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/tensorclass_imagenet.html">Batched data loading with tensorclasses</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/tensorclass_imagenet.html#transforms">Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/tensorclass_imagenet.html#representing-data-with-a-tensorclass">Representing data with a TensorClass</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/tensorclass_imagenet.html#dataloaders">DataLoaders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/tensorclass_imagenet.html#results-from-imagenet">Results from ImageNet</a></li>
 </ul>
 </li>
 </ul>
@@ -407,11 +411,17 @@ For instance, the above example can be easily used across classification and seg
 <li class="toctree-l2"><a class="reference internal" href="distributed.html#operating-on-memory-mapped-tensors-across-nodes">Operating on Memory-mapped tensors across nodes</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="saving.html">Saving TensorDict and tensorclass objects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="saving.html#general-use-case-in-memory-loading">General use case: in-memory loading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="saving.html#saving-and-loading-big-datasets">Saving and loading big-datasets</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="reference/index.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="reference/tensordict.html">tensordict package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="reference/generated/tensordict.TensorDict.html">TensorDict</a></li>
 <li class="toctree-l3"><a class="reference internal" href="reference/generated/tensordict.SubTensorDict.html">SubTensorDict</a></li>
 <li class="toctree-l3"><a class="reference internal" href="reference/generated/tensordict.LazyStackedTensorDict.html">LazyStackedTensorDict</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/tensordict.html#memory-mapped-tensors">Memory-mapped tensors</a></li>
 <li class="toctree-l3"><a class="reference internal" href="reference/tensordict.html#utils">Utils</a></li>
 </ul>
 </li>

@@ -551,7 +551,7 @@
                 <span class="sa">f</span><span class="s2">&quot;got EnvCreator.create_env_kwargs=</span><span class="si">{</span><span class="n">env_or_creator</span><span class="o">.</span><span class="n">create_env_kwargs</span><span class="si">}</span><span class="s2"> and &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;kwargs = </span><span class="si">{</span><span class="n">kwargs</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
-        <span class="k">return</span> <span class="n">env_or_creator</span><span class="o">.</span><span class="n">meta_data</span>
+        <span class="k">return</span> <span class="n">env_or_creator</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;env of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">env_or_creator</span><span class="p">)</span><span class="si">}</span><span class="s2"> is not supported by get_env_metadata.&quot;</span>

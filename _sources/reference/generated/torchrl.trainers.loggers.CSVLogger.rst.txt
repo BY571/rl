@@ -1,7 +1,0 @@
-﻿.. currentmodule:: torchrl.trainers.loggers
-
-
-CSVLogger
-=========
-
-.. autofunction:: CSVLogger

@@ -583,7 +583,6 @@
                 <span class="s2">&quot;Last dimension of generalized_advantage_estimate inputs must be a singleton dimension.&quot;</span>
             <span class="p">)</span>
     <span class="n">not_done</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">done</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">next_state_value</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-    <span class="n">next_state_value</span> <span class="o">=</span> <span class="n">not_done</span> <span class="o">*</span> <span class="n">next_state_value</span>
 
     <span class="n">returns</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">next_state_value</span><span class="p">)</span>
 
@@ -608,6 +607,7 @@
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">rolling_gamma</span><span class="p">:</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">not_done</span>
         <span class="n">g</span> <span class="o">=</span> <span class="n">next_state_value</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">)):</span>
             <span class="n">g</span> <span class="o">=</span> <span class="n">returns</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">reward</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+</span> <span class="n">gamma</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="p">(</span>
@@ -619,8 +619,10 @@
             <span class="n">g</span> <span class="o">=</span> <span class="n">next_state_value</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
             <span class="n">_gamma</span> <span class="o">=</span> <span class="n">gamma</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="p">:]</span>
             <span class="n">_lambda</span> <span class="o">=</span> <span class="n">lmbda</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">nd</span> <span class="o">=</span> <span class="n">not_done</span>
+            <span class="n">_gamma</span> <span class="o">=</span> <span class="n">_gamma</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">nd</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">T</span><span class="p">)):</span>
-                <span class="n">g</span> <span class="o">=</span> <span class="n">reward</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+</span> <span class="n">_gamma</span> <span class="o">*</span> <span class="p">(</span>
+                <span class="n">g</span> <span class="o">=</span> <span class="n">reward</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+</span> <span class="n">_gamma</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="p">(</span>
                     <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">_lambda</span><span class="p">)</span> <span class="o">*</span> <span class="n">next_state_value</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+</span> <span class="n">_lambda</span> <span class="o">*</span> <span class="n">g</span>
                 <span class="p">)</span>
             <span class="n">returns</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">g</span>
@@ -779,19 +781,37 @@
 
     <span class="n">next_state_value</span> <span class="o">=</span> <span class="n">next_state_value</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
     <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
-    <span class="n">done</span> <span class="o">=</span> <span class="n">done</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Vectorized version of td_lambda_advantage_estimate&quot;&quot;&quot;</span>
     <span class="n">device</span> <span class="o">=</span> <span class="n">reward</span><span class="o">.</span><span class="n">device</span>
     <span class="n">not_done</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">done</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">next_state_value</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-    <span class="n">next_state_value</span> <span class="o">=</span> <span class="n">not_done</span> <span class="o">*</span> <span class="n">next_state_value</span>
 
     <span class="n">first_below_thr_gamma</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">and</span> <span class="n">gamma</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="c1"># 3 use cases: (1) there is one gamma per time step, (2) there is a single gamma but</span>
+    <span class="c1"># some intermediate dones and (3) there is a single gamma and no done.</span>
+    <span class="c1"># (3) can be treated much faster than (1) and (2) (lower mem footprint)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">and</span> <span class="n">gamma</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="n">done</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">rolling_gamma</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">rolling_gamma</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">rolling_gamma</span><span class="p">:</span>
+            <span class="n">gamma</span> <span class="o">=</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">not_done</span>
         <span class="n">gammas</span> <span class="o">=</span> <span class="n">_make_gammas_tensor</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">rolling_gamma</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">rolling_gamma</span><span class="p">:</span>
+            <span class="n">done_follows_done</span> <span class="o">=</span> <span class="n">done</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">:,</span> <span class="p">:][</span><span class="n">done</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]]</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">done_follows_done</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                    <span class="s2">&quot;When using rolling_gamma=False and vectorized TD(lambda), &quot;</span>
+                    <span class="s2">&quot;make sure that conseducitve trajectories are separated as different batch &quot;</span>
+                    <span class="s2">&quot;items. Propagating a gamma value across trajectories is not permitted with &quot;</span>
+                    <span class="s2">&quot;this method. Check that you need to use rolling_gamma=False, and if so &quot;</span>
+                    <span class="s2">&quot;consider using the non-vectorized version of the return computation or splitting &quot;</span>
+                    <span class="s2">&quot;your trajectories.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">gammas</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">gammas</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">not_done</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">rolling_gamma</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
@@ -846,10 +866,10 @@
             <span class="n">lambdas</span> <span class="o">=</span> <span class="n">lambdas</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
         <span class="n">v2</span> <span class="o">=</span> <span class="n">_custom_conv1d</span><span class="p">(</span>
-            <span class="n">next_state_value</span><span class="p">,</span> <span class="n">dec</span> <span class="o">*</span> <span class="p">(</span><span class="n">gammas</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">lambdas</span><span class="p">))</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">next_state_value</span> <span class="o">*</span> <span class="n">not_done</span><span class="o">.</span><span class="n">view_as</span><span class="p">(</span><span class="n">next_state_value</span><span class="p">),</span>
+            <span class="n">dec</span> <span class="o">*</span> <span class="p">(</span><span class="n">gammas</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">lambdas</span><span class="p">))</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
         <span class="p">)</span>
-
-        <span class="n">v3</span> <span class="o">=</span> <span class="n">next_state_value</span>
+        <span class="n">v3</span> <span class="o">=</span> <span class="n">next_state_value</span> <span class="o">*</span> <span class="n">not_done</span><span class="o">.</span><span class="n">view_as</span><span class="p">(</span><span class="n">next_state_value</span><span class="p">)</span>
         <span class="n">v3</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">v3</span> <span class="o">=</span> <span class="n">_custom_conv1d</span><span class="p">(</span><span class="n">v3</span><span class="p">,</span> <span class="n">dec</span> <span class="o">*</span> <span class="p">(</span><span class="n">gammas</span> <span class="o">*</span> <span class="n">lambdas</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">v1</span> <span class="o">+</span> <span class="n">v2</span> <span class="o">+</span> <span class="n">v3</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span></div>

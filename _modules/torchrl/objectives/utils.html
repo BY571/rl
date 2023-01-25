@@ -452,7 +452,7 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">loss_module</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;DQNLoss&quot;</span><span class="p">,</span> <span class="s2">&quot;DDPGLoss&quot;</span><span class="p">,</span> <span class="s2">&quot;SACLoss&quot;</span><span class="p">],</span>  <span class="c1"># noqa: F821</span>
+        <span class="n">loss_module</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;DQNLoss&quot;</span><span class="p">,</span> <span class="s2">&quot;DDPGLoss&quot;</span><span class="p">,</span> <span class="s2">&quot;SACLoss&quot;</span><span class="p">,</span> <span class="s2">&quot;TD3Loss&quot;</span><span class="p">],</span>  <span class="c1"># noqa: F821</span>
     <span class="p">):</span>
 
         <span class="n">_target_names</span> <span class="o">=</span> <span class="p">[]</span>
@@ -569,7 +569,13 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">loss_module</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;DQNLoss&quot;</span><span class="p">,</span> <span class="s2">&quot;DDPGLoss&quot;</span><span class="p">,</span> <span class="s2">&quot;SACLoss&quot;</span><span class="p">,</span> <span class="s2">&quot;REDQLoss&quot;</span><span class="p">],</span>  <span class="c1"># noqa: F821</span>
+        <span class="n">loss_module</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+            <span class="s2">&quot;DQNLoss&quot;</span><span class="p">,</span>  <span class="c1"># noqa: F821</span>
+            <span class="s2">&quot;DDPGLoss&quot;</span><span class="p">,</span>  <span class="c1"># noqa: F821</span>
+            <span class="s2">&quot;SACLoss&quot;</span><span class="p">,</span>  <span class="c1"># noqa: F821</span>
+            <span class="s2">&quot;REDQLoss&quot;</span><span class="p">,</span>  <span class="c1"># noqa: F821</span>
+            <span class="s2">&quot;TD3Loss&quot;</span><span class="p">,</span>  <span class="c1"># noqa: F821</span>
+        <span class="p">],</span>
         <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.999</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">eps</span> <span class="o">&lt;</span> <span class="mf">1.0</span> <span class="ow">and</span> <span class="n">eps</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">):</span>
@@ -597,7 +603,7 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">loss_module</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;DQNLoss&quot;</span><span class="p">,</span> <span class="s2">&quot;DDPGLoss&quot;</span><span class="p">,</span> <span class="s2">&quot;SACLoss&quot;</span><span class="p">],</span>  <span class="c1"># noqa: F821</span>
+        <span class="n">loss_module</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;DQNLoss&quot;</span><span class="p">,</span> <span class="s2">&quot;DDPGLoss&quot;</span><span class="p">,</span> <span class="s2">&quot;SACLoss&quot;</span><span class="p">,</span> <span class="s2">&quot;TD3Loss&quot;</span><span class="p">],</span>  <span class="c1"># noqa: F821</span>
         <span class="n">value_network_update_interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">HardUpdate</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">loss_module</span><span class="p">)</span>

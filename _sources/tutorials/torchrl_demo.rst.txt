@@ -188,8 +188,8 @@ Let's create a TensorDict.
 
     TensorDict(
         fields={
-            key 1: Tensor(torch.Size([5, 3]), dtype=torch.float32),
-            key 2: Tensor(torch.Size([5, 5, 6]), dtype=torch.bool)},
+            key 1: Tensor(shape=torch.Size([5, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+            key 2: Tensor(shape=torch.Size([5, 5, 6]), device=cpu, dtype=torch.bool, is_shared=False)},
         batch_size=torch.Size([5]),
         device=None,
         is_shared=False)
@@ -219,8 +219,8 @@ You can index a TensorDict as well as query keys.
 
     TensorDict(
         fields={
-            key 1: Tensor(torch.Size([3]), dtype=torch.float32),
-            key 2: Tensor(torch.Size([5, 6]), dtype=torch.bool)},
+            key 1: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
+            key 2: Tensor(shape=torch.Size([5, 6]), device=cpu, dtype=torch.bool, is_shared=False)},
         batch_size=torch.Size([]),
         device=None,
         is_shared=False)
@@ -324,15 +324,15 @@ Here are some other functionalities of TensorDict.
     view(-1):  torch.Size([10]) torch.Size([10, 1])
     to device:  TensorDict(
         fields={
-            key 1: Tensor(torch.Size([2, 5, 1]), dtype=torch.float32),
-            key 2: Tensor(torch.Size([2, 5, 5, 6]), dtype=torch.bool)},
+            key 1: Tensor(shape=torch.Size([2, 5, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+            key 2: Tensor(shape=torch.Size([2, 5, 5, 6]), device=cpu, dtype=torch.bool, is_shared=False)},
         batch_size=torch.Size([2, 5]),
         device=cpu,
         is_shared=False)
     share memory:  LazyStackedTensorDict(
         fields={
-            key 1: Tensor(torch.Size([2, 5, 1]), dtype=torch.float32),
-            key 2: Tensor(torch.Size([2, 5, 5, 6]), dtype=torch.bool)},
+            key 1: Tensor(shape=torch.Size([2, 5, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+            key 2: Tensor(shape=torch.Size([2, 5, 5, 6]), device=cpu, dtype=torch.bool, is_shared=False)},
         batch_size=torch.Size([2, 5]),
         device=None,
         is_shared=True)
@@ -374,10 +374,10 @@ You can create a **nested TensorDict** as well.
 
     TensorDict(
         fields={
-            key 1: Tensor(torch.Size([5, 3]), dtype=torch.float32),
+            key 1: Tensor(shape=torch.Size([5, 3]), device=cpu, dtype=torch.float32, is_shared=False),
             key 2: TensorDict(
                 fields={
-                    sub-key 1: Tensor(torch.Size([5, 2, 1]), dtype=torch.float32)},
+                    sub-key 1: Tensor(shape=torch.Size([5, 2, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
                 batch_size=torch.Size([5, 2]),
                 device=None,
                 is_shared=False)},
@@ -514,13 +514,13 @@ Here are examples of using a replaybuffer with tensordicts.
     3
     LazyStackedTensorDict(
         fields={
-            a: Tensor(torch.Size([10, 3]), dtype=torch.float32)},
+            a: Tensor(shape=torch.Size([10, 3]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([10]),
         device=None,
         is_shared=False)
     TensorDict(
         fields={
-            a: Tensor(torch.Size([2, 3]), dtype=torch.float32)},
+            a: Tensor(shape=torch.Size([2, 3]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([2]),
         device=None,
         is_shared=False)
@@ -552,8 +552,8 @@ Here are examples of using a replaybuffer with tensordicts.
 
     TensorDict(
         fields={
-            a: Tensor(torch.Size([2, 3]), dtype=torch.float32),
-            index: Tensor(torch.Size([2]), dtype=torch.int32)},
+            a: Tensor(shape=torch.Size([2, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+            index: Tensor(shape=torch.Size([2]), device=cpu, dtype=torch.int32, is_shared=False)},
         batch_size=torch.Size([2]),
         device=None,
         is_shared=False)
@@ -576,7 +576,7 @@ Here are examples of using a replaybuffer with tensordicts.
  .. code-block:: none
 
 
-    tensor([0, 1], dtype=torch.int32)
+    tensor([1, 0], dtype=torch.int32)
 
 
 
@@ -603,8 +603,8 @@ Here are examples of using a replaybuffer with tensordicts.
 
  .. code-block:: none
 
-    0 0.06984968483448029
-    1 0.28791671991348267
+    0 0.28791671991348267
+    1 0.06984968483448029
     2 0.0
 
 
@@ -652,16 +652,16 @@ Envs
 
     TensorDict(
         fields={
-            action: Tensor(torch.Size([1]), dtype=torch.float32),
-            done: Tensor(torch.Size([1]), dtype=torch.bool),
+            action: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
             next: TensorDict(
                 fields={
-                    observation: Tensor(torch.Size([3]), dtype=torch.float32)},
+                    observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False)},
                 batch_size=torch.Size([]),
                 device=cpu,
                 is_shared=False),
-            observation: Tensor(torch.Size([3]), dtype=torch.float32),
-            reward: Tensor(torch.Size([1]), dtype=torch.float32)},
+            observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
+            reward: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([]),
         device=cpu,
         is_shared=False)
@@ -692,9 +692,9 @@ Changing environments config
 
     TensorDict(
         fields={
-            done: Tensor(torch.Size([1]), dtype=torch.bool),
-            pixels: Tensor(torch.Size([500, 500, 3]), dtype=torch.uint8),
-            state: Tensor(torch.Size([3]), dtype=torch.float32)},
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            pixels: Tensor(shape=torch.Size([500, 500, 3]), device=cpu, dtype=torch.uint8, is_shared=False),
+            state: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([]),
         device=cpu,
         is_shared=False)
@@ -788,9 +788,9 @@ Transforms
 
     TensorDict(
         fields={
-            done: Tensor(torch.Size([1]), dtype=torch.bool),
-            pixels: Tensor(torch.Size([3, 500, 500]), dtype=torch.float32),
-            state: Tensor(torch.Size([3]), dtype=torch.float32)},
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            pixels: Tensor(shape=torch.Size([3, 500, 500]), device=cpu, dtype=torch.float32, is_shared=False),
+            state: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([]),
         device=cpu,
         is_shared=False)
@@ -861,10 +861,10 @@ Vectorized Environments
 
     TensorDict(
         fields={
-            done: Tensor(torch.Size([4, 1]), dtype=torch.bool),
-            pixels: Tensor(torch.Size([4, 3, 500, 500]), dtype=torch.float32),
-            state: Tensor(torch.Size([4, 3]), dtype=torch.float32),
-            step_count: Tensor(torch.Size([4]), dtype=torch.int64)},
+            done: Tensor(shape=torch.Size([4, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            pixels: Tensor(shape=torch.Size([4, 3, 500, 500]), device=cpu, dtype=torch.float32, is_shared=False),
+            state: Tensor(shape=torch.Size([4, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+            step_count: Tensor(shape=torch.Size([4]), device=cpu, dtype=torch.int64, is_shared=False)},
         batch_size=torch.Size([4]),
         device=cpu,
         is_shared=False)
@@ -888,7 +888,7 @@ Vectorized Environments
 
 
     BoundedTensorSpec(
-         shape=torch.Size([1]), space=ContinuousBox(minimum=tensor([-2.]), maximum=tensor([2.])), device=cpu, dtype=torch.float32, domain=continuous)
+         shape=torch.Size([4, 1]), space=ContinuousBox(minimum=Tensor(shape=torch.Size([4, 1]), device=cpu, dtype=torch.float32, contiguous=True), maximum=Tensor(shape=torch.Size([4, 1]), device=cpu, dtype=torch.float32, contiguous=True)), device=cpu, dtype=torch.float32, domain=continuous)
 
 
 
@@ -1014,8 +1014,8 @@ TensorDictModules
 
     TensorDict(
         fields={
-            key 1: Tensor(torch.Size([10, 3]), dtype=torch.float32),
-            key 2: Tensor(torch.Size([10, 4]), dtype=torch.float32)},
+            key 1: Tensor(shape=torch.Size([10, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+            key 2: Tensor(shape=torch.Size([10, 4]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([10]),
         device=None,
         is_shared=False)
@@ -1130,10 +1130,10 @@ Sequences of Modules
 
     TensorDict(
         fields={
-            action: Tensor(torch.Size([3, 4]), dtype=torch.float32),
-            hidden: Tensor(torch.Size([3, 3]), dtype=torch.float32),
-            observation: Tensor(torch.Size([3, 5]), dtype=torch.float32),
-            value: Tensor(torch.Size([3, 1]), dtype=torch.float32)},
+            action: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+            hidden: Tensor(shape=torch.Size([3, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+            observation: Tensor(shape=torch.Size([3, 5]), device=cpu, dtype=torch.float32, is_shared=False),
+            value: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([3]),
         device=None,
         is_shared=False)
@@ -1162,10 +1162,10 @@ Sequences of Modules
 
     TensorDict(
         fields={
-            action: Tensor(torch.Size([3, 4]), dtype=torch.float32),
-            hidden: Tensor(torch.Size([3, 3]), dtype=torch.float32),
-            observation: Tensor(torch.Size([3, 5]), dtype=torch.float32),
-            value: Tensor(torch.Size([3, 1]), dtype=torch.float32)},
+            action: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+            hidden: Tensor(shape=torch.Size([3, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+            observation: Tensor(shape=torch.Size([3, 5]), device=cpu, dtype=torch.float32, is_shared=False),
+            value: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([3]),
         device=None,
         is_shared=False)
@@ -1219,10 +1219,10 @@ Functional Programming (Ensembling / Meta-RL)
 
     TensorDict(
         fields={
-            action: Tensor(torch.Size([3, 4]), dtype=torch.float32),
-            hidden: Tensor(torch.Size([3, 3]), dtype=torch.float32),
-            observation: Tensor(torch.Size([3, 5]), dtype=torch.float32),
-            value: Tensor(torch.Size([3, 1]), dtype=torch.float32)},
+            action: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+            hidden: Tensor(shape=torch.Size([3, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+            observation: Tensor(shape=torch.Size([3, 5]), device=cpu, dtype=torch.float32, is_shared=False),
+            value: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([3]),
         device=None,
         is_shared=False)
@@ -1250,10 +1250,10 @@ Functional Programming (Ensembling / Meta-RL)
 
     TensorDict(
         fields={
-            action: Tensor(torch.Size([4, 3, 4]), dtype=torch.float32),
-            hidden: Tensor(torch.Size([4, 3, 3]), dtype=torch.float32),
-            observation: Tensor(torch.Size([4, 3, 5]), dtype=torch.float32),
-            value: Tensor(torch.Size([4, 3, 1]), dtype=torch.float32)},
+            action: Tensor(shape=torch.Size([4, 3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+            hidden: Tensor(shape=torch.Size([4, 3, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+            observation: Tensor(shape=torch.Size([4, 3, 5]), device=cpu, dtype=torch.float32, is_shared=False),
+            value: Tensor(shape=torch.Size([4, 3, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([4, 3]),
         device=None,
         is_shared=False)
@@ -1374,10 +1374,10 @@ Specialized Classes
 
     TensorDict(
         fields={
-            action: Tensor(torch.Size([3, 2]), dtype=torch.float32),
-            input: Tensor(torch.Size([3, 5]), dtype=torch.float32),
-            loc: Tensor(torch.Size([3, 2]), dtype=torch.float32),
-            scale: Tensor(torch.Size([3, 2]), dtype=torch.float32)},
+            action: Tensor(shape=torch.Size([3, 2]), device=cpu, dtype=torch.float32, is_shared=False),
+            input: Tensor(shape=torch.Size([3, 5]), device=cpu, dtype=torch.float32, is_shared=False),
+            loc: Tensor(shape=torch.Size([3, 2]), device=cpu, dtype=torch.float32, is_shared=False),
+            scale: Tensor(shape=torch.Size([3, 2]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([3]),
         device=None,
         is_shared=False)
@@ -1414,11 +1414,11 @@ Specialized Classes
 
     TensorDict(
         fields={
-            action: Tensor(torch.Size([3, 2]), dtype=torch.float32),
-            input: Tensor(torch.Size([3, 5]), dtype=torch.float32),
-            loc: Tensor(torch.Size([3, 2]), dtype=torch.float32),
-            sample_log_prob: Tensor(torch.Size([3]), dtype=torch.float32),
-            scale: Tensor(torch.Size([3, 2]), dtype=torch.float32)},
+            action: Tensor(shape=torch.Size([3, 2]), device=cpu, dtype=torch.float32, is_shared=False),
+            input: Tensor(shape=torch.Size([3, 5]), device=cpu, dtype=torch.float32, is_shared=False),
+            loc: Tensor(shape=torch.Size([3, 2]), device=cpu, dtype=torch.float32, is_shared=False),
+            sample_log_prob: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
+            scale: Tensor(shape=torch.Size([3, 2]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([3]),
         device=None,
         is_shared=False)
@@ -1518,16 +1518,16 @@ Using Environments and Modules
     total steps: 99
     TensorDict(
         fields={
-            action: Tensor(torch.Size([100, 1]), dtype=torch.float32),
-            done: Tensor(torch.Size([100, 1]), dtype=torch.bool),
+            action: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.bool, is_shared=False),
             next: TensorDict(
                 fields={
-                    observation: Tensor(torch.Size([100, 3]), dtype=torch.float32)},
+                    observation: Tensor(shape=torch.Size([100, 3]), device=cpu, dtype=torch.float32, is_shared=False)},
                 batch_size=torch.Size([100]),
                 device=None,
                 is_shared=False),
-            observation: Tensor(torch.Size([100, 3]), dtype=torch.float32),
-            reward: Tensor(torch.Size([100, 1]), dtype=torch.float32)},
+            observation: Tensor(shape=torch.Size([100, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+            reward: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([100]),
         device=None,
         is_shared=False)
@@ -1568,16 +1568,16 @@ Using Environments and Modules
     total steps: 99
     LazyStackedTensorDict(
         fields={
-            action: Tensor(torch.Size([100, 1]), dtype=torch.float32),
-            done: Tensor(torch.Size([100, 1]), dtype=torch.bool),
+            action: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.bool, is_shared=False),
             next: LazyStackedTensorDict(
                 fields={
-                    observation: Tensor(torch.Size([100, 3]), dtype=torch.float32)},
+                    observation: Tensor(shape=torch.Size([100, 3]), device=cpu, dtype=torch.float32, is_shared=False)},
                 batch_size=torch.Size([100]),
                 device=cpu,
                 is_shared=False),
-            observation: Tensor(torch.Size([100, 3]), dtype=torch.float32),
-            reward: Tensor(torch.Size([100, 1]), dtype=torch.float32)},
+            observation: Tensor(shape=torch.Size([100, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+            reward: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([100]),
         device=cpu,
         is_shared=False)
@@ -1627,16 +1627,16 @@ Using Environments and Modules
 
     TensorDict(
         fields={
-            action: Tensor(torch.Size([100, 1]), dtype=torch.float32),
-            done: Tensor(torch.Size([100, 1]), dtype=torch.bool),
+            action: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.bool, is_shared=False),
             next: TensorDict(
                 fields={
-                    observation: Tensor(torch.Size([100, 3]), dtype=torch.float32)},
+                    observation: Tensor(shape=torch.Size([100, 3]), device=cpu, dtype=torch.float32, is_shared=False)},
                 batch_size=torch.Size([100]),
                 device=cpu,
                 is_shared=False),
-            observation: Tensor(torch.Size([100, 3]), dtype=torch.float32),
-            reward: Tensor(torch.Size([100, 1]), dtype=torch.float32)},
+            observation: Tensor(shape=torch.Size([100, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+            reward: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([100]),
         device=cpu,
         is_shared=False)
@@ -1722,19 +1722,19 @@ Using Environments and Modules
 
     TensorDict(
         fields={
-            action: Tensor(torch.Size([6, 10, 1]), dtype=torch.float32),
-            done: Tensor(torch.Size([6, 10, 1]), dtype=torch.bool),
-            mask: Tensor(torch.Size([6, 10]), dtype=torch.bool),
+            action: Tensor(shape=torch.Size([6, 10, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: Tensor(shape=torch.Size([6, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            mask: Tensor(shape=torch.Size([6, 10]), device=cpu, dtype=torch.bool, is_shared=False),
             next: TensorDict(
                 fields={
-                    observation: Tensor(torch.Size([6, 10, 3]), dtype=torch.float32)},
+                    observation: Tensor(shape=torch.Size([6, 10, 3]), device=cpu, dtype=torch.float32, is_shared=False)},
                 batch_size=torch.Size([6, 10]),
                 device=cpu,
                 is_shared=False),
-            observation: Tensor(torch.Size([6, 10, 3]), dtype=torch.float32),
-            reward: Tensor(torch.Size([6, 10, 1]), dtype=torch.float32),
-            step_count: Tensor(torch.Size([6, 10]), dtype=torch.int64),
-            traj_ids: Tensor(torch.Size([6, 10]), dtype=torch.int64)},
+            observation: Tensor(shape=torch.Size([6, 10, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+            reward: Tensor(shape=torch.Size([6, 10, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+            step_count: Tensor(shape=torch.Size([6, 10]), device=cpu, dtype=torch.int64, is_shared=False),
+            traj_ids: Tensor(shape=torch.Size([6, 10]), device=cpu, dtype=torch.int64, is_shared=False)},
         batch_size=torch.Size([6, 10]),
         device=cpu,
         is_shared=False)
@@ -1777,19 +1777,19 @@ Using Environments and Modules
 
     TensorDict(
         fields={
-            action: Tensor(torch.Size([3, 20, 1]), dtype=torch.float32),
-            done: Tensor(torch.Size([3, 20, 1]), dtype=torch.bool),
-            mask: Tensor(torch.Size([3, 20]), dtype=torch.bool),
+            action: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            mask: Tensor(shape=torch.Size([3, 20]), device=cpu, dtype=torch.bool, is_shared=False),
             next: TensorDict(
                 fields={
-                    observation: Tensor(torch.Size([3, 20, 3]), dtype=torch.float32)},
+                    observation: Tensor(shape=torch.Size([3, 20, 3]), device=cpu, dtype=torch.float32, is_shared=False)},
                 batch_size=torch.Size([3, 20]),
                 device=cpu,
                 is_shared=False),
-            observation: Tensor(torch.Size([3, 20, 3]), dtype=torch.float32),
-            reward: Tensor(torch.Size([3, 20, 1]), dtype=torch.float32),
-            step_count: Tensor(torch.Size([3, 20]), dtype=torch.int64),
-            traj_ids: Tensor(torch.Size([3, 20]), dtype=torch.int64)},
+            observation: Tensor(shape=torch.Size([3, 20, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+            reward: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+            step_count: Tensor(shape=torch.Size([3, 20]), device=cpu, dtype=torch.int64, is_shared=False),
+            traj_ids: Tensor(shape=torch.Size([3, 20]), device=cpu, dtype=torch.int64, is_shared=False)},
         batch_size=torch.Size([3, 20]),
         device=cpu,
         is_shared=False)
@@ -1877,12 +1877,12 @@ Objectives
 
     TensorDict(
         fields={
-            loss_actor: Tensor(torch.Size([]), dtype=torch.float32),
-            loss_value: Tensor(torch.Size([]), dtype=torch.float32),
-            pred_value: Tensor(torch.Size([]), dtype=torch.float32),
-            pred_value_max: Tensor(torch.Size([]), dtype=torch.float32),
-            target_value: Tensor(torch.Size([]), dtype=torch.float32),
-            target_value_max: Tensor(torch.Size([]), dtype=torch.float32)},
+            loss_actor: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+            loss_value: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+            pred_value: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+            pred_value_max: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+            target_value: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+            target_value_max: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([]),
         device=None,
         is_shared=False)
@@ -1907,17 +1907,17 @@ Objectives
 
     TensorDict(
         fields={
-            action: Tensor(torch.Size([10, 1]), dtype=torch.float32),
-            done: Tensor(torch.Size([10, 1]), dtype=torch.bool),
+            action: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
             next: TensorDict(
                 fields={
-                    observation: Tensor(torch.Size([10, 3]), dtype=torch.float32)},
+                    observation: Tensor(shape=torch.Size([10, 3]), device=cpu, dtype=torch.float32, is_shared=False)},
                 batch_size=torch.Size([10]),
                 device=cpu,
                 is_shared=False),
-            observation: Tensor(torch.Size([10, 3]), dtype=torch.float32),
-            reward: Tensor(torch.Size([10, 1]), dtype=torch.float32),
-            td_error: Tensor(torch.Size([10, 1]), dtype=torch.float32)},
+            observation: Tensor(shape=torch.Size([10, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+            reward: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+            td_error: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([10]),
         device=cpu,
         is_shared=False)
@@ -1957,7 +1957,7 @@ The library is on PyPI: *pip install torchrl*
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  29.869 seconds)
+   **Total running time of the script:** ( 0 minutes  28.094 seconds)
 
 
 .. _sphx_glr_download_tutorials_torchrl_demo.py:

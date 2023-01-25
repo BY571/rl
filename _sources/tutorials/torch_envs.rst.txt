@@ -135,10 +135,10 @@ to be of type ``CompositeSpec``. Reward and action do not have this restriction:
     Env observation_spec: 
      CompositeSpec(
         observation: BoundedTensorSpec(
-             shape=torch.Size([3]), space=ContinuousBox(minimum=tensor([-1., -1., -8.]), maximum=tensor([1., 1., 8.])), device=cpu, dtype=torch.float32, domain=continuous))
+             shape=torch.Size([3]), space=ContinuousBox(minimum=Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, contiguous=True), maximum=Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, contiguous=True)), device=cpu, dtype=torch.float32, domain=continuous), device=cpu, shape=torch.Size([]))
     Env action_spec: 
      BoundedTensorSpec(
-         shape=torch.Size([1]), space=ContinuousBox(minimum=tensor([-2.]), maximum=tensor([2.])), device=cpu, dtype=torch.float32, domain=continuous)
+         shape=torch.Size([1]), space=ContinuousBox(minimum=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True), maximum=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True)), device=cpu, dtype=torch.float32, domain=continuous)
     Env reward_spec: 
      UnboundedContinuousTensorSpec(
          shape=torch.Size([1]), space=None, device=cpu, dtype=torch.float32, domain=continuous)
@@ -194,7 +194,7 @@ uniformly distributed) numbers in that space:
  .. code-block:: none
 
     random action: 
-     tensor([1.9840])
+     tensor([0.1803])
 
 
 
@@ -234,8 +234,8 @@ Let's see how these methods work with TorchRL:
 
     TensorDict(
         fields={
-            done: Tensor(torch.Size([1]), dtype=torch.bool),
-            observation: Tensor(torch.Size([3]), dtype=torch.float32)},
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([]),
         device=cpu,
         is_shared=False)
@@ -309,16 +309,16 @@ By default, the tensordict returned by ``step`` is the same as the input...
 
     TensorDict(
         fields={
-            action: Tensor(torch.Size([1]), dtype=torch.float32),
-            done: Tensor(torch.Size([1]), dtype=torch.bool),
+            action: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
             next: TensorDict(
                 fields={
-                    observation: Tensor(torch.Size([3]), dtype=torch.float32)},
+                    observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False)},
                 batch_size=torch.Size([]),
                 device=cpu,
                 is_shared=False),
-            observation: Tensor(torch.Size([3]), dtype=torch.float32),
-            reward: Tensor(torch.Size([1]), dtype=torch.float32)},
+            observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
+            reward: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([]),
         device=cpu,
         is_shared=False)
@@ -348,15 +348,15 @@ done via the simple shortcut.
 
     TensorDict(
         fields={
-            action: Tensor(torch.Size([1]), dtype=torch.float32),
-            done: Tensor(torch.Size([1]), dtype=torch.bool),
+            action: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
             next: TensorDict(
                 fields={
-                    observation: Tensor(torch.Size([3]), dtype=torch.float32)},
+                    observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False)},
                 batch_size=torch.Size([]),
                 device=cpu,
                 is_shared=False),
-            reward: Tensor(torch.Size([1]), dtype=torch.float32)},
+            reward: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([]),
         device=cpu,
         is_shared=False)
@@ -399,8 +399,8 @@ it returns a new tensordict updated such that *t < -t'*:
 
     TensorDict(
         fields={
-            observation: Tensor(torch.Size([3]), dtype=torch.float32),
-            some other key: Tensor(torch.Size([1]), dtype=torch.float32)},
+            observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
+            some other key: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([]),
         device=cpu,
         is_shared=False)
@@ -437,8 +437,8 @@ Finally, note that the ``env.reset`` method also accepts a tensordict to update:
 
     TensorDict(
         fields={
-            done: Tensor(torch.Size([1]), dtype=torch.bool),
-            observation: Tensor(torch.Size([3]), dtype=torch.float32)},
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([]),
         device=None,
         is_shared=False)
@@ -470,16 +470,16 @@ easily for a given number of steps:
 
     TensorDict(
         fields={
-            action: Tensor(torch.Size([20, 1]), dtype=torch.float32),
-            done: Tensor(torch.Size([20, 1]), dtype=torch.bool),
+            action: Tensor(shape=torch.Size([20, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: Tensor(shape=torch.Size([20, 1]), device=cpu, dtype=torch.bool, is_shared=False),
             next: TensorDict(
                 fields={
-                    observation: Tensor(torch.Size([20, 3]), dtype=torch.float32)},
+                    observation: Tensor(shape=torch.Size([20, 3]), device=cpu, dtype=torch.float32, is_shared=False)},
                 batch_size=torch.Size([20]),
                 device=cpu,
                 is_shared=False),
-            observation: Tensor(torch.Size([20, 3]), dtype=torch.float32),
-            reward: Tensor(torch.Size([20, 1]), dtype=torch.float32)},
+            observation: Tensor(shape=torch.Size([20, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+            reward: Tensor(shape=torch.Size([20, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([20]),
         device=cpu,
         is_shared=False)
@@ -549,8 +549,8 @@ and return the result of the truncated chain.
 
     TensorDict(
         fields={
-            done: Tensor(torch.Size([1]), dtype=torch.bool),
-            observation: Tensor(torch.Size([3]), dtype=torch.float32)},
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([]),
         device=cpu,
         is_shared=False)
@@ -615,7 +615,7 @@ argument that allows the user to quickly ask for image-based environments:
  .. code-block:: none
 
 
-    <matplotlib.image.AxesImage object at 0x7f3a6e0af250>
+    <matplotlib.image.AxesImage object at 0x7f9dcc5d8880>
 
 
 
@@ -641,8 +641,8 @@ Let's have a look at what the tensordict contains:
 
     TensorDict(
         fields={
-            done: Tensor(torch.Size([1]), dtype=torch.bool),
-            pixels: Tensor(torch.Size([500, 500, 3]), dtype=torch.uint8)},
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            pixels: Tensor(shape=torch.Size([500, 500, 3]), device=cpu, dtype=torch.uint8, is_shared=False)},
         batch_size=torch.Size([]),
         device=cpu,
         is_shared=False)
@@ -701,8 +701,8 @@ Some environments only come in image-based format
     from pixels:  True
     tensordict:  TensorDict(
         fields={
-            done: Tensor(torch.Size([1]), dtype=torch.bool),
-            pixels: Tensor(torch.Size([210, 160, 3]), dtype=torch.uint8)},
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            pixels: Tensor(shape=torch.Size([210, 160, 3]), device=cpu, dtype=torch.uint8, is_shared=False)},
         batch_size=torch.Size([]),
         device=cpu,
         is_shared=False)
@@ -776,9 +776,9 @@ The ``available_envs`` now returns a dict of envs and possible tasks:
 
     result of reset:  TensorDict(
         fields={
-            done: Tensor(torch.Size([1]), dtype=torch.bool),
-            orientations: Tensor(torch.Size([4]), dtype=torch.float64),
-            velocity: Tensor(torch.Size([2]), dtype=torch.float64)},
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            orientations: Tensor(shape=torch.Size([4]), device=cpu, dtype=torch.float64, is_shared=False),
+            velocity: Tensor(shape=torch.Size([2]), device=cpu, dtype=torch.float64, is_shared=False)},
         batch_size=torch.Size([]),
         device=cpu,
         is_shared=False)
@@ -816,8 +816,8 @@ Of course we can also use pixel-based environments:
 
     result of reset:  TensorDict(
         fields={
-            done: Tensor(torch.Size([1]), dtype=torch.bool),
-            pixels: Tensor(torch.Size([240, 320, 3]), dtype=torch.uint8)},
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            pixels: Tensor(shape=torch.Size([240, 320, 3]), device=cpu, dtype=torch.uint8, is_shared=False)},
         batch_size=torch.Size([]),
         device=cpu,
         is_shared=False)
@@ -874,15 +874,15 @@ built around a ``base_dist`` distribution and (a sequence of) ``transforms``.
 
     reset before transform:  TensorDict(
         fields={
-            done: Tensor(torch.Size([1]), dtype=torch.bool),
-            pixels: Tensor(torch.Size([240, 320, 3]), dtype=torch.uint8)},
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            pixels: Tensor(shape=torch.Size([240, 320, 3]), device=cpu, dtype=torch.uint8, is_shared=False)},
         batch_size=torch.Size([]),
         device=cpu,
         is_shared=False)
     reset after transform:  TensorDict(
         fields={
-            done: Tensor(torch.Size([1]), dtype=torch.bool),
-            pixels: Tensor(torch.Size([3, 240, 320]), dtype=torch.float32)},
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            pixels: Tensor(shape=torch.Size([3, 240, 320]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([]),
         device=cpu,
         is_shared=False)
@@ -916,8 +916,8 @@ To compose transforms, simply use the ``Compose`` class:
 
     TensorDict(
         fields={
-            done: Tensor(torch.Size([1]), dtype=torch.bool),
-            pixels: Tensor(torch.Size([3, 32, 32]), dtype=torch.float32)},
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            pixels: Tensor(shape=torch.Size([3, 32, 32]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([]),
         device=cpu,
         is_shared=False)
@@ -949,8 +949,8 @@ Transforms can also be added one at a time:
 
     TensorDict(
         fields={
-            done: Tensor(torch.Size([1]), dtype=torch.bool),
-            pixels: Tensor(torch.Size([1, 32, 32]), dtype=torch.float32)},
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            pixels: Tensor(shape=torch.Size([1, 32, 32]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([]),
         device=cpu,
         is_shared=False)
@@ -979,118 +979,10 @@ As expected, the metadata get updated too:
 
     original obs spec:  CompositeSpec(
         pixels: UnboundedDiscreteTensorSpec(
-             shape=torch.Size([240, 320, 3]), space=ContinuousBox(minimum=tensor([[[0, 0, 0],
-                 [0, 0, 0],
-                 [0, 0, 0],
-                 ...,
-                 [0, 0, 0],
-                 [0, 0, 0],
-                 [0, 0, 0]],
-
-                [[0, 0, 0],
-                 [0, 0, 0],
-                 [0, 0, 0],
-                 ...,
-                 [0, 0, 0],
-                 [0, 0, 0],
-                 [0, 0, 0]],
-
-                [[0, 0, 0],
-                 [0, 0, 0],
-                 [0, 0, 0],
-                 ...,
-                 [0, 0, 0],
-                 [0, 0, 0],
-                 [0, 0, 0]],
-
-                ...,
-
-                [[0, 0, 0],
-                 [0, 0, 0],
-                 [0, 0, 0],
-                 ...,
-                 [0, 0, 0],
-                 [0, 0, 0],
-                 [0, 0, 0]],
-
-                [[0, 0, 0],
-                 [0, 0, 0],
-                 [0, 0, 0],
-                 ...,
-                 [0, 0, 0],
-                 [0, 0, 0],
-                 [0, 0, 0]],
-
-                [[0, 0, 0],
-                 [0, 0, 0],
-                 [0, 0, 0],
-                 ...,
-                 [0, 0, 0],
-                 [0, 0, 0],
-                 [0, 0, 0]]]), maximum=tensor([[[255, 255, 255],
-                 [255, 255, 255],
-                 [255, 255, 255],
-                 ...,
-                 [255, 255, 255],
-                 [255, 255, 255],
-                 [255, 255, 255]],
-
-                [[255, 255, 255],
-                 [255, 255, 255],
-                 [255, 255, 255],
-                 ...,
-                 [255, 255, 255],
-                 [255, 255, 255],
-                 [255, 255, 255]],
-
-                [[255, 255, 255],
-                 [255, 255, 255],
-                 [255, 255, 255],
-                 ...,
-                 [255, 255, 255],
-                 [255, 255, 255],
-                 [255, 255, 255]],
-
-                ...,
-
-                [[255, 255, 255],
-                 [255, 255, 255],
-                 [255, 255, 255],
-                 ...,
-                 [255, 255, 255],
-                 [255, 255, 255],
-                 [255, 255, 255]],
-
-                [[255, 255, 255],
-                 [255, 255, 255],
-                 [255, 255, 255],
-                 ...,
-                 [255, 255, 255],
-                 [255, 255, 255],
-                 [255, 255, 255]],
-
-                [[255, 255, 255],
-                 [255, 255, 255],
-                 [255, 255, 255],
-                 ...,
-                 [255, 255, 255],
-                 [255, 255, 255],
-                 [255, 255, 255]]])), device=cpu, dtype=torch.uint8, domain=continuous))
+             shape=torch.Size([240, 320, 3]), space=ContinuousBox(minimum=Tensor(shape=torch.Size([240, 320, 3]), device=cpu, dtype=torch.int64, contiguous=True), maximum=Tensor(shape=torch.Size([240, 320, 3]), device=cpu, dtype=torch.int64, contiguous=True)), device=cpu, dtype=torch.uint8, domain=continuous), device=cpu, shape=torch.Size([]))
     current obs spec:  CompositeSpec(
         pixels: UnboundedDiscreteTensorSpec(
-             shape=torch.Size([1, 32, 32]), space=ContinuousBox(minimum=tensor([[[0., 0., 0.,  ..., 0., 0., 0.],
-                 [0., 0., 0.,  ..., 0., 0., 0.],
-                 [0., 0., 0.,  ..., 0., 0., 0.],
-                 ...,
-                 [0., 0., 0.,  ..., 0., 0., 0.],
-                 [0., 0., 0.,  ..., 0., 0., 0.],
-                 [0., 0., 0.,  ..., 0., 0., 0.]]]), maximum=tensor([[[0.9999, 0.9999, 0.9999,  ..., 0.9999, 0.9999, 0.9999],
-                 [0.9999, 0.9999, 0.9999,  ..., 0.9999, 0.9999, 0.9999],
-                 [0.9999, 0.9999, 0.9999,  ..., 0.9999, 0.9999, 0.9999],
-                 ...,
-                 [0.9999, 0.9999, 0.9999,  ..., 0.9999, 0.9999, 0.9999],
-                 [0.9999, 0.9999, 0.9999,  ..., 0.9999, 0.9999, 0.9999],
-                 [0.9999, 0.9999, 0.9999,  ..., 0.9999, 0.9999, 0.9999]]])), device=cpu, dtype=torch.float32, domain=continuous))
+             shape=torch.Size([1, 32, 32]), space=ContinuousBox(minimum=Tensor(shape=torch.Size([1, 32, 32]), device=cpu, dtype=torch.float32, contiguous=True), maximum=Tensor(shape=torch.Size([1, 32, 32]), device=cpu, dtype=torch.float32, contiguous=True)), device=cpu, dtype=torch.float32, domain=continuous), device=cpu, shape=torch.Size([]))
 
 
 
@@ -1125,16 +1017,16 @@ We can also concatenate tensors if needed:
 
     keys before concat:  TensorDict(
         fields={
-            done: Tensor(torch.Size([1]), dtype=torch.bool),
-            orientations: Tensor(torch.Size([4]), dtype=torch.float64),
-            velocity: Tensor(torch.Size([2]), dtype=torch.float64)},
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            orientations: Tensor(shape=torch.Size([4]), device=cpu, dtype=torch.float64, is_shared=False),
+            velocity: Tensor(shape=torch.Size([2]), device=cpu, dtype=torch.float64, is_shared=False)},
         batch_size=torch.Size([]),
         device=cpu,
         is_shared=False)
     keys after concat:  TensorDict(
         fields={
-            done: Tensor(torch.Size([1]), dtype=torch.bool),
-            observation: Tensor(torch.Size([6]), dtype=torch.float64)},
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            observation: Tensor(shape=torch.Size([6]), device=cpu, dtype=torch.float64, is_shared=False)},
         batch_size=torch.Size([]),
         device=cpu,
         is_shared=False)
@@ -1312,8 +1204,8 @@ or simply by calling ``step`` (if ``reset`` does not need to be called first).
 
     LazyStackedTensorDict(
         fields={
-            done: Tensor(torch.Size([3, 1]), dtype=torch.bool),
-            observation: Tensor(torch.Size([3, 3]), dtype=torch.float32)},
+            done: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            observation: Tensor(shape=torch.Size([3, 3]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([3]),
         device=cpu,
         is_shared=False)
@@ -1344,16 +1236,16 @@ the second the time frame. Let's check that with the ``rollout`` method:
 
     TensorDict(
         fields={
-            action: Tensor(torch.Size([3, 20, 1]), dtype=torch.float32),
-            done: Tensor(torch.Size([3, 20, 1]), dtype=torch.bool),
+            action: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.bool, is_shared=False),
             next: TensorDict(
                 fields={
-                    observation: Tensor(torch.Size([3, 20, 3]), dtype=torch.float32)},
+                    observation: Tensor(shape=torch.Size([3, 20, 3]), device=cpu, dtype=torch.float32, is_shared=False)},
                 batch_size=torch.Size([3, 20]),
                 device=cpu,
                 is_shared=False),
-            observation: Tensor(torch.Size([3, 20, 3]), dtype=torch.float32),
-            reward: Tensor(torch.Size([3, 20, 1]), dtype=torch.float32)},
+            observation: Tensor(shape=torch.Size([3, 20, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+            reward: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([3, 20]),
         device=cpu,
         is_shared=False)
@@ -1481,7 +1373,7 @@ to access this attribute. Here's an example:
  .. code-block:: none
 
 
-    'bar_cfe707f6-95b1-11ed-8105-0242ac120002'
+    'bar_8c737d40-9cca-11ed-8fa4-0242ac120002'
 
 
 
@@ -1530,7 +1422,7 @@ to access this attribute. Here's an example:
  .. code-block:: none
 
 
-    <torchrl.envs.vec_env._dispatch_caller_parallel object at 0x7f3a6024afb0>
+    <torchrl.envs.vec_env._dispatch_caller_parallel object at 0x7f9d8af7caf0>
 
 
 
@@ -1550,7 +1442,7 @@ to access this attribute. Here's an example:
  .. code-block:: none
 
 
-    ['bar_d37d1e50-95b1-11ed-b4cd-0242ac120002', 'bar_d36afd06-95b1-11ed-b47f-0242ac120002', 'bar_d3456fe6-95b1-11ed-961b-0242ac120002']
+    ['bar_8fa36db8-9cca-11ed-a88e-0242ac120002', 'bar_8fcf8394-9cca-11ed-b935-0242ac120002', 'bar_8f9196d8-9cca-11ed-a40a-0242ac120002']
 
 
 
@@ -1710,8 +1602,8 @@ operations on the main process if possible.
 
     grayscale tensordict:  LazyStackedTensorDict(
         fields={
-            done: Tensor(torch.Size([2, 1]), dtype=torch.bool),
-            pixels: Tensor(torch.Size([2, 1, 64, 64]), dtype=torch.float32)},
+            done: Tensor(shape=torch.Size([2, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            pixels: Tensor(shape=torch.Size([2, 1, 64, 64]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([2]),
         device=cpu,
         is_shared=False)
@@ -1764,8 +1656,8 @@ In regular setting, using VecNorm is quite easy:
 
  .. code-block:: none
 
-    mean: : tensor([-0.1606, -0.0193, -0.3308])
-    std: : tensor([1.2200, 1.2056, 1.1734])
+    mean: : tensor([-0.2114,  0.0539, -0.0726])
+    std: : tensor([1.1227, 1.1784, 1.2738])
 
 
 
@@ -1810,21 +1702,21 @@ once created:
 
     tensordict:  TensorDict(
         fields={
-            action: Tensor(torch.Size([3, 5, 2]), dtype=torch.int64),
-            done: Tensor(torch.Size([3, 5, 1]), dtype=torch.bool),
+            action: Tensor(shape=torch.Size([3, 5, 2]), device=cpu, dtype=torch.int64, is_shared=False),
+            done: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False),
             next: TensorDict(
                 fields={
-                    observation: Tensor(torch.Size([3, 5, 4]), dtype=torch.float32)},
+                    observation: Tensor(shape=torch.Size([3, 5, 4]), device=cpu, dtype=torch.float32, is_shared=False)},
                 batch_size=torch.Size([3, 5]),
                 device=cpu,
                 is_shared=False),
-            observation: Tensor(torch.Size([3, 5, 4]), dtype=torch.float32),
-            reward: Tensor(torch.Size([3, 5, 1]), dtype=torch.float32)},
+            observation: Tensor(shape=torch.Size([3, 5, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+            reward: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([3, 5]),
         device=cpu,
         is_shared=False)
-    mean: : tensor([ 0.0010, -0.0648, -0.1598])
-    std: : tensor([1.1913, 1.1058, 1.3335])
+    mean: : tensor([ 0.0142, -0.0923, -0.2177])
+    std: : tensor([1.1270, 1.1158, 1.3546])
 
 
 
@@ -1864,7 +1756,7 @@ This small difference will usually be absored throughout training.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  28.158 seconds)
+   **Total running time of the script:** ( 0 minutes  25.847 seconds)
 
 
 .. _sphx_glr_download_tutorials_torch_envs.py:

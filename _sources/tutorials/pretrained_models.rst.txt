@@ -103,7 +103,7 @@ the corresponding action.
  .. code-block:: none
 
     Downloading: "https://pytorch.s3.amazonaws.com/models/rl/r3m/r3m_50.pt" to /github/home/.cache/torch/hub/checkpoints/r3m_50.pt
-      0%|          | 0.00/374M [00:00<?, ?B/s]      4%|3         | 14.8M/374M [00:00<00:02, 140MB/s]      8%|7         | 28.2M/374M [00:00<00:03, 114MB/s]     10%|#         | 39.2M/374M [00:00<00:04, 79.6MB/s]     13%|#3        | 49.1M/374M [00:00<00:04, 80.7MB/s]     17%|#7        | 64.0M/374M [00:00<00:03, 90.3MB/s]     19%|#9        | 72.9M/374M [00:00<00:03, 84.8MB/s]     22%|##1       | 81.9M/374M [00:01<00:04, 65.0MB/s]     26%|##6       | 98.3M/374M [00:01<00:03, 73.2MB/s]     31%|###       | 115M/374M [00:01<00:03, 78.8MB/s]      35%|###5      | 131M/374M [00:01<00:02, 86.4MB/s]     39%|###9      | 147M/374M [00:01<00:02, 90.3MB/s]     44%|####3     | 164M/374M [00:01<00:02, 97.0MB/s]     48%|####7     | 179M/374M [00:02<00:02, 92.6MB/s]     50%|#####     | 188M/374M [00:02<00:02, 87.7MB/s]     53%|#####2    | 197M/374M [00:02<00:02, 76.6MB/s]     57%|#####6    | 212M/374M [00:02<00:02, 80.8MB/s]     59%|#####8    | 220M/374M [00:02<00:02, 73.8MB/s]     61%|######1   | 229M/374M [00:02<00:02, 69.4MB/s]     66%|######5   | 246M/374M [00:03<00:01, 82.3MB/s]     70%|######9   | 261M/374M [00:03<00:01, 96.9MB/s]     72%|#######2  | 271M/374M [00:03<00:01, 90.2MB/s]     75%|#######4  | 280M/374M [00:03<00:01, 90.2MB/s]     78%|#######8  | 293M/374M [00:03<00:01, 83.2MB/s]     81%|########  | 302M/374M [00:03<00:00, 79.0MB/s]     83%|########3 | 311M/374M [00:03<00:00, 75.1MB/s]     87%|########7 | 326M/374M [00:04<00:00, 91.2MB/s]     90%|########9 | 335M/374M [00:04<00:00, 77.1MB/s]     92%|#########1| 343M/374M [00:04<00:00, 74.1MB/s]     94%|#########3| 351M/374M [00:04<00:00, 73.0MB/s]     96%|#########6| 360M/374M [00:04<00:00, 69.8MB/s]    100%|#########9| 373M/374M [00:04<00:00, 72.9MB/s]    100%|##########| 374M/374M [00:04<00:00, 81.8MB/s]
+      0%|          | 0.00/374M [00:00<?, ?B/s]      0%|          | 240k/374M [00:00<03:24, 1.92MB/s]      1%|          | 2.30M/374M [00:00<00:31, 12.3MB/s]      2%|2         | 8.97M/374M [00:00<00:10, 37.1MB/s]      4%|4         | 16.0M/374M [00:00<00:07, 51.1MB/s]      6%|6         | 23.2M/374M [00:00<00:06, 59.7MB/s]      8%|8         | 30.6M/374M [00:00<00:05, 65.5MB/s]     10%|#         | 37.7M/374M [00:00<00:05, 63.3MB/s]     12%|#2        | 45.1M/374M [00:00<00:05, 67.6MB/s]     14%|#3        | 52.2M/374M [00:00<00:04, 69.8MB/s]     16%|#5        | 59.5M/374M [00:01<00:04, 71.8MB/s]     18%|#7        | 66.7M/374M [00:01<00:04, 72.9MB/s]     20%|#9        | 73.7M/374M [00:01<00:04, 72.8MB/s]     22%|##1       | 81.9M/374M [00:01<00:04, 68.9MB/s]     24%|##4       | 91.1M/374M [00:01<00:03, 76.4MB/s]     26%|##6       | 98.5M/374M [00:01<00:03, 75.3MB/s]     29%|##8       | 108M/374M [00:01<00:03, 81.3MB/s]      31%|###1      | 117M/374M [00:01<00:03, 85.3MB/s]     33%|###3      | 125M/374M [00:01<00:03, 86.0MB/s]     36%|###5      | 134M/374M [00:02<00:02, 87.1MB/s]     38%|###8      | 143M/374M [00:02<00:02, 88.8MB/s]     40%|####      | 151M/374M [00:02<00:02, 88.7MB/s]     43%|####2     | 160M/374M [00:02<00:02, 88.8MB/s]     45%|####4     | 168M/374M [00:02<00:02, 86.3MB/s]     47%|####7     | 176M/374M [00:02<00:02, 86.1MB/s]     49%|####9     | 185M/374M [00:02<00:02, 86.9MB/s]     52%|#####1    | 194M/374M [00:02<00:02, 88.7MB/s]     54%|#####4    | 202M/374M [00:02<00:02, 66.4MB/s]     56%|#####6    | 211M/374M [00:03<00:02, 69.5MB/s]     58%|#####8    | 218M/374M [00:03<00:02, 62.6MB/s]     61%|######    | 227M/374M [00:03<00:02, 65.7MB/s]     62%|######2   | 234M/374M [00:03<00:02, 60.9MB/s]     64%|######4   | 240M/374M [00:03<00:02, 61.6MB/s]     66%|######6   | 248M/374M [00:03<00:01, 68.4MB/s]     69%|######8   | 257M/374M [00:03<00:01, 74.0MB/s]     71%|#######1  | 266M/374M [00:03<00:01, 80.1MB/s]     73%|#######3  | 275M/374M [00:03<00:01, 82.7MB/s]     76%|#######5  | 283M/374M [00:04<00:01, 80.2MB/s]     78%|#######7  | 291M/374M [00:04<00:01, 82.7MB/s]     80%|#######9  | 299M/374M [00:04<00:01, 57.2MB/s]     82%|########2 | 308M/374M [00:04<00:01, 64.4MB/s]     84%|########4 | 315M/374M [00:04<00:01, 46.2MB/s]     86%|########6 | 323M/374M [00:04<00:00, 54.2MB/s]     88%|########8 | 330M/374M [00:05<00:00, 49.2MB/s]     91%|######### | 339M/374M [00:05<00:00, 59.0MB/s]     92%|#########2| 346M/374M [00:05<00:00, 53.3MB/s]     95%|#########4| 354M/374M [00:05<00:00, 60.5MB/s]     96%|#########6| 361M/374M [00:05<00:00, 59.5MB/s]     99%|#########8| 370M/374M [00:05<00:00, 68.7MB/s]    100%|##########| 374M/374M [00:05<00:00, 68.4MB/s]
 
 
 
@@ -154,16 +154,16 @@ We collect a rollout of 32 steps and print its output:
 
     rollout with transform: TensorDict(
         fields={
-            action: Tensor(torch.Size([32, 8]), dtype=torch.float32),
-            done: Tensor(torch.Size([32, 1]), dtype=torch.bool),
+            action: Tensor(shape=torch.Size([32, 8]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.bool, is_shared=False),
             next: TensorDict(
                 fields={
-                    r3m_vec: Tensor(torch.Size([32, 2048]), dtype=torch.float32)},
+                    r3m_vec: Tensor(shape=torch.Size([32, 2048]), device=cpu, dtype=torch.float32, is_shared=False)},
                 batch_size=torch.Size([32]),
                 device=cpu,
                 is_shared=False),
-            r3m_vec: Tensor(torch.Size([32, 2048]), dtype=torch.float32),
-            reward: Tensor(torch.Size([32, 1]), dtype=torch.float32)},
+            r3m_vec: Tensor(shape=torch.Size([32, 2048]), device=cpu, dtype=torch.float32, is_shared=False),
+            reward: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([32]),
         device=cpu,
         is_shared=False)
@@ -223,16 +223,16 @@ result of our policy.
 
     rollout, fine tuning: TensorDict(
         fields={
-            action: Tensor(torch.Size([32, 8]), dtype=torch.float32),
-            done: Tensor(torch.Size([32, 1]), dtype=torch.bool),
+            action: Tensor(shape=torch.Size([32, 8]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.bool, is_shared=False),
             next: TensorDict(
                 fields={
-                    pixels: Tensor(torch.Size([32, 480, 480, 3]), dtype=torch.uint8)},
+                    pixels: Tensor(shape=torch.Size([32, 480, 480, 3]), device=cpu, dtype=torch.uint8, is_shared=False)},
                 batch_size=torch.Size([32]),
                 device=cpu,
                 is_shared=False),
-            r3m_vec: Tensor(torch.Size([32, 2048]), dtype=torch.float32),
-            reward: Tensor(torch.Size([32, 1]), dtype=torch.float32)},
+            r3m_vec: Tensor(shape=torch.Size([32, 2048]), device=cpu, dtype=torch.float32, is_shared=False),
+            reward: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([32]),
         device=cpu,
         is_shared=False)
@@ -292,11 +292,11 @@ buffer with it:
 
     Creating a MemmapStorage...
     The storage is being created: 
-            action: /tmp/tmpl_08oh5f, 0.030517578125 Mb of storage (size: torch.Size([1000, 8])).
-            done: /tmp/tmpin08juri, 0.00095367431640625 Mb of storage (size: torch.Size([1000, 1])).
-            pixels: /tmp/tmpng3xmtxr, 659.1796875 Mb of storage (size: torch.Size([1000, 480, 480, 3])).
-            reward: /tmp/tmplpnzenq_, 0.003814697265625 Mb of storage (size: torch.Size([1000, 1])).
-            ('next', 'pixels'): /tmp/tmpar7ght4p, 659.1796875 Mb of storage (size: torch.Size([1000, 480, 480, 3])).
+            action: /tmp/tmp3is97zoi, 0.030517578125 Mb of storage (size: torch.Size([1000, 8])).
+            done: /tmp/tmpg341pmd7, 0.00095367431640625 Mb of storage (size: torch.Size([1000, 1])).
+            pixels: /tmp/tmpm3omf2no, 659.1796875 Mb of storage (size: torch.Size([1000, 480, 480, 3])).
+            reward: /tmp/tmpbueoge_c, 0.003814697265625 Mb of storage (size: torch.Size([1000, 1])).
+            ('next', 'pixels'): /tmp/tmp6ed1snrs, 659.1796875 Mb of storage (size: torch.Size([1000, 480, 480, 3])).
 
 
 
@@ -322,16 +322,16 @@ since we haven't used it yet:
 
     stored data: TensorDict(
         fields={
-            action: MemmapTensor(torch.Size([1000, 8]), dtype=torch.float32),
-            done: MemmapTensor(torch.Size([1000, 1]), dtype=torch.bool),
+            action: MemmapTensor(shape=torch.Size([1000, 8]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: MemmapTensor(shape=torch.Size([1000, 1]), device=cpu, dtype=torch.bool, is_shared=False),
             next: TensorDict(
                 fields={
-                    pixels: MemmapTensor(torch.Size([1000, 480, 480, 3]), dtype=torch.uint8)},
+                    pixels: MemmapTensor(shape=torch.Size([1000, 480, 480, 3]), device=cpu, dtype=torch.uint8, is_shared=False)},
                 batch_size=torch.Size([1000]),
                 device=cpu,
                 is_shared=False),
-            pixels: MemmapTensor(torch.Size([1000, 480, 480, 3]), dtype=torch.uint8),
-            reward: MemmapTensor(torch.Size([1000, 1]), dtype=torch.float32)},
+            pixels: MemmapTensor(shape=torch.Size([1000, 480, 480, 3]), device=cpu, dtype=torch.uint8, is_shared=False),
+            reward: MemmapTensor(shape=torch.Size([1000, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([1000]),
         device=cpu,
         is_shared=False)
@@ -361,16 +361,16 @@ In this way, we can train an algorithm offline on a dataset made of images:
 
     data after sampling: TensorDict(
         fields={
-            action: Tensor(torch.Size([32, 8]), dtype=torch.float32),
-            done: Tensor(torch.Size([32, 1]), dtype=torch.bool),
+            action: Tensor(shape=torch.Size([32, 8]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.bool, is_shared=False),
             next: TensorDict(
                 fields={
-                    pixels: Tensor(torch.Size([32, 480, 480, 3]), dtype=torch.uint8)},
+                    pixels: Tensor(shape=torch.Size([32, 480, 480, 3]), device=cpu, dtype=torch.uint8, is_shared=False)},
                 batch_size=torch.Size([32]),
                 device=cpu,
                 is_shared=False),
-            r3m_vec: Tensor(torch.Size([32, 2048]), dtype=torch.float32),
-            reward: Tensor(torch.Size([32, 1]), dtype=torch.float32)},
+            r3m_vec: Tensor(shape=torch.Size([32, 2048]), device=cpu, dtype=torch.float32, is_shared=False),
+            reward: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([32]),
         device=cpu,
         is_shared=False)
@@ -381,7 +381,7 @@ In this way, we can train an algorithm offline on a dataset made of images:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  23.704 seconds)
+   **Total running time of the script:** ( 1 minutes  2.004 seconds)
 
 
 .. _sphx_glr_download_tutorials_pretrained_models.py:

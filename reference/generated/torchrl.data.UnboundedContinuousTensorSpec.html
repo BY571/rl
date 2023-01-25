@@ -38,7 +38,7 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="BinaryDiscreteTensorSpec" href="torchrl.data.BinaryDiscreteTensorSpec.html" />
+    <link rel="next" title="UnboundedDiscreteTensorSpec" href="torchrl.data.UnboundedDiscreteTensorSpec.html" />
     <link rel="prev" title="OneHotDiscreteTensorSpec" href="torchrl.data.OneHotDiscreteTensorSpec.html" />
   <!-- Google Analytics -->
   
@@ -410,6 +410,20 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="torchrl.data.UnboundedContinuousTensorSpec.expand">
+<span class="sig-name descname"><span class="pre">expand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">shape</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/data/tensor_specs.html#UnboundedContinuousTensorSpec.expand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.data.UnboundedContinuousTensorSpec.expand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new Spec with the extended shape.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*shape</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a><em> or </em><em>iterable</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the new shape of the Spec. Must comply with the current shape:
+its length must be at least as long as the current shape length,
+and its last values must be complient too; ie they can only differ
+from it if the current dimension is a singleton.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="torchrl.data.UnboundedContinuousTensorSpec.index">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.13)"><span class="pre">Tensor</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.11)"><span class="pre">slice</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tensor_to_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.13)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.13)"><span class="pre">Tensor</span></a></span></span><a class="headerlink" href="#torchrl.data.UnboundedContinuousTensorSpec.index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Indexes the input tensor.</p>
@@ -528,7 +542,7 @@ indicated key.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="torchrl.data.BinaryDiscreteTensorSpec.html" class="btn btn-neutral float-right" title="BinaryDiscreteTensorSpec" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
+        <a href="torchrl.data.UnboundedDiscreteTensorSpec.html" class="btn btn-neutral float-right" title="UnboundedDiscreteTensorSpec" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
       
       
         <a href="torchrl.data.OneHotDiscreteTensorSpec.html" class="btn btn-neutral" title="OneHotDiscreteTensorSpec" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
@@ -567,6 +581,7 @@ indicated key.</p></li>
 <li><a class="reference internal" href="#torchrl.data.UnboundedContinuousTensorSpec"><code class="docutils literal notranslate"><span class="pre">UnboundedContinuousTensorSpec</span></code></a><ul>
 <li><a class="reference internal" href="#torchrl.data.UnboundedContinuousTensorSpec.assert_is_in"><code class="docutils literal notranslate"><span class="pre">UnboundedContinuousTensorSpec.assert_is_in()</span></code></a></li>
 <li><a class="reference internal" href="#torchrl.data.UnboundedContinuousTensorSpec.encode"><code class="docutils literal notranslate"><span class="pre">UnboundedContinuousTensorSpec.encode()</span></code></a></li>
+<li><a class="reference internal" href="#torchrl.data.UnboundedContinuousTensorSpec.expand"><code class="docutils literal notranslate"><span class="pre">UnboundedContinuousTensorSpec.expand()</span></code></a></li>
 <li><a class="reference internal" href="#torchrl.data.UnboundedContinuousTensorSpec.index"><code class="docutils literal notranslate"><span class="pre">UnboundedContinuousTensorSpec.index()</span></code></a></li>
 <li><a class="reference internal" href="#torchrl.data.UnboundedContinuousTensorSpec.is_in"><code class="docutils literal notranslate"><span class="pre">UnboundedContinuousTensorSpec.is_in()</span></code></a></li>
 <li><a class="reference internal" href="#torchrl.data.UnboundedContinuousTensorSpec.project"><code class="docutils literal notranslate"><span class="pre">UnboundedContinuousTensorSpec.project()</span></code></a></li>

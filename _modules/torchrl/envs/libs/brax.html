@@ -477,25 +477,38 @@
         <span class="n">key</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">state</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="n">state_dict</span> <span class="o">=</span> <span class="n">_object_to_tensordict</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="p">())</span>
-        <span class="n">state_spec</span> <span class="o">=</span> <span class="n">_extract_spec</span><span class="p">(</span><span class="n">state_dict</span><span class="p">)</span>
+        <span class="n">state_spec</span> <span class="o">=</span> <span class="n">_extract_spec</span><span class="p">(</span><span class="n">state_dict</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">state_spec</span>
 
     <span class="k">def</span> <span class="nf">_make_specs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">:</span> <span class="s2">&quot;brax.envs.env.Env&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
             <span class="n">action</span><span class="o">=</span><span class="n">BoundedTensorSpec</span><span class="p">(</span>
-                <span class="n">minimum</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">maximum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">action_size</span><span class="p">,),</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span>
-            <span class="p">)</span>
+                <span class="n">minimum</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">maximum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">shape</span><span class="o">=</span><span class="p">(</span>
+                    <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+                    <span class="n">env</span><span class="o">.</span><span class="n">action_size</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
             <span class="n">shape</span><span class="o">=</span><span class="p">[</span>
+                <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
                 <span class="mi">1</span><span class="p">,</span>
             <span class="p">],</span>
             <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
             <span class="n">observation</span><span class="o">=</span><span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
-                <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">observation_size</span><span class="p">,),</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span>
-            <span class="p">)</span>
+                <span class="n">shape</span><span class="o">=</span><span class="p">(</span>
+                    <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+                    <span class="n">env</span><span class="o">.</span><span class="n">observation_size</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="c1"># extract state spec from instance</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">state_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_state_spec</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
@@ -532,8 +545,8 @@
         <span class="n">state</span> <span class="o">=</span> <span class="n">_object_to_tensordict</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
 
         <span class="c1"># build result</span>
-        <span class="n">reward</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="n">done</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">bool</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">reward</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">done</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">bool</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="n">tensordict_out</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span>
             <span class="n">source</span><span class="o">=</span><span class="p">{</span>
                 <span class="s2">&quot;observation&quot;</span><span class="p">:</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;obs&quot;</span><span class="p">),</span>
@@ -565,14 +578,8 @@
         <span class="n">next_state</span> <span class="o">=</span> <span class="n">_object_to_tensordict</span><span class="p">(</span><span class="n">next_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
 
         <span class="c1"># build result</span>
-        <span class="n">reward</span> <span class="o">=</span> <span class="n">next_state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span>
-            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">shape</span>
-        <span class="p">)</span>
-        <span class="n">done</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">next_state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">bool</span><span class="p">()</span>
-            <span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="p">)</span>
+        <span class="n">reward</span> <span class="o">=</span> <span class="n">next_state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">done</span> <span class="o">=</span> <span class="n">next_state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">bool</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="n">tensordict_out</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span>
             <span class="n">source</span><span class="o">=</span><span class="p">{</span>
                 <span class="s2">&quot;observation&quot;</span><span class="p">:</span> <span class="n">next_state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;obs&quot;</span><span class="p">),</span>
@@ -599,19 +606,13 @@
             <span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="o">*</span><span class="n">qp_values</span>
         <span class="p">)</span>
 
-        <span class="c1"># extract done values</span>
-        <span class="n">next_done</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">next_state_nograd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">bool</span><span class="p">()</span>
-            <span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="p">)</span>
+        <span class="c1"># extract done values: we assume a shape identical to reward</span>
+        <span class="n">next_done</span> <span class="o">=</span> <span class="n">next_state_nograd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">bool</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
         <span class="c1"># merge with tensors with grad function</span>
         <span class="n">next_state</span> <span class="o">=</span> <span class="n">next_state_nograd</span>
         <span class="n">next_state</span><span class="p">[</span><span class="s2">&quot;obs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">next_obs</span>
-        <span class="n">next_state</span><span class="p">[</span><span class="s2">&quot;reward&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">next_reward</span><span class="o">.</span><span class="n">view</span><span class="p">(</span>
-            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">shape</span>
-        <span class="p">)</span>
+        <span class="n">next_state</span><span class="p">[</span><span class="s2">&quot;reward&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">next_reward</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="n">next_state</span><span class="p">[</span><span class="s2">&quot;qp&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">qp_keys</span><span class="p">,</span> <span class="n">next_qp_values</span><span class="p">)))</span>
 
         <span class="c1"># build result</span>

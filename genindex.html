@@ -467,13 +467,17 @@
 </li>
         <li><a href="reference/generated/torchrl.data.DiscreteTensorSpec.html#torchrl.data.DiscreteTensorSpec.assert_is_in">(torchrl.data.DiscreteTensorSpec method)</a>
 </li>
-        <li><a href="reference/generated/torchrl.data.MultOneHotDiscreteTensorSpec.html#torchrl.data.MultOneHotDiscreteTensorSpec.assert_is_in">(torchrl.data.MultOneHotDiscreteTensorSpec method)</a>
+        <li><a href="reference/generated/torchrl.data.MultiDiscreteTensorSpec.html#torchrl.data.MultiDiscreteTensorSpec.assert_is_in">(torchrl.data.MultiDiscreteTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.MultiOneHotDiscreteTensorSpec.html#torchrl.data.MultiOneHotDiscreteTensorSpec.assert_is_in">(torchrl.data.MultiOneHotDiscreteTensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.OneHotDiscreteTensorSpec.html#torchrl.data.OneHotDiscreteTensorSpec.assert_is_in">(torchrl.data.OneHotDiscreteTensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec.assert_is_in">(torchrl.data.TensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec.assert_is_in">(torchrl.data.UnboundedContinuousTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.UnboundedDiscreteTensorSpec.html#torchrl.data.UnboundedDiscreteTensorSpec.assert_is_in">(torchrl.data.UnboundedDiscreteTensorSpec method)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.collectors.collectors.aSyncDataCollector.html#torchrl.collectors.collectors.aSyncDataCollector">aSyncDataCollector (class in torchrl.collectors.collectors)</a>
@@ -608,7 +612,7 @@
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.cpu">(torchrl.envs.SerialEnv method)</a>
 </li>
       </ul></li>
-      <li><a href="reference/generated/torchrl.trainers.loggers.CSVLogger.html#torchrl.trainers.loggers.CSVLogger">CSVLogger() (in module torchrl.trainers.loggers)</a>
+      <li><a href="reference/generated/torchrl.record.loggers.CSVLogger.html#torchrl.record.loggers.CSVLogger">CSVLogger() (in module torchrl.record.loggers)</a>
 </li>
       <li><a href="reference/generated/torchrl.data.MultiStep.html#torchrl.data.MultiStep.cuda">cuda() (torchrl.data.MultiStep method)</a>
 
@@ -705,13 +709,17 @@
 </li>
         <li><a href="reference/generated/torchrl.data.DiscreteTensorSpec.html#torchrl.data.DiscreteTensorSpec.encode">(torchrl.data.DiscreteTensorSpec method)</a>
 </li>
-        <li><a href="reference/generated/torchrl.data.MultOneHotDiscreteTensorSpec.html#torchrl.data.MultOneHotDiscreteTensorSpec.encode">(torchrl.data.MultOneHotDiscreteTensorSpec method)</a>
+        <li><a href="reference/generated/torchrl.data.MultiDiscreteTensorSpec.html#torchrl.data.MultiDiscreteTensorSpec.encode">(torchrl.data.MultiDiscreteTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.MultiOneHotDiscreteTensorSpec.html#torchrl.data.MultiOneHotDiscreteTensorSpec.encode">(torchrl.data.MultiOneHotDiscreteTensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.OneHotDiscreteTensorSpec.html#torchrl.data.OneHotDiscreteTensorSpec.encode">(torchrl.data.OneHotDiscreteTensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec.encode">(torchrl.data.TensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec.encode">(torchrl.data.UnboundedContinuousTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.UnboundedDiscreteTensorSpec.html#torchrl.data.UnboundedDiscreteTensorSpec.encode">(torchrl.data.UnboundedDiscreteTensorSpec method)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.modules.tensordict_module.common.ensure_tensordict_compatible.html#torchrl.modules.tensordict_module.common.ensure_tensordict_compatible">ensure_tensordict_compatible (class in torchrl.modules.tensordict_module.common)</a>
@@ -736,10 +744,32 @@
         <li><a href="reference/generated/torchrl.envs.transforms.TransformedEnv.html#torchrl.envs.transforms.TransformedEnv.eval">(torchrl.envs.transforms.TransformedEnv method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.envs.transforms.ExcludeTransform.html#torchrl.envs.transforms.ExcludeTransform">ExcludeTransform (class in torchrl.envs.transforms)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/generated/torchrl.data.BinaryDiscreteTensorSpec.html#torchrl.data.BinaryDiscreteTensorSpec.expand">expand() (torchrl.data.BinaryDiscreteTensorSpec method)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.data.BoundedTensorSpec.html#torchrl.data.BoundedTensorSpec.expand">(torchrl.data.BoundedTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.CompositeSpec.html#torchrl.data.CompositeSpec.expand">(torchrl.data.CompositeSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.DiscreteTensorSpec.html#torchrl.data.DiscreteTensorSpec.expand">(torchrl.data.DiscreteTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.MultiDiscreteTensorSpec.html#torchrl.data.MultiDiscreteTensorSpec.expand">(torchrl.data.MultiDiscreteTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.MultiOneHotDiscreteTensorSpec.html#torchrl.data.MultiOneHotDiscreteTensorSpec.expand">(torchrl.data.MultiOneHotDiscreteTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.OneHotDiscreteTensorSpec.html#torchrl.data.OneHotDiscreteTensorSpec.expand">(torchrl.data.OneHotDiscreteTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec.expand">(torchrl.data.TensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec.expand">(torchrl.data.UnboundedContinuousTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.UnboundedDiscreteTensorSpec.html#torchrl.data.UnboundedDiscreteTensorSpec.expand">(torchrl.data.UnboundedDiscreteTensorSpec method)</a>
+</li>
+      </ul></li>
       <li><a href="reference/generated/torchrl.envs.utils.exploration_mode.html#torchrl.envs.utils.exploration_mode">exploration_mode() (in module torchrl.envs.utils)</a>
 </li>
       <li><a href="reference/generated/torchrl.data.PrioritizedReplayBuffer.html#torchrl.data.PrioritizedReplayBuffer.extend">extend() (torchrl.data.PrioritizedReplayBuffer method)</a>
@@ -908,7 +938,7 @@
 </li>
       <li><a href="reference/generated/torchrl.objectives.value.functional.generalized_advantage_estimate.html#torchrl.objectives.value.functional.generalized_advantage_estimate">generalized_advantage_estimate (class in torchrl.objectives.value.functional)</a>
 </li>
-      <li><a href="reference/generated/torchrl.trainers.loggers.generate_exp_name.html#torchrl.trainers.loggers.generate_exp_name">generate_exp_name() (in module torchrl.trainers.loggers)</a>
+      <li><a href="reference/generated/torchrl.record.loggers.generate_exp_name.html#torchrl.record.loggers.generate_exp_name">generate_exp_name() (in module torchrl.record.loggers)</a>
 </li>
       <li><a href="reference/generated/torchrl.envs.utils.get_available_libraries.html#torchrl.envs.utils.get_available_libraries">get_available_libraries() (in module torchrl.envs.utils)</a>
 </li>
@@ -940,7 +970,7 @@
         <li><a href="reference/generated/torchrl.envs.transforms.VecNorm.html#torchrl.envs.transforms.VecNorm.get_extra_state">(torchrl.envs.transforms.VecNorm method)</a>
 </li>
       </ul></li>
-      <li><a href="reference/generated/torchrl.trainers.loggers.get_logger.html#torchrl.trainers.loggers.get_logger">get_logger() (in module torchrl.trainers.loggers)</a>
+      <li><a href="reference/generated/torchrl.record.loggers.get_logger.html#torchrl.record.loggers.get_logger">get_logger() (in module torchrl.record.loggers)</a>
 </li>
       <li><a href="reference/generated/torchrl.data.MultiStep.html#torchrl.data.MultiStep.get_parameter">get_parameter() (torchrl.data.MultiStep method)</a>
 
@@ -1045,13 +1075,17 @@
 </li>
         <li><a href="reference/generated/torchrl.data.DiscreteTensorSpec.html#torchrl.data.DiscreteTensorSpec.index">(torchrl.data.DiscreteTensorSpec method)</a>
 </li>
-        <li><a href="reference/generated/torchrl.data.MultOneHotDiscreteTensorSpec.html#torchrl.data.MultOneHotDiscreteTensorSpec.index">(torchrl.data.MultOneHotDiscreteTensorSpec method)</a>
+        <li><a href="reference/generated/torchrl.data.MultiDiscreteTensorSpec.html#torchrl.data.MultiDiscreteTensorSpec.index">(torchrl.data.MultiDiscreteTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.MultiOneHotDiscreteTensorSpec.html#torchrl.data.MultiOneHotDiscreteTensorSpec.index">(torchrl.data.MultiOneHotDiscreteTensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.OneHotDiscreteTensorSpec.html#torchrl.data.OneHotDiscreteTensorSpec.index">(torchrl.data.OneHotDiscreteTensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec.index">(torchrl.data.TensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec.index">(torchrl.data.UnboundedContinuousTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.UnboundedDiscreteTensorSpec.html#torchrl.data.UnboundedDiscreteTensorSpec.index">(torchrl.data.UnboundedDiscreteTensorSpec method)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.transforms.ObservationNorm.html#torchrl.envs.transforms.ObservationNorm.init_stats">init_stats() (torchrl.envs.transforms.ObservationNorm method)</a>
@@ -1086,8 +1120,6 @@
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.ipu">(torchrl.envs.SerialEnv method)</a>
 </li>
       </ul></li>
-      <li><a href="reference/generated/torchrl.envs.transforms.VIPTransform.html#torchrl.envs.transforms.VIPTransform.is_3d">is_3d (torchrl.envs.transforms.VIPTransform property)</a>
-</li>
       <li><a href="reference/generated/torchrl.data.BinaryDiscreteTensorSpec.html#torchrl.data.BinaryDiscreteTensorSpec.is_in">is_in() (torchrl.data.BinaryDiscreteTensorSpec method)</a>
 
       <ul>
@@ -1097,13 +1129,17 @@
 </li>
         <li><a href="reference/generated/torchrl.data.DiscreteTensorSpec.html#torchrl.data.DiscreteTensorSpec.is_in">(torchrl.data.DiscreteTensorSpec method)</a>
 </li>
-        <li><a href="reference/generated/torchrl.data.MultOneHotDiscreteTensorSpec.html#torchrl.data.MultOneHotDiscreteTensorSpec.is_in">(torchrl.data.MultOneHotDiscreteTensorSpec method)</a>
+        <li><a href="reference/generated/torchrl.data.MultiDiscreteTensorSpec.html#torchrl.data.MultiDiscreteTensorSpec.is_in">(torchrl.data.MultiDiscreteTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.MultiOneHotDiscreteTensorSpec.html#torchrl.data.MultiOneHotDiscreteTensorSpec.is_in">(torchrl.data.MultiOneHotDiscreteTensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.OneHotDiscreteTensorSpec.html#torchrl.data.OneHotDiscreteTensorSpec.is_in">(torchrl.data.OneHotDiscreteTensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec.is_in">(torchrl.data.TensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec.is_in">(torchrl.data.UnboundedContinuousTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.UnboundedDiscreteTensorSpec.html#torchrl.data.UnboundedDiscreteTensorSpec.is_in">(torchrl.data.UnboundedDiscreteTensorSpec method)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.modules.tensordict_module.common.is_tensordict_compatible.html#torchrl.modules.tensordict_module.common.is_tensordict_compatible">is_tensordict_compatible (class in torchrl.modules.tensordict_module.common)</a>
@@ -1178,7 +1214,7 @@
         <li><a href="reference/generated/torchrl.modules.TruncatedNormal.html#torchrl.modules.TruncatedNormal.log_prob">(torchrl.modules.TruncatedNormal method)</a>
 </li>
       </ul></li>
-      <li><a href="reference/generated/torchrl.trainers.loggers.Logger.html#torchrl.trainers.loggers.Logger">Logger() (in module torchrl.trainers.loggers)</a>
+      <li><a href="reference/generated/torchrl.record.loggers.Logger.html#torchrl.record.loggers.Logger">Logger() (in module torchrl.record.loggers)</a>
 </li>
       <li><a href="reference/generated/torchrl.trainers.LogReward.html#torchrl.trainers.LogReward">LogReward (class in torchrl.trainers)</a>
 </li>
@@ -1234,7 +1270,7 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/generated/torchrl.trainers.loggers.MLFlowLogger.html#torchrl.trainers.loggers.MLFlowLogger">MLFlowLogger() (in module torchrl.trainers.loggers)</a>
+      <li><a href="reference/generated/torchrl.record.loggers.MLFlowLogger.html#torchrl.record.loggers.MLFlowLogger">MLFlowLogger() (in module torchrl.record.loggers)</a>
 </li>
       <li><a href="reference/generated/torchrl.modules.MLP.html#torchrl.modules.MLP">MLP (class in torchrl.modules)</a>
 </li>
@@ -1272,11 +1308,13 @@
 </li>
       <li><a href="reference/generated/torchrl.collectors.collectors.MultiaSyncDataCollector.html#torchrl.collectors.collectors.MultiaSyncDataCollector">MultiaSyncDataCollector (class in torchrl.collectors.collectors)</a>
 </li>
+      <li><a href="reference/generated/torchrl.data.MultiDiscreteTensorSpec.html#torchrl.data.MultiDiscreteTensorSpec">MultiDiscreteTensorSpec (class in torchrl.data)</a>
+</li>
+      <li><a href="reference/generated/torchrl.data.MultiOneHotDiscreteTensorSpec.html#torchrl.data.MultiOneHotDiscreteTensorSpec">MultiOneHotDiscreteTensorSpec (class in torchrl.data)</a>
+</li>
       <li><a href="reference/generated/torchrl.data.MultiStep.html#torchrl.data.MultiStep">MultiStep (class in torchrl.data)</a>
 </li>
       <li><a href="reference/generated/torchrl.collectors.collectors.MultiSyncDataCollector.html#torchrl.collectors.collectors.MultiSyncDataCollector">MultiSyncDataCollector (class in torchrl.collectors.collectors)</a>
-</li>
-      <li><a href="reference/generated/torchrl.data.MultOneHotDiscreteTensorSpec.html#torchrl.data.MultOneHotDiscreteTensorSpec">MultOneHotDiscreteTensorSpec (class in torchrl.data)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1402,10 +1440,10 @@
         <li><a href="reference/generated/torchrl.modules.MPPIPlanner.html#torchrl.modules.MPPIPlanner.planning">(torchrl.modules.MPPIPlanner method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.objectives.PPOLoss.html#torchrl.objectives.PPOLoss">PPOLoss (class in torchrl.objectives)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.data.PrioritizedReplayBuffer.html#torchrl.data.PrioritizedReplayBuffer">PrioritizedReplayBuffer (class in torchrl.data)</a>
 </li>
       <li><a href="reference/generated/torchrl.data.replay_buffers.samplers.PrioritizedSampler.html#torchrl.data.replay_buffers.samplers.PrioritizedSampler">PrioritizedSampler (class in torchrl.data.replay_buffers.samplers)</a>
@@ -1421,13 +1459,17 @@
 </li>
         <li><a href="reference/generated/torchrl.data.DiscreteTensorSpec.html#torchrl.data.DiscreteTensorSpec.project">(torchrl.data.DiscreteTensorSpec method)</a>
 </li>
-        <li><a href="reference/generated/torchrl.data.MultOneHotDiscreteTensorSpec.html#torchrl.data.MultOneHotDiscreteTensorSpec.project">(torchrl.data.MultOneHotDiscreteTensorSpec method)</a>
+        <li><a href="reference/generated/torchrl.data.MultiDiscreteTensorSpec.html#torchrl.data.MultiDiscreteTensorSpec.project">(torchrl.data.MultiDiscreteTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.MultiOneHotDiscreteTensorSpec.html#torchrl.data.MultiOneHotDiscreteTensorSpec.project">(torchrl.data.MultiOneHotDiscreteTensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.OneHotDiscreteTensorSpec.html#torchrl.data.OneHotDiscreteTensorSpec.project">(torchrl.data.OneHotDiscreteTensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec.project">(torchrl.data.TensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec.project">(torchrl.data.UnboundedContinuousTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.UnboundedDiscreteTensorSpec.html#torchrl.data.UnboundedDiscreteTensorSpec.project">(torchrl.data.UnboundedDiscreteTensorSpec method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -1459,13 +1501,17 @@
 </li>
         <li><a href="reference/generated/torchrl.data.DiscreteTensorSpec.html#torchrl.data.DiscreteTensorSpec.rand">(torchrl.data.DiscreteTensorSpec method)</a>
 </li>
-        <li><a href="reference/generated/torchrl.data.MultOneHotDiscreteTensorSpec.html#torchrl.data.MultOneHotDiscreteTensorSpec.rand">(torchrl.data.MultOneHotDiscreteTensorSpec method)</a>
+        <li><a href="reference/generated/torchrl.data.MultiDiscreteTensorSpec.html#torchrl.data.MultiDiscreteTensorSpec.rand">(torchrl.data.MultiDiscreteTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.MultiOneHotDiscreteTensorSpec.html#torchrl.data.MultiOneHotDiscreteTensorSpec.rand">(torchrl.data.MultiOneHotDiscreteTensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.OneHotDiscreteTensorSpec.html#torchrl.data.OneHotDiscreteTensorSpec.rand">(torchrl.data.OneHotDiscreteTensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec.rand">(torchrl.data.TensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec.rand">(torchrl.data.UnboundedContinuousTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.UnboundedDiscreteTensorSpec.html#torchrl.data.UnboundedDiscreteTensorSpec.rand">(torchrl.data.UnboundedDiscreteTensorSpec method)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.ModelBasedEnvBase.html#torchrl.envs.rand_step">rand_step() (in module torchrl.envs)</a>
@@ -1658,6 +1704,8 @@
         <li><a href="reference/generated/torchrl.envs.transforms.StepCounter.html#torchrl.envs.transforms.StepCounter.reset">(torchrl.envs.transforms.StepCounter method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.TensorDictPrimer.html#torchrl.envs.transforms.TensorDictPrimer.reset">(torchrl.envs.transforms.TensorDictPrimer method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.transforms.TimeMaxPool.html#torchrl.envs.transforms.TimeMaxPool.reset">(torchrl.envs.transforms.TimeMaxPool method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.Transform.html#torchrl.envs.transforms.Transform.reset">(torchrl.envs.transforms.Transform method)</a>
 </li>
@@ -1896,7 +1944,7 @@
 </li>
       <li><a href="reference/generated/torchrl.objectives.value.TDLambdaEstimate.html#torchrl.objectives.value.TDLambdaEstimate">TDLambdaEstimate (class in torchrl.objectives.value)</a>
 </li>
-      <li><a href="reference/generated/torchrl.trainers.loggers.TensorboardLogger.html#torchrl.trainers.loggers.TensorboardLogger">TensorboardLogger() (in module torchrl.trainers.loggers)</a>
+      <li><a href="reference/generated/torchrl.record.loggers.TensorboardLogger.html#torchrl.record.loggers.TensorboardLogger">TensorboardLogger() (in module torchrl.record.loggers)</a>
 </li>
       <li><a href="reference/generated/torchrl.envs.transforms.TensorDictPrimer.html#torchrl.envs.transforms.TensorDictPrimer">TensorDictPrimer (class in torchrl.envs.transforms)</a>
 </li>
@@ -1907,6 +1955,8 @@
       <li><a href="reference/generated/torchrl.data.TensorDictReplayBuffer.html#torchrl.data.TensorDictReplayBuffer">TensorDictReplayBuffer (class in torchrl.data)</a>
 </li>
       <li><a href="reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec">TensorSpec (class in torchrl.data)</a>
+</li>
+      <li><a href="reference/generated/torchrl.envs.transforms.TimeMaxPool.html#torchrl.envs.transforms.TimeMaxPool">TimeMaxPool (class in torchrl.envs.transforms)</a>
 </li>
       <li><a href="reference/generated/torchrl.data.MultiStep.html#torchrl.data.MultiStep.to">to() (torchrl.data.MultiStep method)</a>
 
@@ -1953,13 +2003,17 @@
 </li>
         <li><a href="reference/generated/torchrl.data.DiscreteTensorSpec.html#torchrl.data.DiscreteTensorSpec.to_numpy">(torchrl.data.DiscreteTensorSpec method)</a>
 </li>
-        <li><a href="reference/generated/torchrl.data.MultOneHotDiscreteTensorSpec.html#torchrl.data.MultOneHotDiscreteTensorSpec.to_numpy">(torchrl.data.MultOneHotDiscreteTensorSpec method)</a>
+        <li><a href="reference/generated/torchrl.data.MultiDiscreteTensorSpec.html#torchrl.data.MultiDiscreteTensorSpec.to_numpy">(torchrl.data.MultiDiscreteTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.MultiOneHotDiscreteTensorSpec.html#torchrl.data.MultiOneHotDiscreteTensorSpec.to_numpy">(torchrl.data.MultiOneHotDiscreteTensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.OneHotDiscreteTensorSpec.html#torchrl.data.OneHotDiscreteTensorSpec.to_numpy">(torchrl.data.OneHotDiscreteTensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec.to_numpy">(torchrl.data.TensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec.to_numpy">(torchrl.data.UnboundedContinuousTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.UnboundedDiscreteTensorSpec.html#torchrl.data.UnboundedDiscreteTensorSpec.to_numpy">(torchrl.data.UnboundedDiscreteTensorSpec method)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.transforms.VecNorm.html#torchrl.envs.transforms.VecNorm.to_observation_norm">to_observation_norm() (torchrl.envs.transforms.VecNorm method)</a>
@@ -2025,6 +2079,8 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.TensorDictPrimer.html#torchrl.envs.transforms.TensorDictPrimer.transform_observation_spec">(torchrl.envs.transforms.TensorDictPrimer method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.transforms.TimeMaxPool.html#torchrl.envs.transforms.TimeMaxPool.transform_observation_spec">(torchrl.envs.transforms.TimeMaxPool method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.transforms.ToTensorImage.html#torchrl.envs.transforms.ToTensorImage.transform_observation_spec">(torchrl.envs.transforms.ToTensorImage method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.Transform.html#torchrl.envs.transforms.Transform.transform_observation_spec">(torchrl.envs.transforms.Transform method)</a>
@@ -2075,13 +2131,17 @@
 </li>
         <li><a href="reference/generated/torchrl.data.DiscreteTensorSpec.html#torchrl.data.DiscreteTensorSpec.type_check">(torchrl.data.DiscreteTensorSpec method)</a>
 </li>
-        <li><a href="reference/generated/torchrl.data.MultOneHotDiscreteTensorSpec.html#torchrl.data.MultOneHotDiscreteTensorSpec.type_check">(torchrl.data.MultOneHotDiscreteTensorSpec method)</a>
+        <li><a href="reference/generated/torchrl.data.MultiDiscreteTensorSpec.html#torchrl.data.MultiDiscreteTensorSpec.type_check">(torchrl.data.MultiDiscreteTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.MultiOneHotDiscreteTensorSpec.html#torchrl.data.MultiOneHotDiscreteTensorSpec.type_check">(torchrl.data.MultiOneHotDiscreteTensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.OneHotDiscreteTensorSpec.html#torchrl.data.OneHotDiscreteTensorSpec.type_check">(torchrl.data.OneHotDiscreteTensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec.type_check">(torchrl.data.TensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec.type_check">(torchrl.data.UnboundedContinuousTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.UnboundedDiscreteTensorSpec.html#torchrl.data.UnboundedDiscreteTensorSpec.type_check">(torchrl.data.UnboundedDiscreteTensorSpec method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -2092,6 +2152,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec">UnboundedContinuousTensorSpec (class in torchrl.data)</a>
 </li>
+      <li><a href="reference/generated/torchrl.data.UnboundedDiscreteTensorSpec.html#torchrl.data.UnboundedDiscreteTensorSpec">UnboundedDiscreteTensorSpec (class in torchrl.data)</a>
+</li>
       <li><a href="reference/generated/torchrl.envs.transforms.UnsqueezeTransform.html#torchrl.envs.transforms.UnsqueezeTransform">UnsqueezeTransform (class in torchrl.envs.transforms)</a>
 </li>
       <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.update_kwargs">update_kwargs() (torchrl.envs.ParallelEnv method)</a>
@@ -2100,6 +2162,8 @@
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.update_kwargs">(torchrl.envs.SerialEnv method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.collectors.collectors.aSyncDataCollector.html#torchrl.collectors.collectors.aSyncDataCollector.update_policy_weights_">update_policy_weights_() (torchrl.collectors.collectors.aSyncDataCollector method)</a>
 
       <ul>
@@ -2110,8 +2174,6 @@
         <li><a href="reference/generated/torchrl.collectors.collectors.SyncDataCollector.html#torchrl.collectors.collectors.SyncDataCollector.update_policy_weights_">(torchrl.collectors.collectors.SyncDataCollector method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.data.replay_buffers.samplers.PrioritizedSampler.html#torchrl.data.replay_buffers.samplers.PrioritizedSampler.update_priority">update_priority() (torchrl.data.replay_buffers.samplers.PrioritizedSampler method)</a>
 </li>
       <li><a href="reference/generated/torchrl.trainers.UpdateWeights.html#torchrl.trainers.UpdateWeights">UpdateWeights (class in torchrl.trainers)</a>
@@ -2150,7 +2212,7 @@
 <h2 id="W">W</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/generated/torchrl.trainers.loggers.WandbLogger.html#torchrl.trainers.loggers.WandbLogger">WandbLogger() (in module torchrl.trainers.loggers)</a>
+      <li><a href="reference/generated/torchrl.record.loggers.WandbLogger.html#torchrl.record.loggers.WandbLogger">WandbLogger() (in module torchrl.record.loggers)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -2191,13 +2253,17 @@
 </li>
         <li><a href="reference/generated/torchrl.data.DiscreteTensorSpec.html#torchrl.data.DiscreteTensorSpec.zero">(torchrl.data.DiscreteTensorSpec method)</a>
 </li>
-        <li><a href="reference/generated/torchrl.data.MultOneHotDiscreteTensorSpec.html#torchrl.data.MultOneHotDiscreteTensorSpec.zero">(torchrl.data.MultOneHotDiscreteTensorSpec method)</a>
+        <li><a href="reference/generated/torchrl.data.MultiDiscreteTensorSpec.html#torchrl.data.MultiDiscreteTensorSpec.zero">(torchrl.data.MultiDiscreteTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.MultiOneHotDiscreteTensorSpec.html#torchrl.data.MultiOneHotDiscreteTensorSpec.zero">(torchrl.data.MultiOneHotDiscreteTensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.OneHotDiscreteTensorSpec.html#torchrl.data.OneHotDiscreteTensorSpec.zero">(torchrl.data.OneHotDiscreteTensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec.zero">(torchrl.data.TensorSpec method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec.zero">(torchrl.data.UnboundedContinuousTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.UnboundedDiscreteTensorSpec.html#torchrl.data.UnboundedDiscreteTensorSpec.zero">(torchrl.data.UnboundedDiscreteTensorSpec method)</a>
 </li>
       </ul></li>
   </ul></td>

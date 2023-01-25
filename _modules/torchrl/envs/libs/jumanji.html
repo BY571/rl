@@ -547,15 +547,17 @@
             <span class="n">action</span><span class="o">=</span><span class="n">_jumanji_to_torchrl_spec_transform</span><span class="p">(</span>
                 <span class="n">env</span><span class="o">.</span><span class="n">action_spec</span><span class="p">(),</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span>
             <span class="p">),</span>
-        <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_make_observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
         <span class="n">spec</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">observation_spec</span><span class="p">()</span>
         <span class="n">new_spec</span> <span class="o">=</span> <span class="n">_jumanji_to_torchrl_spec_transform</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">jumanji</span><span class="o">.</span><span class="n">specs</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">observation</span><span class="o">=</span><span class="n">new_spec</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">observation</span><span class="o">=</span><span class="n">new_spec</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">jumanji</span><span class="o">.</span><span class="n">specs</span><span class="o">.</span><span class="n">Spec</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">new_spec</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
+            <span class="k">return</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">new_spec</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported spec type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -565,7 +567,7 @@
         <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
             <span class="n">reward_spec</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">reward_spec</span>
+        <span class="k">return</span> <span class="n">reward_spec</span><span class="o">.</span><span class="n">expand</span><span class="p">([</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">*</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">_make_specs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">:</span> <span class="s2">&quot;jumanji.env.Environment&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
 
@@ -575,7 +577,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_reward_spec</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
 
         <span class="c1"># extract state spec from instance</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">state_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_state_spec</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_state_spec</span><span class="p">(</span><span class="n">env</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_spec</span>
 
         <span class="c1"># build state example for data conversion</span>
@@ -612,7 +614,7 @@
         <span class="c1"># prepare inputs</span>
         <span class="n">state</span> <span class="o">=</span> <span class="n">_tensordict_to_object</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;state&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_example</span><span class="p">)</span>
         <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_action</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;action&quot;</span><span class="p">))</span>
-        <span class="n">reward</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">zero</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+        <span class="n">reward</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>
 
         <span class="c1"># flatten batch size into vector</span>
         <span class="n">state</span> <span class="o">=</span> <span class="n">_tree_flatten</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>

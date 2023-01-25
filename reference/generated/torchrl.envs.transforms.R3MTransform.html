@@ -391,7 +391,7 @@ The reason for this is that the <code class="xref py py-obj docutils literal not
 the parent environment (if any) to be accessed: by making the class lazy we
 can ensure that the following code snippet works as expected:</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">transform</span> <span class="o">=</span> <span class="n">R3MTransform</span><span class="p">(</span><span class="s2">&quot;resenet50&quot;</span><span class="p">,</span> <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pixels&quot;</span><span class="p">])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">transform</span> <span class="o">=</span> <span class="n">R3MTransform</span><span class="p">(</span><span class="s2">&quot;resnet50&quot;</span><span class="p">,</span> <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pixels&quot;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># the forward method will first call _init which will look at env.observation_spec</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
@@ -410,8 +410,12 @@ Defaults to 244.</p></li>
 <li><p><strong>stack_images</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if False, the images given in the <code class="xref py py-obj docutils literal notranslate"><span class="pre">in_keys</span></code>
 argument will be treaded separetely and each will be given a single,
 separated entry in the output tensordict. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>.</p></li>
-<li><p><strong>download</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if True, the weights will be downloaded using
-the torch.hub download API (i.e. weights will be cached for future use).
+<li><p><strong>download</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>torchvision Weights config</em><em> or </em><em>corresponding string</em>) – if True, the weights will be downloaded using the torch.hub download
+API (i.e. weights will be cached for future use).
+These weights are the original weights from the R3M publication.
+If the torchvision weights are needed, there are two ways they can be
+obtained: <code class="xref py py-obj docutils literal notranslate"><span class="pre">download=ResNet50_Weights.IMAGENET1K_V1</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">download=&quot;IMAGENET1K_V1&quot;</span></code>
+where <code class="xref py py-obj docutils literal notranslate"><span class="pre">ResNet50_Weights</span></code> can be imported via <code class="xref py py-obj docutils literal notranslate"><span class="pre">from</span> <span class="pre">torchvision.models</span> <span class="pre">import</span> <span class="pre">resnet50,</span> <span class="pre">ResNet50_Weights</span></code>.
 Defaults to False.</p></li>
 <li><p><strong>download_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – path where to download the models.
 Default is None (cache path determined by torch.hub utils).</p></li>

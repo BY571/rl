@@ -271,11 +271,11 @@ Nested ``TensorDict`` have therefore the following property: the parent
 
     TensorDict(
         fields={
-            a: Tensor(torch.Size([3, 4]), dtype=torch.float32),
+            a: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
             b: TensorDict(
                 fields={
-                    c: Tensor(torch.Size([3, 4, 5]), dtype=torch.int32),
-                    d: Tensor(torch.Size([3, 4, 5, 6]), dtype=torch.float32)},
+                    c: Tensor(shape=torch.Size([3, 4, 5]), device=cpu, dtype=torch.int32, is_shared=False),
+                    d: Tensor(shape=torch.Size([3, 4, 5, 6]), device=cpu, dtype=torch.float32, is_shared=False)},
                 batch_size=torch.Size([3, 4, 5]),
                 device=None,
                 is_shared=False)},
@@ -314,8 +314,8 @@ TensorDict Dictionary Features
 
     TensorDict(
         fields={
-            a: Tensor(torch.Size([3, 4, 5]), dtype=torch.float32),
-            b: Tensor(torch.Size([3, 4]), dtype=torch.float32)},
+            a: Tensor(shape=torch.Size([3, 4, 5]), device=cpu, dtype=torch.float32, is_shared=False),
+            b: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([3, 4]),
         device=None,
         is_shared=False)
@@ -703,7 +703,7 @@ We can also fill the values of a TensorDict sequentially
 
     TensorDict(
         fields={
-            a: Tensor(torch.Size([10, 3, 4]), dtype=torch.float32)},
+            a: Tensor(shape=torch.Size([10, 3, 4]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([10]),
         device=None,
         is_shared=False)
@@ -803,8 +803,8 @@ Slicing and indexing is supported along the batch dimensions.
 
     TensorDict(
         fields={
-            a: Tensor(torch.Size([4, 5]), dtype=torch.float32),
-            b: Tensor(torch.Size([4]), dtype=torch.float32)},
+            a: Tensor(shape=torch.Size([4, 5]), device=cpu, dtype=torch.float32, is_shared=False),
+            b: Tensor(shape=torch.Size([4]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([4]),
         device=None,
         is_shared=False)
@@ -829,8 +829,8 @@ Slicing and indexing is supported along the batch dimensions.
 
     TensorDict(
         fields={
-            a: Tensor(torch.Size([2, 4, 5]), dtype=torch.float32),
-            b: Tensor(torch.Size([2, 4]), dtype=torch.float32)},
+            a: Tensor(shape=torch.Size([2, 4, 5]), device=cpu, dtype=torch.float32, is_shared=False),
+            b: Tensor(shape=torch.Size([2, 4]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([2, 4]),
         device=None,
         is_shared=False)
@@ -855,8 +855,8 @@ Slicing and indexing is supported along the batch dimensions.
 
     TensorDict(
         fields={
-            a: Tensor(torch.Size([3, 2, 5]), dtype=torch.float32),
-            b: Tensor(torch.Size([3, 2]), dtype=torch.float32)},
+            a: Tensor(shape=torch.Size([3, 2, 5]), device=cpu, dtype=torch.float32, is_shared=False),
+            b: Tensor(shape=torch.Size([3, 2]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([3, 2]),
         device=None,
         is_shared=False)
@@ -963,8 +963,8 @@ We mask ``TensorDict`` as we mask tensors.
 
     TensorDict(
         fields={
-            a: Tensor(torch.Size([6, 5]), dtype=torch.float32),
-            b: Tensor(torch.Size([6]), dtype=torch.float32)},
+            a: Tensor(shape=torch.Size([6, 5]), device=cpu, dtype=torch.float32, is_shared=False),
+            b: Tensor(shape=torch.Size([6]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([6]),
         device=None,
         is_shared=False)
@@ -1002,8 +1002,8 @@ fashion, returning a ``LazyStackedTensorDict`` item.
 
     LazyStackedTensorDict(
         fields={
-            a: Tensor(torch.Size([2, 3, 4, 5]), dtype=torch.float32),
-            b: Tensor(torch.Size([2, 3, 4]), dtype=torch.float32)},
+            a: Tensor(shape=torch.Size([2, 3, 4, 5]), device=cpu, dtype=torch.float32, is_shared=False),
+            b: Tensor(shape=torch.Size([2, 3, 4]), device=cpu, dtype=torch.float32, is_shared=False)},
         batch_size=torch.Size([2, 3, 4]),
         device=None,
         is_shared=False)
@@ -1177,7 +1177,7 @@ Have fun with TensorDict!
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.042 seconds)
+   **Total running time of the script:** ( 0 minutes  0.024 seconds)
 
 
 .. _sphx_glr_download_tutorials_tensordict_tutorial.py:

@@ -429,10 +429,10 @@ to be of type <code class="docutils literal notranslate"><span class="pre">Compo
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Env observation_spec:
  CompositeSpec(
     observation: BoundedTensorSpec(
-         shape=torch.Size([3]), space=ContinuousBox(minimum=tensor([-1., -1., -8.]), maximum=tensor([1., 1., 8.])), device=cpu, dtype=torch.float32, domain=continuous))
+         shape=torch.Size([3]), space=ContinuousBox(minimum=Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, contiguous=True), maximum=Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, contiguous=True)), device=cpu, dtype=torch.float32, domain=continuous), device=cpu, shape=torch.Size([]))
 Env action_spec:
  BoundedTensorSpec(
-     shape=torch.Size([1]), space=ContinuousBox(minimum=tensor([-2.]), maximum=tensor([2.])), device=cpu, dtype=torch.float32, domain=continuous)
+     shape=torch.Size([1]), space=ContinuousBox(minimum=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True), maximum=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True)), device=cpu, dtype=torch.float32, domain=continuous)
 Env reward_spec:
  UnboundedContinuousTensorSpec(
      shape=torch.Size([1]), space=None, device=cpu, dtype=torch.float32, domain=continuous)
@@ -457,7 +457,7 @@ projected action:
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>random action:
- tensor([1.9840])
+ tensor([0.1803])
 </pre></div>
 </div>
 <p>Envs are also packed with an <code class="docutils literal notranslate"><span class="pre">env.input_spec</span></code> attribute of type
@@ -479,8 +479,8 @@ and (3) <code class="docutils literal notranslate"><span class="pre">step</span>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
     fields={
-        done: Tensor(torch.Size([1]), dtype=torch.bool),
-        observation: Tensor(torch.Size([3]), dtype=torch.float32)},
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([]),
     device=cpu,
     is_shared=False)
@@ -507,16 +507,16 @@ we can just generate a random action:</p>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
     fields={
-        action: Tensor(torch.Size([1]), dtype=torch.float32),
-        done: Tensor(torch.Size([1]), dtype=torch.bool),
+        action: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
         next: TensorDict(
             fields={
-                observation: Tensor(torch.Size([3]), dtype=torch.float32)},
+                observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False)},
             batch_size=torch.Size([]),
             device=cpu,
             is_shared=False),
-        observation: Tensor(torch.Size([3]), dtype=torch.float32),
-        reward: Tensor(torch.Size([1]), dtype=torch.float32)},
+        observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
+        reward: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([]),
     device=cpu,
     is_shared=False)
@@ -529,15 +529,15 @@ done via the simple shortcut.</p>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
     fields={
-        action: Tensor(torch.Size([1]), dtype=torch.float32),
-        done: Tensor(torch.Size([1]), dtype=torch.bool),
+        action: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
         next: TensorDict(
             fields={
-                observation: Tensor(torch.Size([3]), dtype=torch.float32)},
+                observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False)},
             batch_size=torch.Size([]),
             device=cpu,
             is_shared=False),
-        reward: Tensor(torch.Size([1]), dtype=torch.float32)},
+        reward: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([]),
     device=cpu,
     is_shared=False)
@@ -563,8 +563,8 @@ it returns a new tensordict updated such that <em>t &lt; -t’</em>:</p>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
     fields={
-        observation: Tensor(torch.Size([3]), dtype=torch.float32),
-        some other key: Tensor(torch.Size([1]), dtype=torch.float32)},
+        observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
+        some other key: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([]),
     device=cpu,
     is_shared=False)
@@ -582,8 +582,8 @@ observation matches the previous one.</p>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
     fields={
-        done: Tensor(torch.Size([1]), dtype=torch.bool),
-        observation: Tensor(torch.Size([3]), dtype=torch.float32)},
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([]),
     device=None,
     is_shared=False)
@@ -600,16 +600,16 @@ easily for a given number of steps:</p>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
     fields={
-        action: Tensor(torch.Size([20, 1]), dtype=torch.float32),
-        done: Tensor(torch.Size([20, 1]), dtype=torch.bool),
+        action: Tensor(shape=torch.Size([20, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+        done: Tensor(shape=torch.Size([20, 1]), device=cpu, dtype=torch.bool, is_shared=False),
         next: TensorDict(
             fields={
-                observation: Tensor(torch.Size([20, 3]), dtype=torch.float32)},
+                observation: Tensor(shape=torch.Size([20, 3]), device=cpu, dtype=torch.float32, is_shared=False)},
             batch_size=torch.Size([20]),
             device=cpu,
             is_shared=False),
-        observation: Tensor(torch.Size([20, 3]), dtype=torch.float32),
-        reward: Tensor(torch.Size([20, 1]), dtype=torch.float32)},
+        observation: Tensor(shape=torch.Size([20, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+        reward: Tensor(shape=torch.Size([20, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([20]),
     device=cpu,
     is_shared=False)
@@ -642,8 +642,8 @@ and return the result of the truncated chain.</p>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
     fields={
-        done: Tensor(torch.Size([1]), dtype=torch.bool),
-        observation: Tensor(torch.Size([3]), dtype=torch.float32)},
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([]),
     device=cpu,
     is_shared=False)
@@ -665,7 +665,7 @@ argument that allows the user to quickly ask for image-based environments:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pixels&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
 </pre></div>
 </div>
-<img src="../_images/sphx_glr_torch_envs_001.png" srcset="../_images/sphx_glr_torch_envs_001.png" alt="torch envs" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.image.AxesImage object at 0x7f3a6e0af250&gt;
+<img src="../_images/sphx_glr_torch_envs_001.png" srcset="../_images/sphx_glr_torch_envs_001.png" alt="torch envs" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.image.AxesImage object at 0x7f9dcc5d8880&gt;
 </pre></div>
 </div>
 <p>Let’s have a look at what the tensordict contains:</p>
@@ -674,8 +674,8 @@ argument that allows the user to quickly ask for image-based environments:</p>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
     fields={
-        done: Tensor(torch.Size([1]), dtype=torch.bool),
-        pixels: Tensor(torch.Size([500, 500, 3]), dtype=torch.uint8)},
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        pixels: Tensor(shape=torch.Size([500, 500, 3]), device=cpu, dtype=torch.uint8, is_shared=False)},
     batch_size=torch.Size([]),
     device=cpu,
     is_shared=False)
@@ -703,8 +703,8 @@ gym environment step method).</p>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>from pixels:  True
 tensordict:  TensorDict(
     fields={
-        done: Tensor(torch.Size([1]), dtype=torch.bool),
-        pixels: Tensor(torch.Size([210, 160, 3]), dtype=torch.uint8)},
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        pixels: Tensor(shape=torch.Size([210, 160, 3]), device=cpu, dtype=torch.uint8, is_shared=False)},
     batch_size=torch.Size([]),
     device=cpu,
     is_shared=False)
@@ -740,9 +740,9 @@ The <code class="docutils literal notranslate"><span class="pre">available_envs<
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>result of reset:  TensorDict(
     fields={
-        done: Tensor(torch.Size([1]), dtype=torch.bool),
-        orientations: Tensor(torch.Size([4]), dtype=torch.float64),
-        velocity: Tensor(torch.Size([2]), dtype=torch.float64)},
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        orientations: Tensor(shape=torch.Size([4]), device=cpu, dtype=torch.float64, is_shared=False),
+        velocity: Tensor(shape=torch.Size([2]), device=cpu, dtype=torch.float64, is_shared=False)},
     batch_size=torch.Size([]),
     device=cpu,
     is_shared=False)
@@ -758,8 +758,8 @@ The <code class="docutils literal notranslate"><span class="pre">available_envs<
 </div>
 <img src="../_images/sphx_glr_torch_envs_002.png" srcset="../_images/sphx_glr_torch_envs_002.png" alt="torch envs" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>result of reset:  TensorDict(
     fields={
-        done: Tensor(torch.Size([1]), dtype=torch.bool),
-        pixels: Tensor(torch.Size([240, 320, 3]), dtype=torch.uint8)},
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        pixels: Tensor(shape=torch.Size([240, 320, 3]), device=cpu, dtype=torch.uint8, is_shared=False)},
     batch_size=torch.Size([]),
     device=cpu,
     is_shared=False)
@@ -802,15 +802,15 @@ built around a <code class="docutils literal notranslate"><span class="pre">base
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>reset before transform:  TensorDict(
     fields={
-        done: Tensor(torch.Size([1]), dtype=torch.bool),
-        pixels: Tensor(torch.Size([240, 320, 3]), dtype=torch.uint8)},
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        pixels: Tensor(shape=torch.Size([240, 320, 3]), device=cpu, dtype=torch.uint8, is_shared=False)},
     batch_size=torch.Size([]),
     device=cpu,
     is_shared=False)
 reset after transform:  TensorDict(
     fields={
-        done: Tensor(torch.Size([1]), dtype=torch.bool),
-        pixels: Tensor(torch.Size([3, 240, 320]), dtype=torch.float32)},
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        pixels: Tensor(shape=torch.Size([3, 240, 320]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([]),
     device=cpu,
     is_shared=False)
@@ -826,8 +826,8 @@ reset after transform:  TensorDict(
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
     fields={
-        done: Tensor(torch.Size([1]), dtype=torch.bool),
-        pixels: Tensor(torch.Size([3, 32, 32]), dtype=torch.float32)},
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        pixels: Tensor(shape=torch.Size([3, 32, 32]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([]),
     device=cpu,
     is_shared=False)
@@ -842,8 +842,8 @@ reset after transform:  TensorDict(
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
     fields={
-        done: Tensor(torch.Size([1]), dtype=torch.bool),
-        pixels: Tensor(torch.Size([1, 32, 32]), dtype=torch.float32)},
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        pixels: Tensor(shape=torch.Size([1, 32, 32]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([]),
     device=cpu,
     is_shared=False)
@@ -856,118 +856,10 @@ reset after transform:  TensorDict(
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>original obs spec:  CompositeSpec(
     pixels: UnboundedDiscreteTensorSpec(
-         shape=torch.Size([240, 320, 3]), space=ContinuousBox(minimum=tensor([[[0, 0, 0],
-             [0, 0, 0],
-             [0, 0, 0],
-             ...,
-             [0, 0, 0],
-             [0, 0, 0],
-             [0, 0, 0]],
-
-            [[0, 0, 0],
-             [0, 0, 0],
-             [0, 0, 0],
-             ...,
-             [0, 0, 0],
-             [0, 0, 0],
-             [0, 0, 0]],
-
-            [[0, 0, 0],
-             [0, 0, 0],
-             [0, 0, 0],
-             ...,
-             [0, 0, 0],
-             [0, 0, 0],
-             [0, 0, 0]],
-
-            ...,
-
-            [[0, 0, 0],
-             [0, 0, 0],
-             [0, 0, 0],
-             ...,
-             [0, 0, 0],
-             [0, 0, 0],
-             [0, 0, 0]],
-
-            [[0, 0, 0],
-             [0, 0, 0],
-             [0, 0, 0],
-             ...,
-             [0, 0, 0],
-             [0, 0, 0],
-             [0, 0, 0]],
-
-            [[0, 0, 0],
-             [0, 0, 0],
-             [0, 0, 0],
-             ...,
-             [0, 0, 0],
-             [0, 0, 0],
-             [0, 0, 0]]]), maximum=tensor([[[255, 255, 255],
-             [255, 255, 255],
-             [255, 255, 255],
-             ...,
-             [255, 255, 255],
-             [255, 255, 255],
-             [255, 255, 255]],
-
-            [[255, 255, 255],
-             [255, 255, 255],
-             [255, 255, 255],
-             ...,
-             [255, 255, 255],
-             [255, 255, 255],
-             [255, 255, 255]],
-
-            [[255, 255, 255],
-             [255, 255, 255],
-             [255, 255, 255],
-             ...,
-             [255, 255, 255],
-             [255, 255, 255],
-             [255, 255, 255]],
-
-            ...,
-
-            [[255, 255, 255],
-             [255, 255, 255],
-             [255, 255, 255],
-             ...,
-             [255, 255, 255],
-             [255, 255, 255],
-             [255, 255, 255]],
-
-            [[255, 255, 255],
-             [255, 255, 255],
-             [255, 255, 255],
-             ...,
-             [255, 255, 255],
-             [255, 255, 255],
-             [255, 255, 255]],
-
-            [[255, 255, 255],
-             [255, 255, 255],
-             [255, 255, 255],
-             ...,
-             [255, 255, 255],
-             [255, 255, 255],
-             [255, 255, 255]]])), device=cpu, dtype=torch.uint8, domain=continuous))
+         shape=torch.Size([240, 320, 3]), space=ContinuousBox(minimum=Tensor(shape=torch.Size([240, 320, 3]), device=cpu, dtype=torch.int64, contiguous=True), maximum=Tensor(shape=torch.Size([240, 320, 3]), device=cpu, dtype=torch.int64, contiguous=True)), device=cpu, dtype=torch.uint8, domain=continuous), device=cpu, shape=torch.Size([]))
 current obs spec:  CompositeSpec(
     pixels: UnboundedDiscreteTensorSpec(
-         shape=torch.Size([1, 32, 32]), space=ContinuousBox(minimum=tensor([[[0., 0., 0.,  ..., 0., 0., 0.],
-             [0., 0., 0.,  ..., 0., 0., 0.],
-             [0., 0., 0.,  ..., 0., 0., 0.],
-             ...,
-             [0., 0., 0.,  ..., 0., 0., 0.],
-             [0., 0., 0.,  ..., 0., 0., 0.],
-             [0., 0., 0.,  ..., 0., 0., 0.]]]), maximum=tensor([[[0.9999, 0.9999, 0.9999,  ..., 0.9999, 0.9999, 0.9999],
-             [0.9999, 0.9999, 0.9999,  ..., 0.9999, 0.9999, 0.9999],
-             [0.9999, 0.9999, 0.9999,  ..., 0.9999, 0.9999, 0.9999],
-             ...,
-             [0.9999, 0.9999, 0.9999,  ..., 0.9999, 0.9999, 0.9999],
-             [0.9999, 0.9999, 0.9999,  ..., 0.9999, 0.9999, 0.9999],
-             [0.9999, 0.9999, 0.9999,  ..., 0.9999, 0.9999, 0.9999]]])), device=cpu, dtype=torch.float32, domain=continuous))
+         shape=torch.Size([1, 32, 32]), space=ContinuousBox(minimum=Tensor(shape=torch.Size([1, 32, 32]), device=cpu, dtype=torch.float32, contiguous=True), maximum=Tensor(shape=torch.Size([1, 32, 32]), device=cpu, dtype=torch.float32, contiguous=True)), device=cpu, dtype=torch.float32, domain=continuous), device=cpu, shape=torch.Size([]))
 </pre></div>
 </div>
 <p>We can also concatenate tensors if needed:</p>
@@ -985,16 +877,16 @@ current obs spec:  CompositeSpec(
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>keys before concat:  TensorDict(
     fields={
-        done: Tensor(torch.Size([1]), dtype=torch.bool),
-        orientations: Tensor(torch.Size([4]), dtype=torch.float64),
-        velocity: Tensor(torch.Size([2]), dtype=torch.float64)},
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        orientations: Tensor(shape=torch.Size([4]), device=cpu, dtype=torch.float64, is_shared=False),
+        velocity: Tensor(shape=torch.Size([2]), device=cpu, dtype=torch.float64, is_shared=False)},
     batch_size=torch.Size([]),
     device=cpu,
     is_shared=False)
 keys after concat:  TensorDict(
     fields={
-        done: Tensor(torch.Size([1]), dtype=torch.bool),
-        observation: Tensor(torch.Size([6]), dtype=torch.float64)},
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        observation: Tensor(shape=torch.Size([6]), device=cpu, dtype=torch.float64, is_shared=False)},
     batch_size=torch.Size([]),
     device=cpu,
     is_shared=False)
@@ -1108,8 +1000,8 @@ or simply by calling <code class="docutils literal notranslate"><span class="pre
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>LazyStackedTensorDict(
     fields={
-        done: Tensor(torch.Size([3, 1]), dtype=torch.bool),
-        observation: Tensor(torch.Size([3, 3]), dtype=torch.float32)},
+        done: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+        observation: Tensor(shape=torch.Size([3, 3]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([3]),
     device=cpu,
     is_shared=False)
@@ -1123,16 +1015,16 @@ the second the time frame. Let’s check that with the <code class="docutils lit
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
     fields={
-        action: Tensor(torch.Size([3, 20, 1]), dtype=torch.float32),
-        done: Tensor(torch.Size([3, 20, 1]), dtype=torch.bool),
+        action: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+        done: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.bool, is_shared=False),
         next: TensorDict(
             fields={
-                observation: Tensor(torch.Size([3, 20, 3]), dtype=torch.float32)},
+                observation: Tensor(shape=torch.Size([3, 20, 3]), device=cpu, dtype=torch.float32, is_shared=False)},
             batch_size=torch.Size([3, 20]),
             device=cpu,
             is_shared=False),
-        observation: Tensor(torch.Size([3, 20, 3]), dtype=torch.float32),
-        reward: Tensor(torch.Size([3, 20, 1]), dtype=torch.float32)},
+        observation: Tensor(shape=torch.Size([3, 20, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+        reward: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([3, 20]),
     device=cpu,
     is_shared=False)
@@ -1192,7 +1084,7 @@ to access this attribute. Here’s an example:</p>
 <span class="n">env</span><span class="o">.</span><span class="n">foo</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&#39;bar_cfe707f6-95b1-11ed-8105-0242ac120002&#39;
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&#39;bar_8c737d40-9cca-11ed-8fa4-0242ac120002&#39;
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">parallel_env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ParallelEnv</span></a><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">env_make</span><span class="p">)</span>  <span class="c1"># -&gt; creates 3 envs in parallel</span>
@@ -1213,13 +1105,13 @@ to access this attribute. Here’s an example:</p>
 <span class="n">foo_list</span>  <span class="c1"># needs to be instantiated, for instance using list</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;torchrl.envs.vec_env._dispatch_caller_parallel object at 0x7f3a6024afb0&gt;
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;torchrl.envs.vec_env._dispatch_caller_parallel object at 0x7f9d8af7caf0&gt;
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="n">foo_list</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;bar_d37d1e50-95b1-11ed-b4cd-0242ac120002&#39;, &#39;bar_d36afd06-95b1-11ed-b47f-0242ac120002&#39;, &#39;bar_d3456fe6-95b1-11ed-961b-0242ac120002&#39;]
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;bar_8fa36db8-9cca-11ed-a88e-0242ac120002&#39;, &#39;bar_8fcf8394-9cca-11ed-b935-0242ac120002&#39;, &#39;bar_8f9196d8-9cca-11ed-a40a-0242ac120002&#39;]
 </pre></div>
 </div>
 <p>Similarly, methods can also be accessed:</p>
@@ -1314,8 +1206,8 @@ operations on the main process if possible.</p>
 </div>
 <img src="../_images/sphx_glr_torch_envs_004.png" srcset="../_images/sphx_glr_torch_envs_004.png" alt="torch envs" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>grayscale tensordict:  LazyStackedTensorDict(
     fields={
-        done: Tensor(torch.Size([2, 1]), dtype=torch.bool),
-        pixels: Tensor(torch.Size([2, 1, 64, 64]), dtype=torch.float32)},
+        done: Tensor(shape=torch.Size([2, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+        pixels: Tensor(shape=torch.Size([2, 1, 64, 64]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([2]),
     device=cpu,
     is_shared=False)
@@ -1350,8 +1242,8 @@ it with data normalizing given a fixed version of the normalizing constants.</p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;std: :&quot;</span><span class="p">,</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;observation&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>  <span class="c1"># Approx 1</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>mean: : tensor([-0.1606, -0.0193, -0.3308])
-std: : tensor([1.2200, 1.2056, 1.1734])
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>mean: : tensor([-0.2114,  0.0539, -0.0726])
+std: : tensor([1.1227, 1.1784, 1.2738])
 </pre></div>
 </div>
 <p>In <strong>parallel envs</strong> things are slightly more complicated, as we need to
@@ -1379,21 +1271,21 @@ once created:</p>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>tensordict:  TensorDict(
     fields={
-        action: Tensor(torch.Size([3, 5, 2]), dtype=torch.int64),
-        done: Tensor(torch.Size([3, 5, 1]), dtype=torch.bool),
+        action: Tensor(shape=torch.Size([3, 5, 2]), device=cpu, dtype=torch.int64, is_shared=False),
+        done: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False),
         next: TensorDict(
             fields={
-                observation: Tensor(torch.Size([3, 5, 4]), dtype=torch.float32)},
+                observation: Tensor(shape=torch.Size([3, 5, 4]), device=cpu, dtype=torch.float32, is_shared=False)},
             batch_size=torch.Size([3, 5]),
             device=cpu,
             is_shared=False),
-        observation: Tensor(torch.Size([3, 5, 4]), dtype=torch.float32),
-        reward: Tensor(torch.Size([3, 5, 1]), dtype=torch.float32)},
+        observation: Tensor(shape=torch.Size([3, 5, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        reward: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
     batch_size=torch.Size([3, 5]),
     device=cpu,
     is_shared=False)
-mean: : tensor([ 0.0010, -0.0648, -0.1598])
-std: : tensor([1.1913, 1.1058, 1.3335])
+mean: : tensor([ 0.0142, -0.0923, -0.2177])
+std: : tensor([1.1270, 1.1158, 1.3546])
 </pre></div>
 </div>
 <p>The count is slightly higher than the number of steps (since we
@@ -1412,7 +1304,7 @@ This small difference will usually be absored throughout training.</p>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>update counts:  tensor([18.])
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  28.158 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  25.847 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-torch-envs-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/b4027b1e6f187fa5875852cc5731ee46/torch_envs.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">torch_envs.py</span></code></a></p>
