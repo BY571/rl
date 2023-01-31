@@ -785,7 +785,9 @@
             <span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_batch_hook</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_pre_steps_log_hook</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
             <span class="n">current_frames</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">batch</span><span class="o">.</span><span class="n">numel</span><span class="p">()))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+                <span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">batch</span><span class="o">.</span><span class="n">numel</span><span class="p">()))</span>
+                <span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">item</span><span class="p">()</span>
                 <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_skip</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">collected_frames</span> <span class="o">+=</span> <span class="n">current_frames</span>
@@ -1004,8 +1006,8 @@
 
     <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flatten_tensordicts</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s2">&quot;mask&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">batch</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
+                <span class="n">batch</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">))]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">batch</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1166,9 +1168,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">log_pbar</span> <span class="o">=</span> <span class="n">log_pbar</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s2">&quot;mask&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">{</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logname</span><span class="p">:</span> <span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">)[</span><span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">)]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logname</span><span class="p">:</span> <span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">)[</span><span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">))]</span>
+                <span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">item</span><span class="p">(),</span>
                 <span class="s2">&quot;log_pbar&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_pbar</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="k">return</span> <span class="p">{</span>
@@ -1212,8 +1216,8 @@
     <span class="nd">@torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">update_reward_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">reward</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s2">&quot;mask&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span><span class="p">[</span><span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span><span class="p">[</span><span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">))]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_has_been_called</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize_has_been_called</span><span class="p">:</span>
             <span class="c1"># We&#39;d like to check that rewards are normalized. Problem is that the trainer can collect data without calling steps...</span>
             <span class="c1"># raise RuntimeError(</span>
@@ -1289,8 +1293,8 @@
 <span class="sd">        &gt;&gt;&gt; trainer.register_op(&quot;batch_process&quot;, mask_batch)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="s2">&quot;mask&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">batch</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">batch</span>
 
@@ -1350,10 +1354,10 @@
             <span class="k">return</span> <span class="n">batch</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span><span class="n">batch</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">]]</span>
 
         <span class="n">sub_traj_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_traj_len</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_traj_len</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">batch</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">if</span> <span class="s2">&quot;mask&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
             <span class="c1"># if a valid mask is present, it&#39;s important to sample only</span>
             <span class="c1"># valid steps</span>
-            <span class="n">traj_len</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">traj_len</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">sub_traj_len</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">min_sub_traj_len</span><span class="p">,</span>
                 <span class="nb">min</span><span class="p">(</span><span class="n">sub_traj_len</span><span class="p">,</span> <span class="n">traj_len</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">int</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()),</span>
@@ -1405,7 +1409,9 @@
             <span class="p">),</span>
             <span class="n">batch_size</span><span class="o">=</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">sub_traj_len</span><span class="p">),</span>
         <span class="p">)</span>
-        <span class="k">if</span> <span class="s2">&quot;mask&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">td</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">td</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="p">(</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Sampled invalid steps&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">td</span>
 
@@ -1615,8 +1621,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">log_pbar</span> <span class="o">=</span> <span class="n">log_pbar</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s2">&quot;mask&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">current_frames</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_skip</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">current_frames</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_skip</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">current_frames</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_skip</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_count</span> <span class="o">+=</span> <span class="n">current_frames</span>

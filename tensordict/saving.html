@@ -218,7 +218,7 @@
               
               
                 <div class="version">
-                  main (0.0.2a+65b0f7f )
+                  main (0.0.2a+79d8607 )
                 </div>
               
             
@@ -510,6 +510,86 @@ key in the destination tensordict will go unnoticed.</p></li>
 </pre></div>
 </div>
 </section>
+<section id="saving-memmory-mapped-tensordicts">
+<h2>Saving memmory-mapped TensorDicts<a class="headerlink" href="#saving-memmory-mapped-tensordicts" title="Permalink to this heading">¶</a></h2>
+<p>When converting entries of a <code class="docutils literal notranslate"><span class="pre">TensorDict</span></code> to <code class="docutils literal notranslate"><span class="pre">MemmapTensor</span></code>, it is possible
+to control where the memory maps are saved on disk so that they persist and can
+be loaded at a later date. Simply specify a <code class="docutils literal notranslate"><span class="pre">prefix</span></code> when calling <code class="docutils literal notranslate"><span class="pre">TensorDict.memmap_</span></code>. For example</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">torch</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">td</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">)}},</span> <span class="p">[</span><span class="mi">10</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">td</span><span class="o">.</span><span class="n">memmap_</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;tensordict&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>yields the following directory structure</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>tensordict
+├── a.memmap
+├── a.meta.pt
+├── b
+│   ├── c.memmap
+│   ├── c.meta.pt
+│   └── meta.pt
+└── meta.pt
+</pre></div>
+</div>
+<p>Each key in the <code class="docutils literal notranslate"><span class="pre">TensorDict</span></code> corresponds to a single <code class="docutils literal notranslate"><span class="pre">*.memmap</span></code> file, with
+the directory structure determined by the key structure: nested keys correspond
+to sub-directories.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Because we must walk the nested directory structure, and write a file for
+each entry, this is not a fast way to serialize the contents of the
+<code class="docutils literal notranslate"><span class="pre">TensorDict</span></code>, and hence should not be used for example inside a training
+loop.</p>
+</div>
+<p>To load the <code class="docutils literal notranslate"><span class="pre">TensorDict</span></code> from these files we can use
+<code class="docutils literal notranslate"><span class="pre">TensorDict.load_memmap</span></code>.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">td2</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">load_memmap</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;tensordict&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">td2</span>
+<span class="n">TensorDict</span><span class="p">(</span>
+  <span class="n">fields</span><span class="o">=</span><span class="p">{</span>
+      <span class="n">a</span><span class="p">:</span> <span class="n">MemmapTensor</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">10</span><span class="p">]),</span> <span class="n">device</span><span class="o">=</span><span class="n">cpu</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">is_shared</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+      <span class="n">b</span><span class="p">:</span> <span class="n">TensorDict</span><span class="p">(</span>
+          <span class="n">fields</span><span class="o">=</span><span class="p">{</span>
+              <span class="n">c</span><span class="p">:</span> <span class="n">MemmapTensor</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">10</span><span class="p">]),</span> <span class="n">device</span><span class="o">=</span><span class="n">cpu</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">is_shared</span><span class="o">=</span><span class="kc">False</span><span class="p">)},</span>
+          <span class="n">batch_size</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">10</span><span class="p">]),</span>
+          <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+          <span class="n">is_shared</span><span class="o">=</span><span class="kc">False</span><span class="p">)},</span>
+  <span class="n">batch_size</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">10</span><span class="p">]),</span>
+  <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+  <span class="n">is_shared</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Because all of the information to reconstruct nested items is contained in the
+corresponding subdirectory, we can also load just the nested <code class="docutils literal notranslate"><span class="pre">TensorDict</span></code> by
+loading from the sub-directory</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">td3</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">load_memmap</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;tensordict/b&quot;</span><span class="p">)</span>
+<span class="n">TensorDict</span><span class="p">(</span>
+  <span class="n">fields</span><span class="o">=</span><span class="p">{</span>
+      <span class="n">c</span><span class="p">:</span> <span class="n">MemmapTensor</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">10</span><span class="p">]),</span> <span class="n">device</span><span class="o">=</span><span class="n">cpu</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">is_shared</span><span class="o">=</span><span class="kc">False</span><span class="p">)},</span>
+  <span class="n">batch_size</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">10</span><span class="p">]),</span>
+  <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+  <span class="n">is_shared</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="handling-existing-memmaptensors">
+<h3>Handling existing <code class="docutils literal notranslate"><span class="pre">MemmapTensors</span></code><a class="headerlink" href="#handling-existing-memmaptensors" title="Permalink to this heading">¶</a></h3>
+<p>If the <code class="docutils literal notranslate"><span class="pre">TensorDict</span></code> already has <code class="docutils literal notranslate"><span class="pre">MemmapTensor</span></code> entries, there are a few
+possible behaviours.</p>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">prefix</span></code> is not specified, <code class="docutils literal notranslate"><span class="pre">memmap_</span></code> does not modify any existing
+<code class="docutils literal notranslate"><span class="pre">MemmapTensors</span></code> in the <code class="docutils literal notranslate"><span class="pre">TensorDict</span></code>, they will keep their original
+location on disk.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">prefix</span></code> is specified, existing <code class="docutils literal notranslate"><span class="pre">MemmapTensor</span></code> entries are not
+modified, and an error will be raised if they are not saved in a location
+consistent with <code class="docutils literal notranslate"><span class="pre">prefix</span></code> and their key in the <code class="docutils literal notranslate"><span class="pre">TensorDict</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">prefix</span></code> is specified, and the keyword argument <code class="docutils literal notranslate"><span class="pre">copy_existing=True</span></code>
+is set, then any existing <code class="docutils literal notranslate"><span class="pre">MemmapTensor</span></code> entries are left unmodified if
+they already exist in the correct location, or are copied to the correct
+location if they are not.</p></li>
+</ul>
+</section>
+</section>
 </section>
 
 
@@ -558,6 +638,10 @@ key in the destination tensordict will go unnoticed.</p></li>
 <li><a class="reference internal" href="#">Saving TensorDict and tensorclass objects</a><ul>
 <li><a class="reference internal" href="#general-use-case-in-memory-loading">General use case: in-memory loading</a></li>
 <li><a class="reference internal" href="#saving-and-loading-big-datasets">Saving and loading big-datasets</a></li>
+<li><a class="reference internal" href="#saving-memmory-mapped-tensordicts">Saving memmory-mapped TensorDicts</a><ul>
+<li><a class="reference internal" href="#handling-existing-memmaptensors">Handling existing <code class="docutils literal notranslate"><span class="pre">MemmapTensors</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

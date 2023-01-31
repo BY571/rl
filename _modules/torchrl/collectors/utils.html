@@ -395,16 +395,16 @@
 
 <span class="sd">    From there, builds a B x T x ... zero-padded tensordict with B batches on max duration T</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># TODO: incorporate tensordict.split once it&#39;s implemented</span>
     <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;.-|-.&quot;</span>
     <span class="n">rollout_tensordict</span> <span class="o">=</span> <span class="n">rollout_tensordict</span><span class="o">.</span><span class="n">flatten_keys</span><span class="p">(</span><span class="n">sep</span><span class="p">)</span>
-    <span class="n">traj_ids</span> <span class="o">=</span> <span class="n">rollout_tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;traj_ids&quot;</span><span class="p">)</span>
+    <span class="n">traj_ids</span> <span class="o">=</span> <span class="n">rollout_tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;traj_ids&quot;</span><span class="p">]))</span>
     <span class="n">splits</span> <span class="o">=</span> <span class="n">traj_ids</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">splits</span> <span class="o">=</span> <span class="p">[(</span><span class="n">splits</span> <span class="o">==</span> <span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">splits</span><span class="o">.</span><span class="n">unique_consecutive</span><span class="p">()]</span>
     <span class="c1"># if all splits are identical then we can skip this function</span>
+    <span class="n">mask_key</span> <span class="o">=</span> <span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">))</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">splits</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">traj_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
         <span class="n">rollout_tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
-            <span class="s2">&quot;mask&quot;</span><span class="p">,</span>
+            <span class="n">mask_key</span><span class="p">,</span>
             <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span>
                 <span class="n">rollout_tensordict</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
                 <span class="n">device</span><span class="o">=</span><span class="n">rollout_tensordict</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
@@ -418,7 +418,7 @@
 
     <span class="k">for</span> <span class="n">out_split</span> <span class="ow">in</span> <span class="n">out_splits</span><span class="p">:</span>
         <span class="n">out_split</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
-            <span class="s2">&quot;mask&quot;</span><span class="p">,</span>
+            <span class="n">mask_key</span><span class="p">,</span>
             <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span>
                 <span class="n">out_split</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
                 <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span>

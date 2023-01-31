@@ -380,19 +380,19 @@ components of the policy. As the sematic is the same, they can be used interchan
 in one or the other context. In this tutorial, we will be using R3M (<a class="reference external" href="https://arxiv.org/abs/2203.12601">https://arxiv.org/abs/2203.12601</a>),
 but other models (e.g. VIP) will work equally well.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch.cuda</span>
-<span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TensorDictSequential</span></a>
+<span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="n">TensorDictSequential</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
-<span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">R3MTransform</span></a><span class="p">,</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TransformedEnv</span></a>
-<span class="kn">from</span> <span class="nn">torchrl.envs.libs.gym</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">GymEnv</span></a>
-<span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">Actor</span></a>
+<span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">R3MTransform</span><span class="p">,</span> <span class="n">TransformedEnv</span>
+<span class="kn">from</span> <span class="nn">torchrl.envs.libs.gym</span> <span class="kn">import</span> <span class="n">GymEnv</span>
+<span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="n">Actor</span>
 
-<a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">device</span></a> <span class="o">=</span> <span class="s2">&quot;cuda:0&quot;</span> <span class="k">if</span> <a href="https://pytorch.org/docs/stable/generated/torch.cuda.device_count.html#torch.cuda.device_count" title="torch.cuda.device_count" class="sphx-glr-backref-module-torch-cuda sphx-glr-backref-type-py-function"><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">device_count</span></a><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span>
+<span class="n">device</span> <span class="o">=</span> <span class="s2">&quot;cuda:0&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">device_count</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span>
 </pre></div>
 </div>
 <p>Let us first create an environment. For the sake of simplicity, we will be using
 a common gym environment. In practice, this will work in more challenging, embodied
 AI contexts (e.g. have a look at our Habitat wrappers).</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">base_env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">GymEnv</span></a><span class="p">(</span><span class="s2">&quot;Ant-v4&quot;</span><span class="p">,</span> <span class="n">from_pixels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">device</span></a><span class="o">=</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">device</span></a><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">base_env</span> <span class="o">=</span> <span class="n">GymEnv</span><span class="p">(</span><span class="s2">&quot;Ant-v4&quot;</span><span class="p">,</span> <span class="n">from_pixels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Let us fetch our pretrained model. We ask for the pretrained version of the model through the
@@ -401,70 +401,68 @@ Next, we will append our transform to the environment. In practice, what will ha
 each batch of data collected will go through the transform and be mapped on a “r3m_vec” entry
 in the output tensordict. Our policy, consisting of a single layer MLP, will then read this vector and compute
 the corresponding action.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">r3m</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">R3MTransform</span></a><span class="p">(</span><span class="s2">&quot;resnet50&quot;</span><span class="p">,</span> <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pixels&quot;</span><span class="p">],</span> <span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">device</span></a><span class="p">)</span>
-<span class="n">env_transformed</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TransformedEnv</span></a><span class="p">(</span><span class="n">base_env</span><span class="p">,</span> <span class="n">r3m</span><span class="p">)</span>
-<a href="https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html#torch.nn.Sequential" title="torch.nn.Sequential" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">net</span></a> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html#torch.nn.Sequential" title="torch.nn.Sequential" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span></a><span class="p">(</span>
-    <a href="https://pytorch.org/docs/stable/generated/torch.nn.LazyLinear.html#torch.nn.LazyLinear" title="torch.nn.LazyLinear" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">nn</span><span class="o">.</span><span class="n">LazyLinear</span></a><span class="p">(</span><span class="mi">128</span><span class="p">),</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Tanh.html#torch.nn.Tanh" title="torch.nn.Tanh" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">nn</span><span class="o">.</span><span class="n">Tanh</span></a><span class="p">(),</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Linear.html#torch.nn.Linear" title="torch.nn.Linear" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span></a><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">base_env</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">r3m</span> <span class="o">=</span> <span class="n">R3MTransform</span><span class="p">(</span><span class="s2">&quot;resnet50&quot;</span><span class="p">,</span> <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pixels&quot;</span><span class="p">],</span> <span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+<span class="n">env_transformed</span> <span class="o">=</span> <span class="n">TransformedEnv</span><span class="p">(</span><span class="n">base_env</span><span class="p">,</span> <span class="n">r3m</span><span class="p">)</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">LazyLinear</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">Tanh</span><span class="p">(),</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">base_env</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 <span class="p">)</span>
-<span class="n">policy</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">Actor</span></a><span class="p">(</span><a href="https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html#torch.nn.Sequential" title="torch.nn.Sequential" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">net</span></a><span class="p">,</span> <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;r3m_vec&quot;</span><span class="p">])</span>
+<span class="n">policy</span> <span class="o">=</span> <span class="n">Actor</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;r3m_vec&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Downloading: &quot;https://pytorch.s3.amazonaws.com/models/rl/r3m/r3m_50.pt&quot; to /github/home/.cache/torch/hub/checkpoints/r3m_50.pt
 
   0%|          | 0.00/374M [00:00&lt;?, ?B/s]
-  0%|          | 240k/374M [00:00&lt;03:24, 1.92MB/s]
-  1%|          | 2.30M/374M [00:00&lt;00:31, 12.3MB/s]
-  2%|2         | 8.97M/374M [00:00&lt;00:10, 37.1MB/s]
-  4%|4         | 16.0M/374M [00:00&lt;00:07, 51.1MB/s]
-  6%|6         | 23.2M/374M [00:00&lt;00:06, 59.7MB/s]
-  8%|8         | 30.6M/374M [00:00&lt;00:05, 65.5MB/s]
- 10%|#         | 37.7M/374M [00:00&lt;00:05, 63.3MB/s]
- 12%|#2        | 45.1M/374M [00:00&lt;00:05, 67.6MB/s]
- 14%|#3        | 52.2M/374M [00:00&lt;00:04, 69.8MB/s]
- 16%|#5        | 59.5M/374M [00:01&lt;00:04, 71.8MB/s]
- 18%|#7        | 66.7M/374M [00:01&lt;00:04, 72.9MB/s]
- 20%|#9        | 73.7M/374M [00:01&lt;00:04, 72.8MB/s]
- 22%|##1       | 81.9M/374M [00:01&lt;00:04, 68.9MB/s]
- 24%|##4       | 91.1M/374M [00:01&lt;00:03, 76.4MB/s]
- 26%|##6       | 98.5M/374M [00:01&lt;00:03, 75.3MB/s]
- 29%|##8       | 108M/374M [00:01&lt;00:03, 81.3MB/s]
- 31%|###1      | 117M/374M [00:01&lt;00:03, 85.3MB/s]
- 33%|###3      | 125M/374M [00:01&lt;00:03, 86.0MB/s]
- 36%|###5      | 134M/374M [00:02&lt;00:02, 87.1MB/s]
- 38%|###8      | 143M/374M [00:02&lt;00:02, 88.8MB/s]
- 40%|####      | 151M/374M [00:02&lt;00:02, 88.7MB/s]
- 43%|####2     | 160M/374M [00:02&lt;00:02, 88.8MB/s]
- 45%|####4     | 168M/374M [00:02&lt;00:02, 86.3MB/s]
- 47%|####7     | 176M/374M [00:02&lt;00:02, 86.1MB/s]
- 49%|####9     | 185M/374M [00:02&lt;00:02, 86.9MB/s]
- 52%|#####1    | 194M/374M [00:02&lt;00:02, 88.7MB/s]
- 54%|#####4    | 202M/374M [00:02&lt;00:02, 66.4MB/s]
- 56%|#####6    | 211M/374M [00:03&lt;00:02, 69.5MB/s]
- 58%|#####8    | 218M/374M [00:03&lt;00:02, 62.6MB/s]
- 61%|######    | 227M/374M [00:03&lt;00:02, 65.7MB/s]
- 62%|######2   | 234M/374M [00:03&lt;00:02, 60.9MB/s]
- 64%|######4   | 240M/374M [00:03&lt;00:02, 61.6MB/s]
- 66%|######6   | 248M/374M [00:03&lt;00:01, 68.4MB/s]
- 69%|######8   | 257M/374M [00:03&lt;00:01, 74.0MB/s]
- 71%|#######1  | 266M/374M [00:03&lt;00:01, 80.1MB/s]
- 73%|#######3  | 275M/374M [00:03&lt;00:01, 82.7MB/s]
- 76%|#######5  | 283M/374M [00:04&lt;00:01, 80.2MB/s]
- 78%|#######7  | 291M/374M [00:04&lt;00:01, 82.7MB/s]
- 80%|#######9  | 299M/374M [00:04&lt;00:01, 57.2MB/s]
- 82%|########2 | 308M/374M [00:04&lt;00:01, 64.4MB/s]
- 84%|########4 | 315M/374M [00:04&lt;00:01, 46.2MB/s]
- 86%|########6 | 323M/374M [00:04&lt;00:00, 54.2MB/s]
- 88%|########8 | 330M/374M [00:05&lt;00:00, 49.2MB/s]
- 91%|######### | 339M/374M [00:05&lt;00:00, 59.0MB/s]
- 92%|#########2| 346M/374M [00:05&lt;00:00, 53.3MB/s]
- 95%|#########4| 354M/374M [00:05&lt;00:00, 60.5MB/s]
- 96%|#########6| 361M/374M [00:05&lt;00:00, 59.5MB/s]
- 99%|#########8| 370M/374M [00:05&lt;00:00, 68.7MB/s]
-100%|##########| 374M/374M [00:05&lt;00:00, 68.4MB/s]
+  0%|          | 256k/374M [00:00&lt;03:10, 2.06MB/s]
+  1%|          | 2.26M/374M [00:00&lt;00:32, 12.1MB/s]
+  3%|2         | 9.95M/374M [00:00&lt;00:09, 41.5MB/s]
+  5%|5         | 18.7M/374M [00:00&lt;00:06, 60.8MB/s]
+  7%|7         | 27.5M/374M [00:00&lt;00:05, 71.7MB/s]
+ 10%|9         | 36.2M/374M [00:00&lt;00:04, 78.4MB/s]
+ 12%|#1        | 44.3M/374M [00:00&lt;00:04, 80.5MB/s]
+ 14%|#4        | 52.7M/374M [00:00&lt;00:04, 82.8MB/s]
+ 16%|#6        | 61.2M/374M [00:00&lt;00:03, 84.6MB/s]
+ 19%|#8        | 69.4M/374M [00:01&lt;00:03, 85.3MB/s]
+ 21%|##        | 78.1M/374M [00:01&lt;00:03, 87.0MB/s]
+ 23%|##3       | 86.4M/374M [00:01&lt;00:04, 70.4MB/s]
+ 25%|##5       | 94.9M/374M [00:01&lt;00:03, 75.2MB/s]
+ 27%|##7       | 103M/374M [00:01&lt;00:04, 68.6MB/s]
+ 30%|##9       | 111M/374M [00:01&lt;00:03, 74.7MB/s]
+ 32%|###1      | 120M/374M [00:01&lt;00:03, 78.0MB/s]
+ 34%|###4      | 128M/374M [00:01&lt;00:03, 80.5MB/s]
+ 36%|###6      | 137M/374M [00:01&lt;00:02, 83.4MB/s]
+ 39%|###8      | 145M/374M [00:02&lt;00:02, 84.1MB/s]
+ 41%|####      | 153M/374M [00:02&lt;00:02, 85.8MB/s]
+ 43%|####3     | 162M/374M [00:02&lt;00:02, 87.7MB/s]
+ 46%|####5     | 171M/374M [00:02&lt;00:03, 59.8MB/s]
+ 47%|####7     | 177M/374M [00:02&lt;00:03, 62.5MB/s]
+ 49%|####9     | 184M/374M [00:02&lt;00:03, 57.7MB/s]
+ 52%|#####1    | 193M/374M [00:02&lt;00:02, 65.5MB/s]
+ 54%|#####3    | 201M/374M [00:02&lt;00:02, 70.6MB/s]
+ 56%|#####6    | 210M/374M [00:03&lt;00:02, 74.0MB/s]
+ 58%|#####8    | 218M/374M [00:03&lt;00:02, 63.2MB/s]
+ 60%|######    | 226M/374M [00:03&lt;00:02, 68.5MB/s]
+ 63%|######2   | 234M/374M [00:03&lt;00:01, 73.8MB/s]
+ 65%|######4   | 243M/374M [00:03&lt;00:01, 77.3MB/s]
+ 67%|######7   | 251M/374M [00:03&lt;00:01, 79.8MB/s]
+ 69%|######9   | 259M/374M [00:03&lt;00:01, 82.8MB/s]
+ 72%|#######1  | 268M/374M [00:03&lt;00:01, 84.1MB/s]
+ 74%|#######3  | 277M/374M [00:03&lt;00:01, 86.9MB/s]
+ 76%|#######6  | 285M/374M [00:04&lt;00:01, 87.2MB/s]
+ 79%|#######8  | 294M/374M [00:04&lt;00:00, 88.5MB/s]
+ 81%|########  | 303M/374M [00:04&lt;00:00, 89.9MB/s]
+ 83%|########3 | 311M/374M [00:04&lt;00:00, 89.9MB/s]
+ 85%|########5 | 320M/374M [00:04&lt;00:00, 88.2MB/s]
+ 88%|########7 | 328M/374M [00:04&lt;00:00, 87.3MB/s]
+ 90%|######### | 337M/374M [00:04&lt;00:00, 88.3MB/s]
+ 92%|#########2| 345M/374M [00:04&lt;00:00, 80.9MB/s]
+ 95%|#########4| 354M/374M [00:04&lt;00:00, 82.8MB/s]
+ 97%|#########6| 363M/374M [00:04&lt;00:00, 85.9MB/s]
+ 99%|#########9| 372M/374M [00:05&lt;00:00, 87.3MB/s]
+100%|##########| 374M/374M [00:05&lt;00:00, 76.6MB/s]
 </pre></div>
 </div>
 <p>Let’s check the number of parameters of the policy:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;number of params:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.parameters" title="torch.nn.Module.parameters" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-method"><span class="n">policy</span><span class="o">.</span><span class="n">parameters</span></a><span class="p">())))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;number of params:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">policy</span><span class="o">.</span><span class="n">parameters</span><span class="p">())))</span>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>number of params: 4
@@ -495,9 +493,9 @@ the corresponding action.</p>
 <p>For fine tuning, we integrate the transform in the policy after making the parameters
 trainable. In practice, it may be wiser to restrict this to a subset of the parameters (say the last layer
 of the MLP).</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.train" title="torch.nn.Module.train" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-method"><span class="n">r3m</span><span class="o">.</span><span class="n">train</span></a><span class="p">()</span>
-<span class="n">policy</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TensorDictSequential</span></a><span class="p">(</span><span class="n">r3m</span><span class="p">,</span> <span class="n">policy</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;number of params after r3m is integrated:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.parameters" title="torch.nn.Module.parameters" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-method"><span class="n">policy</span><span class="o">.</span><span class="n">parameters</span></a><span class="p">())))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">r3m</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+<span class="n">policy</span> <span class="o">=</span> <span class="n">TensorDictSequential</span><span class="p">(</span><span class="n">r3m</span><span class="p">,</span> <span class="n">policy</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;number of params after r3m is integrated:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">policy</span><span class="o">.</span><span class="n">parameters</span><span class="p">())))</span>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>number of params after r3m is integrated: 163
@@ -540,20 +538,20 @@ images stored in a replay buffer (e.g. in an offline RL context). First, let’s
 </div>
 <p>We can now collect the data (random rollouts for our purpose) and fill the replay
 buffer with it:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">total</span></a> <span class="o">=</span> <span class="mi">0</span>
-<span class="k">while</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">total</span></a> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">while</span> <span class="n">total</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">:</span>
     <span class="n">tensordict</span> <span class="o">=</span> <span class="n">base_env</span><span class="o">.</span><span class="n">rollout</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
     <span class="n">rb</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
-    <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">total</span></a> <span class="o">+=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span>
+    <span class="n">total</span> <span class="o">+=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Creating a MemmapStorage...
 The storage is being created:
-        action: /tmp/tmp3is97zoi, 0.030517578125 Mb of storage (size: torch.Size([1000, 8])).
-        done: /tmp/tmpg341pmd7, 0.00095367431640625 Mb of storage (size: torch.Size([1000, 1])).
-        pixels: /tmp/tmpm3omf2no, 659.1796875 Mb of storage (size: torch.Size([1000, 480, 480, 3])).
-        reward: /tmp/tmpbueoge_c, 0.003814697265625 Mb of storage (size: torch.Size([1000, 1])).
-        (&#39;next&#39;, &#39;pixels&#39;): /tmp/tmp6ed1snrs, 659.1796875 Mb of storage (size: torch.Size([1000, 480, 480, 3])).
+        action: /tmp/tmp9w31kk0j, 0.030517578125 Mb of storage (size: torch.Size([1000, 8])).
+        done: /tmp/tmpseu_8ye3, 0.00095367431640625 Mb of storage (size: torch.Size([1000, 1])).
+        pixels: /tmp/tmpfedb7x_3, 659.1796875 Mb of storage (size: torch.Size([1000, 480, 480, 3])).
+        reward: /tmp/tmpcyg37t_h, 0.003814697265625 Mb of storage (size: torch.Size([1000, 1])).
+        (&#39;next&#39;, &#39;pixels&#39;): /tmp/tmp_2w91ras, 659.1796875 Mb of storage (size: torch.Size([1000, 480, 480, 3])).
 </pre></div>
 </div>
 <p>Let’s check what our replay buffer storage looks like. It should not contain the “r3m_vec” entry
@@ -601,7 +599,7 @@ In this way, we can train an algorithm offline on a dataset made of images:</p>
     is_shared=False)
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 1 minutes  2.004 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  54.492 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-pretrained-models-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/ae7b3885bfc446e5c7ca2102306be4c2/pretrained_models.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">pretrained_models.py</span></code></a></p>

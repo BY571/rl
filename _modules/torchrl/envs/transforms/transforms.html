@@ -376,6 +376,7 @@
 
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">tensordict.tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">TensorDictBase</span>
+<span class="kn">from</span> <span class="nn">tensordict.utils</span> <span class="kn">import</span> <span class="n">expand_as_right</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span><span class="p">,</span> <span class="n">Tensor</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">BinaryDiscreteTensorSpec</span><span class="p">,</span>
@@ -475,13 +476,6 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resets a tranform if it is stateful.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">tensordict</span></div>
 
-    <span class="k">def</span> <span class="nf">_check_inplace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;inplace&quot;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Transform of class </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> has no &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;attribute inplace, consider implementing it.&quot;</span>
-            <span class="p">)</span>
-
     <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">pass</span>
 
@@ -496,11 +490,13 @@
 
     <span class="k">def</span> <span class="nf">_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the input tensordict, and for the selected keys, applies the transform.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_check_inplace</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">in_key</span><span class="p">,</span> <span class="n">out_key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">in_key</span> <span class="ow">in</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="n">include_nested</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
                 <span class="n">observation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_transform</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">in_key</span><span class="p">))</span>
-                <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">out_key</span><span class="p">,</span> <span class="n">observation</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inplace</span><span class="p">)</span>
+                <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+                    <span class="n">out_key</span><span class="p">,</span>
+                    <span class="n">observation</span><span class="p">,</span>
+                <span class="p">)</span>
         <span class="k">return</span> <span class="n">tensordict</span>
 
 <div class="viewcode-block" id="Transform.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.Transform.html#torchrl.envs.transforms.Transform.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
@@ -522,11 +518,13 @@
             <span class="k">return</span> <span class="n">obs</span>
 
     <span class="k">def</span> <span class="nf">_inv_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_check_inplace</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">in_key</span><span class="p">,</span> <span class="n">out_key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys_inv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys_inv</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">in_key</span> <span class="ow">in</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="n">include_nested</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
                 <span class="n">observation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inv_apply_transform</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">in_key</span><span class="p">))</span>
-                <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">out_key</span><span class="p">,</span> <span class="n">observation</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inplace</span><span class="p">)</span>
+                <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+                    <span class="n">out_key</span><span class="p">,</span>
+                    <span class="n">observation</span><span class="p">,</span>
+                <span class="p">)</span>
         <span class="k">return</span> <span class="n">tensordict</span>
 
     <span class="k">def</span> <span class="nf">inv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
@@ -969,8 +967,6 @@
 <div class="viewcode-block" id="ObservationTransform"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.ObservationTransform.html#torchrl.envs.transforms.ObservationTransform">[docs]</a><span class="k">class</span> <span class="nc">ObservationTransform</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Abstract class for transformations of the observations.&quot;&quot;&quot;</span>
 
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span>
-
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">in_keys</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -995,8 +991,6 @@
 <span class="sd">        &gt;&gt;&gt; transformed_env = TransformedEnv(env, transforms)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">transforms</span><span class="p">:</span> <span class="n">Transform</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">in_keys</span><span class="o">=</span><span class="p">[])</span>
@@ -1135,8 +1129,6 @@
 <span class="sd">        torch.Size([1, 1, 3, 10, 11]) torch.float32</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span>
-
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">unsqueeze</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1189,8 +1181,6 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span>
-
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">clamp_min</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1212,11 +1202,11 @@
 
     <span class="k">def</span> <span class="nf">_apply_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reward</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">clamp_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">clamp_min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span><span class="o">.</span><span class="n">clamp_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">clamp_max</span><span class="p">)</span>
+            <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">clamp_max</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">clamp_min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span><span class="o">.</span><span class="n">clamp_min_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">)</span>
+            <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">clamp_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span><span class="o">.</span><span class="n">clamp_max_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clamp_max</span><span class="p">)</span>
+            <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span><span class="o">.</span><span class="n">clamp_max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clamp_max</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">reward</span>
 
 <div class="viewcode-block" id="RewardClipping.transform_reward_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.RewardClipping.html#torchrl.envs.transforms.RewardClipping.transform_reward_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_reward_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reward_spec</span><span class="p">:</span> <span class="n">TensorSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
@@ -1245,8 +1235,6 @@
 
 <div class="viewcode-block" id="BinarizeReward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.BinarizeReward.html#torchrl.envs.transforms.BinarizeReward">[docs]</a><span class="k">class</span> <span class="nc">BinarizeReward</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Maps the reward to a binary value (0 or 1) if the reward is null or non-null, respectively.&quot;&quot;&quot;</span>
-
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1278,8 +1266,6 @@
 <span class="sd">        h (int): resulting height</span>
 <span class="sd">        interpolation (str): interpolation method</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1348,8 +1334,6 @@
 <span class="sd">        h (int, optional): resulting height. If None, then w is used (square crop).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span>
-
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">w</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -1404,8 +1388,6 @@
 <span class="sd">        first_dim (int): first dimension of the dimensions to flatten.</span>
 <span class="sd">        last_dim (int): last dimension of the dimensions to flatten.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1477,7 +1459,6 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">invertible</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1594,7 +1575,6 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">invertible</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1630,8 +1610,6 @@
 
 <div class="viewcode-block" id="GrayScale"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.GrayScale.html#torchrl.envs.transforms.GrayScale">[docs]</a><span class="k">class</span> <span class="nc">GrayScale</span><span class="p">(</span><span class="n">ObservationTransform</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Turns a pixel observation to grayscale.&quot;&quot;&quot;</span>
-
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_keys</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">in_keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1703,8 +1681,6 @@
 <span class="sd">        tensor([-1.3752e+01, -6.5087e-03,  2.9294e-03], dtype=torch.float32) tensor([14.9636,  2.5608,  0.6408], dtype=torch.float32)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1833,7 +1809,6 @@
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Non-finite values found in loc&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Non-finite values found in scale&quot;</span><span class="p">)</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;loc&quot;</span><span class="p">,</span> <span class="n">loc</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;scale&quot;</span><span class="p">,</span> <span class="n">scale</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">))</span></div>
 
@@ -1882,10 +1857,10 @@
 <span class="sd">    calling the `reset()` method.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        N (int, optional): number of observation to concatenate.</span>
-<span class="sd">            Default is `4`.</span>
-<span class="sd">        cat_dim (int, optional): dimension along which concatenate the</span>
-<span class="sd">            observations. Default is `cat_dim=-3`.</span>
+<span class="sd">        N (int): number of observation to concatenate.</span>
+<span class="sd">        dim (int): dimension along which concatenate the</span>
+<span class="sd">            observations. Should be negative, to ensure that it is compatible</span>
+<span class="sd">            with environments of different batch_size.</span>
 <span class="sd">        in_keys (list of int, optional): keys pointing to the frames that have</span>
 <span class="sd">            to be concatenated. Defaults to [&quot;pixels&quot;].</span>
 <span class="sd">        out_keys (list of int, optional): keys pointing to where the output</span>
@@ -1895,14 +1870,14 @@
 
     <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">_CAT_DIM_ERR</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;cat_dim must be &gt; 0 to accomodate for tensordict of &quot;</span>
+        <span class="s2">&quot;dim must be &gt; 0 to accomodate for tensordict of &quot;</span>
         <span class="s2">&quot;different batch-sizes (since negative dims are batch invariant).&quot;</span>
     <span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">N</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
-        <span class="n">cat_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">in_keys</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">out_keys</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
@@ -1910,9 +1885,9 @@
             <span class="n">in_keys</span> <span class="o">=</span> <span class="n">IMAGE_KEYS</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">in_keys</span><span class="o">=</span><span class="n">in_keys</span><span class="p">,</span> <span class="n">out_keys</span><span class="o">=</span><span class="n">out_keys</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">=</span> <span class="n">N</span>
-        <span class="k">if</span> <span class="n">cat_dim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">dim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_CAT_DIM_ERR</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cat_dim</span> <span class="o">=</span> <span class="n">cat_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="n">dim</span>
         <span class="k">for</span> <span class="n">in_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">:</span>
             <span class="n">buffer_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;_cat_buffers_</span><span class="si">{</span><span class="n">in_key</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="nb">setattr</span><span class="p">(</span>
@@ -1925,38 +1900,29 @@
 
 <div class="viewcode-block" id="CatFrames.reset"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.CatFrames.html#torchrl.envs.transforms.CatFrames.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resets _buffers.&quot;&quot;&quot;</span>
-        <span class="c1"># Non-batched environments</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">in_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">:</span>
-                <span class="n">buffer_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;_cat_buffers_</span><span class="si">{</span><span class="n">in_key</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="n">buffer</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer_name</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">parameter</span><span class="o">.</span><span class="n">UninitializedBuffer</span><span class="p">):</span>
-                    <span class="k">continue</span>
-                <span class="n">buffer</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
-
-        <span class="c1"># Batched environments</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">_reset</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                <span class="s2">&quot;_reset&quot;</span><span class="p">,</span>
-                <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span>
-                    <span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
-                    <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span>
-                    <span class="n">device</span><span class="o">=</span><span class="n">tensordict</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
-                <span class="p">),</span>
-            <span class="p">)</span>
-            <span class="k">for</span> <span class="n">in_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">:</span>
-                <span class="n">buffer_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;_cat_buffers_</span><span class="si">{</span><span class="n">in_key</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="n">buffer</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer_name</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">parameter</span><span class="o">.</span><span class="n">UninitializedBuffer</span><span class="p">):</span>
-                    <span class="k">continue</span>
-                <span class="n">buffer</span><span class="p">[</span><span class="n">_reset</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">_reset</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">set_default</span><span class="p">(</span>
+            <span class="s2">&quot;_reset&quot;</span><span class="p">,</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span>
+                <span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span>
+                <span class="n">device</span><span class="o">=</span><span class="n">tensordict</span><span class="o">.</span><span class="n">device</span>
+                <span class="k">if</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">),</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">in_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">:</span>
+            <span class="n">buffer_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;_cat_buffers_</span><span class="si">{</span><span class="n">in_key</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">buffer</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">parameter</span><span class="o">.</span><span class="n">UninitializedBuffer</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">buffer</span><span class="p">[</span><span class="n">_reset</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="k">return</span> <span class="n">tensordict</span></div>
 
     <span class="k">def</span> <span class="nf">_make_missing_buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">buffer_name</span><span class="p">):</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cat_dim</span><span class="p">]</span>
-        <span class="n">shape</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cat_dim</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">]</span>
+        <span class="n">shape</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
         <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer_name</span><span class="p">)</span><span class="o">.</span><span class="n">materialize</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
         <span class="n">buffer</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer_name</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
@@ -1965,19 +1931,24 @@
 
     <span class="k">def</span> <span class="nf">_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the episode tensordict with max pooled keys.&quot;&quot;&quot;</span>
+        <span class="n">_reset</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_reset&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
         <span class="k">for</span> <span class="n">in_key</span><span class="p">,</span> <span class="n">out_key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">):</span>
             <span class="c1"># Lazy init of buffers</span>
             <span class="n">buffer_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;_cat_buffers_</span><span class="si">{</span><span class="n">in_key</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">tensordict</span><span class="p">[</span><span class="n">in_key</span><span class="p">]</span>
-            <span class="n">d</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cat_dim</span><span class="p">)</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
             <span class="n">buffer</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer_name</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">parameter</span><span class="o">.</span><span class="n">UninitializedBuffer</span><span class="p">):</span>
                 <span class="n">buffer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_missing_buffer</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">buffer_name</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># shift obs 1 position to the right</span>
-                <span class="n">buffer</span><span class="o">.</span><span class="n">copy_</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">shifts</span><span class="o">=-</span><span class="n">d</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cat_dim</span><span class="p">))</span>
+            <span class="c1"># shift obs 1 position to the right</span>
+            <span class="k">if</span> <span class="n">_reset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">buffer</span><span class="p">[</span><span class="n">_reset</span><span class="p">]</span> <span class="o">=</span> <span class="n">buffer</span><span class="p">[</span><span class="n">_reset</span><span class="p">]</span><span class="o">.</span><span class="n">copy_</span><span class="p">(</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">_reset</span><span class="p">]</span><span class="o">.</span><span class="n">repeat_interleave</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="n">buffer</span><span class="o">.</span><span class="n">copy_</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">shifts</span><span class="o">=-</span><span class="n">d</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">))</span>
             <span class="c1"># add new obs</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cat_dim</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span>
             <span class="k">if</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">idx</span> <span class="o">=</span> <span class="n">buffer</span><span class="o">.</span><span class="n">ndimension</span><span class="p">()</span> <span class="o">+</span> <span class="n">idx</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1993,19 +1964,19 @@
     <span class="k">def</span> <span class="nf">transform_observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation_spec</span><span class="p">:</span> <span class="n">TensorSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
         <span class="n">space</span> <span class="o">=</span> <span class="n">observation_spec</span><span class="o">.</span><span class="n">space</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">space</span><span class="p">,</span> <span class="n">ContinuousBox</span><span class="p">):</span>
-            <span class="n">space</span><span class="o">.</span><span class="n">minimum</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">space</span><span class="o">.</span><span class="n">minimum</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cat_dim</span><span class="p">)</span>
-            <span class="n">space</span><span class="o">.</span><span class="n">maximum</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">space</span><span class="o">.</span><span class="n">maximum</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cat_dim</span><span class="p">)</span>
+            <span class="n">space</span><span class="o">.</span><span class="n">minimum</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">space</span><span class="o">.</span><span class="n">minimum</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+            <span class="n">space</span><span class="o">.</span><span class="n">maximum</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">space</span><span class="o">.</span><span class="n">maximum</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
             <span class="n">observation_spec</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">space</span><span class="o">.</span><span class="n">minimum</span><span class="o">.</span><span class="n">shape</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-            <span class="n">shape</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cat_dim</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">*</span> <span class="n">shape</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cat_dim</span><span class="p">]</span>
+            <span class="n">shape</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">*</span> <span class="n">shape</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">]</span>
             <span class="n">observation_spec</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">observation_spec</span></div>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(N=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">, cat_dim&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cat_dim</span><span class="si">}</span><span class="s2">, keys=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="si">}</span><span class="s2">)&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(N=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">, dim&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="si">}</span><span class="s2">, keys=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="si">}</span><span class="s2">)&quot;</span>
         <span class="p">)</span></div>
 
 
@@ -2027,8 +1998,6 @@
 
 <span class="sd">            as it is done for standardization. Default is `False`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -2083,8 +2052,6 @@
 <div class="viewcode-block" id="FiniteTensorDictCheck"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.FiniteTensorDictCheck.html#torchrl.envs.transforms.FiniteTensorDictCheck">[docs]</a><span class="k">class</span> <span class="nc">FiniteTensorDictCheck</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This transform will check that all the items of the tensordict are finite, and raise an exception if they are not.&quot;&quot;&quot;</span>
 
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span>
-
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">in_keys</span><span class="o">=</span><span class="p">[])</span>
 
@@ -2107,7 +2074,6 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">invertible</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -2201,7 +2167,6 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">invertible</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -2358,8 +2323,6 @@
 <span class="sd">        tensor([1])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span>
-
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">m</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">action_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;action&quot;</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">([</span><span class="n">action_key</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_n</span> <span class="o">=</span> <span class="n">max_n</span>
@@ -2401,8 +2364,6 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span>
-
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_skip</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">([])</span>
         <span class="k">if</span> <span class="n">frame_skip</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -2434,8 +2395,6 @@
 <span class="sd">            Default is `True`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">noops</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span> <span class="n">random</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sample initial states by taking random number of no-ops on reset.</span>
@@ -2534,8 +2493,6 @@
 <span class="sd">            device=cpu,</span>
 <span class="sd">            is_shared=False)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">random</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">primers</span> <span class="o">=</span> <span class="n">kwargs</span>
@@ -2637,8 +2594,6 @@
 <span class="sd">    See the :func:`~torchrl.modules.models.exploration.gSDEModule&#39; for more info.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span>
-
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">state_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -2717,8 +2672,6 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span>
-
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">in_keys</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -2768,7 +2721,7 @@
                 <span class="n">key</span><span class="p">,</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">N</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">numel</span><span class="p">())</span>
             <span class="p">)</span>
 
-            <span class="n">tensordict</span><span class="o">.</span><span class="n">set_</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">new_val</span><span class="p">)</span>
+            <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">new_val</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
@@ -2948,8 +2901,6 @@
 <span class="sd">    this transform hos no effect.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span>
-
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">in_keys</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -2996,8 +2947,9 @@
             <span class="k">for</span> <span class="n">in_key</span><span class="p">,</span> <span class="n">out_key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">out_key</span> <span class="ow">in</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                     <span class="n">value</span> <span class="o">=</span> <span class="n">tensordict</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span>
-                    <span class="n">dtype</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">dtype</span>
-                    <span class="n">tensordict</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="p">(</span><span class="o">~</span><span class="n">_reset</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+                    <span class="n">tensordict</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">masked_fill</span><span class="p">(</span>
+                        <span class="n">expand_as_right</span><span class="p">(</span><span class="n">_reset</span><span class="p">,</span> <span class="n">value</span><span class="p">),</span> <span class="mf">0.0</span>
+                    <span class="p">)</span>
                 <span class="k">elif</span> <span class="n">in_key</span> <span class="o">==</span> <span class="s2">&quot;reward&quot;</span><span class="p">:</span>
                     <span class="c1"># Since the episode reward is not in the tensordict, we need to allocate it</span>
                     <span class="c1"># with zeros entirely (regardless of the _reset mask)</span>
@@ -3019,7 +2971,6 @@
     <span class="k">def</span> <span class="nf">_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Updates the episode rewards with the step rewards.&quot;&quot;&quot;</span>
         <span class="c1"># Sanity checks</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_check_inplace</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">in_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">in_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="k">return</span> <span class="n">tensordict</span>
@@ -3092,7 +3043,6 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">invertible</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_steps</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">max_steps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">max_steps</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -3107,39 +3057,36 @@
                 <span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">tensordict</span><span class="o">.</span><span class="n">device</span>
             <span class="p">),</span>
         <span class="p">)</span>
+        <span class="n">step_count</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;step_count&quot;</span><span class="p">,</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span>
+                <span class="n">device</span><span class="o">=</span><span class="n">tensordict</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">step_count</span><span class="p">[</span><span class="n">_reset</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
             <span class="s2">&quot;step_count&quot;</span><span class="p">,</span>
-            <span class="p">(</span><span class="o">~</span><span class="n">_reset</span><span class="p">)</span>
-            <span class="o">*</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                <span class="s2">&quot;step_count&quot;</span><span class="p">,</span>
-                <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-                    <span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
-                    <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span>
-                    <span class="n">device</span><span class="o">=</span><span class="n">tensordict</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
-                <span class="p">),</span>
-            <span class="p">),</span>
+            <span class="n">step_count</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">tensordict</span></div>
 
     <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-        <span class="n">next_step_count</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                <span class="s2">&quot;step_count&quot;</span><span class="p">,</span>
-                <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-                    <span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
-                    <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span>
-                    <span class="n">device</span><span class="o">=</span><span class="n">tensordict</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
-                <span class="p">),</span>
-            <span class="p">)</span>
-            <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">step_count</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;step_count&quot;</span><span class="p">,</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span>
+                <span class="n">device</span><span class="o">=</span><span class="n">tensordict</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+            <span class="p">),</span>
         <span class="p">)</span>
+        <span class="n">next_step_count</span> <span class="o">=</span> <span class="n">step_count</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;step_count&quot;</span><span class="p">,</span> <span class="n">next_step_count</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
-                <span class="s2">&quot;done&quot;</span><span class="p">,</span>
-                <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span>
-                <span class="o">|</span> <span class="p">(</span><span class="n">next_step_count</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
-            <span class="p">)</span>
+            <span class="n">done</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span>
+            <span class="n">done</span> <span class="o">=</span> <span class="n">done</span> <span class="o">|</span> <span class="p">(</span><span class="n">next_step_count</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">,</span> <span class="n">done</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tensordict</span>
 
 <div class="viewcode-block" id="StepCounter.transform_observation_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.StepCounter.html#torchrl.envs.transforms.StepCounter.transform_observation_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_observation_spec</span><span class="p">(</span>
@@ -3154,7 +3101,9 @@
             <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span>
             <span class="n">device</span><span class="o">=</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">observation_spec</span><span class="p">[</span><span class="s2">&quot;step_count&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">minimum</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">observation_spec</span><span class="p">[</span><span class="s2">&quot;step_count&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">minimum</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">observation_spec</span><span class="p">[</span><span class="s2">&quot;step_count&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">minimum</span> <span class="o">*</span> <span class="mi">0</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="n">observation_spec</span></div></div>
 
 
@@ -3166,8 +3115,6 @@
 <span class="sd">            not present, it is simply ignored.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">excluded_keys</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">in_keys</span><span class="o">=</span><span class="p">[],</span> <span class="n">in_keys_inv</span><span class="o">=</span><span class="p">[],</span> <span class="n">out_keys</span><span class="o">=</span><span class="p">[],</span> <span class="n">out_keys_inv</span><span class="o">=</span><span class="p">[])</span>
@@ -3207,8 +3154,6 @@
 <span class="sd">            not present, it is simply ignored.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">selected_keys</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">in_keys</span><span class="o">=</span><span class="p">[],</span> <span class="n">in_keys_inv</span><span class="o">=</span><span class="p">[],</span> <span class="n">out_keys</span><span class="o">=</span><span class="p">[],</span> <span class="n">out_keys_inv</span><span class="o">=</span><span class="p">[])</span>
@@ -3255,7 +3200,6 @@
 <span class="sd">        T (int, optional): Number of time steps over which to apply max pooling.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">invertible</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>

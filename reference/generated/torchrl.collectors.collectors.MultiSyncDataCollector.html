@@ -402,19 +402,24 @@ This class can be safely used with online RL algorithms.</p>
 <span class="gp">... </span>        <span class="k">break</span>
 <span class="go">TensorDict(</span>
 <span class="go">    fields={</span>
-<span class="go">        action: Tensor(torch.Size([4, 50, 1]), dtype=torch.float32),</span>
-<span class="go">        done: Tensor(torch.Size([4, 50, 1]), dtype=torch.bool),</span>
-<span class="go">        mask: Tensor(torch.Size([4, 50, 1]), dtype=torch.bool),</span>
-<span class="go">        next: TensorDict(</span>
+<span class="go">        action: Tensor(shape=torch.Size([4, 50, 1]), device=cpu, dtype=torch.float32, is_shared=False),</span>
+<span class="go">        collector: TensorDict(</span>
 <span class="go">            fields={</span>
-<span class="go">                observation: Tensor(torch.Size([4, 50, 3]), dtype=torch.float32)},</span>
+<span class="go">                step_count: Tensor(shape=torch.Size([4, 50]), device=cpu, dtype=torch.int64, is_shared=False),</span>
+<span class="go">                traj_ids: Tensor(shape=torch.Size([4, 50]), device=cpu, dtype=torch.int64, is_shared=False)},</span>
 <span class="go">            batch_size=torch.Size([4, 50]),</span>
 <span class="go">            device=cpu,</span>
 <span class="go">            is_shared=False),</span>
-<span class="go">        observation: Tensor(torch.Size([4, 50, 3]), dtype=torch.float32),</span>
-<span class="go">        reward: Tensor(torch.Size([4, 50, 1]), dtype=torch.float32),</span>
-<span class="go">        step_count: Tensor(torch.Size([4, 50, 1]), dtype=torch.float32),</span>
-<span class="go">        traj_ids: Tensor(torch.Size([4, 50, 1, 1]), dtype=torch.float32)},</span>
+<span class="go">        done: Tensor(shape=torch.Size([4, 50, 1]), device=cpu, dtype=torch.bool, is_shared=False),</span>
+<span class="go">        mask: Tensor(shape=torch.Size([4, 50]), device=cpu, dtype=torch.bool, is_shared=False),</span>
+<span class="go">        next: TensorDict(</span>
+<span class="go">            fields={</span>
+<span class="go">                observation: Tensor(shape=torch.Size([4, 50, 3]), device=cpu, dtype=torch.float32, is_shared=False)},</span>
+<span class="go">            batch_size=torch.Size([4, 50]),</span>
+<span class="go">            device=cpu,</span>
+<span class="go">            is_shared=False),</span>
+<span class="go">        observation: Tensor(shape=torch.Size([4, 50, 3]), device=cpu, dtype=torch.float32, is_shared=False),</span>
+<span class="go">        reward: Tensor(shape=torch.Size([4, 50, 1]), device=cpu, dtype=torch.float32, is_shared=False)},</span>
 <span class="go">    batch_size=torch.Size([4, 50]),</span>
 <span class="go">    device=cpu,</span>
 <span class="go">    is_shared=False)</span>

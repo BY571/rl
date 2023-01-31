@@ -925,8 +925,10 @@
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">average_gae</span><span class="p">:</span>
-            <span class="n">adv</span> <span class="o">=</span> <span class="n">adv</span> <span class="o">-</span> <span class="n">adv</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-            <span class="n">adv</span> <span class="o">=</span> <span class="n">adv</span> <span class="o">/</span> <span class="n">adv</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="mf">1e-4</span><span class="p">)</span>
+            <span class="n">loc</span> <span class="o">=</span> <span class="n">adv</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="n">scale</span> <span class="o">=</span> <span class="n">adv</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="mf">1e-4</span><span class="p">)</span>
+            <span class="n">adv</span> <span class="o">=</span> <span class="n">adv</span> <span class="o">-</span> <span class="n">loc</span>
+            <span class="n">adv</span> <span class="o">=</span> <span class="n">adv</span> <span class="o">/</span> <span class="n">scale</span>
 
         <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">advantage_key</span><span class="p">,</span> <span class="n">adv</span><span class="p">)</span>
         <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value_target_key</span><span class="p">,</span> <span class="n">value_target</span><span class="p">)</span>
