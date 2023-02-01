@@ -448,8 +448,8 @@ Of course, a <a class="reference internal" href="generated/torchrl.envs.Parallel
 <p>It is important that your environment specs match the input and output that it sends and receives, as
 <a class="reference internal" href="generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv" title="torchrl.envs.ParallelEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParallelEnv</span></code></a> will create buffers from these specs to communicate with the spawn processes.
 Check the <a class="reference internal" href="generated/torchrl.envs.utils.check_env_specs.html#torchrl.envs.utils.check_env_specs" title="torchrl.envs.utils.check_env_specs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">torchrl.envs.utils.check_env_specs</span></code></a> method for a sanity check.</p>
-<div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-text">Parallel environment</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Parallel environment</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     <span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">make_env</span><span class="p">():</span>
      <span class="o">...</span>     <span class="k">return</span> <span class="n">GymEnv</span><span class="p">(</span><span class="s2">&quot;Pendulum-v1&quot;</span><span class="p">,</span> <span class="n">from_pixels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="mf">9.81</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cuda:0&quot;</span><span class="p">)</span>
      <span class="o">&gt;&gt;&gt;</span> <span class="n">check_env_specs</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>  <span class="c1"># this must pass for ParallelEnv to work</span>
@@ -461,8 +461,8 @@ Check the <a class="reference internal" href="generated/torchrl.envs.utils.check
 </div>
 <p><a class="reference internal" href="generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv" title="torchrl.envs.ParallelEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParallelEnv</span></code></a> allows to retrieve the attributes from its contained environments:
 one can simply call:</p>
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">Parallel environment attributes</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Parallel environment attributes</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     <span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">g</span>  <span class="c1"># gets the g-force of the various envs, which we set to 9.81 before</span>
      <span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
      <span class="mf">9.81</span>
@@ -470,8 +470,8 @@ one can simply call:</p>
 </div>
 </div>
 <p>It is also possible to reset some but not all of the environments:</p>
-<div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-text">Parallel environment reset</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Parallel environment reset</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     <span class="o">&gt;&gt;&gt;</span> <span class="n">tensordict</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({</span><span class="s2">&quot;reset_workers&quot;</span><span class="p">:</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">]},</span> <span class="p">[</span><span class="mi">4</span><span class="p">])</span>
      <span class="o">&gt;&gt;&gt;</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
      <span class="n">TensorDict</span><span class="p">(</span>
@@ -500,6 +500,12 @@ an assertion error whenever the preallocated buffer and the collected data misma
 <p>We also offer the <a class="reference internal" href="generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv" title="torchrl.envs.SerialEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SerialEnv</span></code></a> class that enjoys the exact same API but is executed
 serially. This is mostly useful for testing purposes, when one wants to assess the
 behaviour of a <a class="reference internal" href="generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv" title="torchrl.envs.ParallelEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParallelEnv</span></code></a> without launching the subprocesses.</p>
+<p>In addition to <a class="reference internal" href="generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv" title="torchrl.envs.ParallelEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParallelEnv</span></code></a>, which offers process-based parallelism, we also provide a way to create
+multithreaded environments with <a class="reference internal" href="generated/torchrl.envs.MultiThreadedEnv.html#torchrl.envs.MultiThreadedEnv" title="torchrl.envs.MultiThreadedEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiThreadedEnv</span></code></a>. This class uses <a class="reference external" href="https://github.com/sail-sg/envpool">EnvPool</a>
+library underneath, which allows for higher performance, but at the same time restricts flexibility - one can only
+create environments implemented in <cite>EnvPool</cite>. This covers many popular RL environments types (Atari, Classic Control,
+etc.), but one can not use an arbitrary TorchRL environment, as it is possible with <a class="reference internal" href="generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv" title="torchrl.envs.ParallelEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParallelEnv</span></code></a>. Run
+<cite>benchmarks/benchmark_batched_envs.py</cite> to compare performance of different ways to parallelize batched environments.</p>
 <table class="autosummary longtable docutils # Necessary for the table generated by autosummary to look decent align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv" title="torchrl.envs.SerialEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SerialEnv</span></code></a>(*args[, _inplace_update, ...])</p></td>
@@ -508,7 +514,10 @@ behaviour of a <a class="reference internal" href="generated/torchrl.envs.Parall
 <tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv" title="torchrl.envs.ParallelEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParallelEnv</span></code></a>(*args[, _inplace_update, ...])</p></td>
 <td><p>Creates one environment per process.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.EnvCreator.html#torchrl.envs.EnvCreator" title="torchrl.envs.EnvCreator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EnvCreator</span></code></a>(create_env_fn[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.MultiThreadedEnv.html#torchrl.envs.MultiThreadedEnv" title="torchrl.envs.MultiThreadedEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiThreadedEnv</span></code></a>(*args[, _inplace_update, ...])</p></td>
+<td><p>Multithreaded execution of environments based on EnvPool.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.EnvCreator.html#torchrl.envs.EnvCreator" title="torchrl.envs.EnvCreator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EnvCreator</span></code></a>(create_env_fn[, ...])</p></td>
 <td><p>Environment creator class.</p></td>
 </tr>
 </tbody>
@@ -521,8 +530,8 @@ policy or a value operator). To do this, TorchRL provides a set of transforms th
 logic of <cite>torch.distributions.Transform</cite> and <cite>torchvision.transforms</cite>.</p>
 <p>Transformed environments are build using the <span class="xref std std-doc">TransformedEnv</span> primitive.
 Composed transforms are built using the <span class="xref std std-doc">Compose</span> class:</p>
-<div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">Transformed environment</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Transformed environment</span><a class="headerlink" href="#id5" title="Permalink to this code">¶</a></div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     <span class="o">&gt;&gt;&gt;</span> <span class="n">base_env</span> <span class="o">=</span> <span class="n">GymEnv</span><span class="p">(</span><span class="s2">&quot;Pendulum-v1&quot;</span><span class="p">,</span> <span class="n">from_pixels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cuda:0&quot;</span><span class="p">)</span>
      <span class="o">&gt;&gt;&gt;</span> <span class="n">transform</span> <span class="o">=</span> <span class="n">Compose</span><span class="p">(</span><span class="n">ToTensorImage</span><span class="p">(</span><span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pixels&quot;</span><span class="p">]),</span> <span class="n">Resize</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pixels&quot;</span><span class="p">]))</span>
      <span class="o">&gt;&gt;&gt;</span> <span class="n">env</span> <span class="o">=</span> <span class="n">TransformedEnv</span><span class="p">(</span><span class="n">base_env</span><span class="p">,</span> <span class="n">transform</span><span class="p">)</span>
@@ -537,8 +546,8 @@ operations that is to be computed.</p>
 The same can be achieved with TorchRL transformed environments: the <span class="xref std std-doc">parent</span> attribute will
 return a new <a class="reference internal" href="generated/torchrl.envs.transforms.TransformedEnv.html#torchrl.envs.transforms.TransformedEnv" title="torchrl.envs.transforms.TransformedEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TransformedEnv</span></code></a> with all the transforms up to the transform of interest.
 Re-using the example above:</p>
-<div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">Transform parent</span><a class="headerlink" href="#id5" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Transform parent</span><a class="headerlink" href="#id6" title="Permalink to this code">¶</a></div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     <span class="o">&gt;&gt;&gt;</span> <span class="n">resize_parent</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">transform</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span>  <span class="c1"># returns the same as TransformedEnv(base_env, transform[:-1])</span>
 </pre></div>
 </div>
@@ -552,8 +561,8 @@ the action is applied in reverse order over the composed transform chain:
 this allows to apply transforms to data in the environment before the action is taken
 in the environment. The keys to be included in this inverse transform are passed through the
 <span class="xref std std-doc">“in_keys_inv”</span> keyword argument:</p>
-<div class="literal-block-wrapper docutils container" id="id6">
-<div class="code-block-caption"><span class="caption-text">Inverse transform</span><a class="headerlink" href="#id6" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">Inverse transform</span><a class="headerlink" href="#id7" title="Permalink to this code">¶</a></div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     <span class="o">&gt;&gt;&gt;</span> <span class="n">env</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span><span class="n">DoubleToFloat</span><span class="p">(</span><span class="n">in_keys_inv</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">]))</span>  <span class="c1"># will map the action from float32 to float64 before calling the base_env.step</span>
 </pre></div>
 </div>

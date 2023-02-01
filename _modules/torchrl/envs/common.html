@@ -749,8 +749,8 @@
                 <span class="s2">&quot;tensordict.select()) inside _step before writing new tensors onto this new instance.&quot;</span>
             <span class="p">)</span>
         <span class="n">tensordict</span><span class="o">.</span><span class="n">unlock</span><span class="p">()</span>
-
-        <span class="n">obs_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="c1"># Keys need to be non-nested for tensordict_out.exclude below</span>
+        <span class="n">obs_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="n">nested_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
         <span class="n">tensordict_out_select</span> <span class="o">=</span> <span class="n">tensordict_out</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="n">obs_keys</span><span class="p">)</span>
         <span class="n">tensordict_out</span> <span class="o">=</span> <span class="n">tensordict_out</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="o">*</span><span class="n">obs_keys</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">tensordict_out</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="n">tensordict_out_select</span><span class="p">)</span>

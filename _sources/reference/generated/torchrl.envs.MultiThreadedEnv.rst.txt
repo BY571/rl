@@ -1,0 +1,9 @@
+﻿.. currentmodule:: torchrl.envs
+
+
+MultiThreadedEnv
+================
+
+.. autoclass:: MultiThreadedEnv
+    :members:
+    :inherited-members:
