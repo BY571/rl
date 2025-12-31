@@ -1,0 +1,44 @@
+# SPO (Simple Policy Optimization) configuration for MuJoCo
+# Based on hyperparameters from "Simple Policy Optimization" (https://arxiv.org/abs/2401.16025)
+
+# task and env
+env:
+  env_name: HalfCheetah-v4
+
+# collector
+collector:
+  frames_per_batch: 2048
+  total_frames: 1_000_000
+
+# logger
+logger:
+  backend: wandb
+  project_name: torchrl_example_spo
+  group_name: null
+  exp_name: Mujoco_SPO
+  test_interval: 1_000_000
+  num_test_episodes: 5
+  video: False
+
+# Optim
+optim:
+  lr: 3e-4
+  weight_decay: 0.0
+  anneal_lr: True
+  device:
+
+# loss
+loss:
+  gamma: 0.99
+  mini_batch_size: 512
+  spo_epochs: 10
+  gae_lambda: 0.95
+  epsilon: 0.2
+  critic_coef: 0.5
+  entropy_coef: 0.0
+  loss_critic_type: smooth_l1
+
+compile:
+  compile: False
+  compile_mode:
+  cudagraphs: False
