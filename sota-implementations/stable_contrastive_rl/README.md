@@ -64,6 +64,19 @@ python stable_contrastive_rl.py \
     env.max_steps=100
 ```
 
+### Verification Script
+
+To verify the implementation works correctly without installing `gymnasium-robotics`:
+
+```bash
+python verify_implementation.py
+```
+
+This runs a quick training loop on Pendulum-v1 with goal-conditioning and verifies:
+- Losses are finite
+- Gradients flow correctly
+- Training is stable
+
 ### Key Hyperparameters
 
 | Parameter | Default | Description |
