@@ -5,6 +5,11 @@
 
 from torchrl.objectives.a2c import A2CLoss
 from torchrl.objectives.common import add_random_module, LossModule
+from torchrl.objectives.contrastive_rl import (
+    ContrastiveRLEncoder,
+    make_contrastive_rl_modules,
+    StableContrastiveRLLoss,
+)
 from torchrl.objectives.cql import CQLLoss, DiscreteCQLLoss
 from torchrl.objectives.crossq import CrossQLoss
 from torchrl.objectives.ddpg import DDPGLoss
@@ -39,6 +44,7 @@ from torchrl.objectives.utils import (
 
 __all__ = [
     "A2CLoss",
+    "ContrastiveRLEncoder",
     "CQLLoss",
     "ClipPPOLoss",
     "CrossQLoss",
@@ -64,6 +70,7 @@ __all__ = [
     "ReinforceLoss",
     "SACLoss",
     "SoftUpdate",
+    "StableContrastiveRLLoss",
     "TD3BCLoss",
     "TD3Loss",
     "TargetNetUpdater",
@@ -74,5 +81,6 @@ __all__ = [
     "group_optimizers",
     "hold_out_net",
     "hold_out_params",
+    "make_contrastive_rl_modules",
     "next_state_value",
 ]
