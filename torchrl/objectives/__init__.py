@@ -7,6 +7,7 @@ from torchrl.objectives.a2c import A2CLoss
 from torchrl.objectives.common import add_random_module, LossModule
 from torchrl.objectives.cql import CQLLoss, DiscreteCQLLoss
 from torchrl.objectives.crossq import CrossQLoss
+from torchrl.objectives.ctrl import CTRLLoss, CTRLPPOLoss
 from torchrl.objectives.ddpg import DDPGLoss
 from torchrl.objectives.decision_transformer import DTLoss, OnlineDTLoss
 from torchrl.objectives.dqn import DistributionalDQNLoss, DQNLoss
@@ -40,6 +41,8 @@ from torchrl.objectives.utils import (
 __all__ = [
     "A2CLoss",
     "CQLLoss",
+    "CTRLLoss",
+    "CTRLPPOLoss",
     "ClipPPOLoss",
     "CrossQLoss",
     "DDPGLoss",

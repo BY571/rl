@@ -1,0 +1,67 @@
+# CTRL + PPO Configuration for Procgen
+# Reference: "Cross-Trajectory Representation Learning for Zero-Shot Generalization in RL"
+
+# Environment settings
+env:
+  env_name: procgen:procgen-coinrun-v0
+  num_envs: 64
+  num_levels: 200  # Number of training levels (0 = unlimited)
+  distribution_mode: easy  # easy, hard, extreme
+  backend: gymnasium
+
+# Model settings
+model:
+  embedding_dim: 256  # Encoder output dimension
+
+# Data collection
+collector:
+  total_frames: 25_000_000
+  frames_per_batch: 2048
+
+# Loss settings
+loss:
+  mini_batch_size: 512
+  ppo_epochs: 3
+  clip_epsilon: 0.2
+  gamma: 0.999
+  gae_lambda: 0.95
+  entropy_coeff: 0.01
+  critic_coeff: 0.5
+  loss_critic_type: l2
+
+# CTRL settings
+ctrl:
+  projection_dim: 128
+  num_prototypes: 512
+  sinkhorn_iters: 3
+  temperature: 0.1
+  window_len: 4
+  myow_k: 5
+  myow_coeff: 1.0
+  ctrl_coeff: 1.0  # Weight for CTRL loss in total loss
+
+# Optimizer settings
+optim:
+  lr: 5e-4
+  ctrl_lr: 1e-4
+  weight_decay: 0.0
+  eps: 1e-5
+  max_grad_norm: 0.5
+  anneal_lr: true
+  device: ""  # Empty string means auto-detect
+
+# Logging
+logger:
+  backend: wandb  # wandb, tensorboard, or ""
+  project_name: ctrl_procgen
+  group_name: null
+  exp_name: ctrl_ppo
+  test_interval: 50_000
+  num_test_episodes: 10
+  video: false
+
+# Compilation settings
+compile:
+  compile: false
+  compile_mode: null
+  cudagraphs: false
