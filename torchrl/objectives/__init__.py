@@ -19,6 +19,7 @@ from torchrl.objectives.gail import GAILLoss
 from torchrl.objectives.iql import DiscreteIQLLoss, IQLLoss
 from torchrl.objectives.multiagent import QMixerLoss
 from torchrl.objectives.ppo import ClipPPOLoss, KLPENPPOLoss, PPOLoss
+from torchrl.objectives.qrdqn import QRDQNLoss
 from torchrl.objectives.redq import REDQLoss
 from torchrl.objectives.reinforce import ReinforceLoss
 from torchrl.objectives.sac import DiscreteSACLoss, SACLoss
@@ -60,6 +61,7 @@ __all__ = [
     "OnlineDTLoss",
     "PPOLoss",
     "QMixerLoss",
+    "QRDQNLoss",
     "REDQLoss",
     "ReinforceLoss",
     "SACLoss",
