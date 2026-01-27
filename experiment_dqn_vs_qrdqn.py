@@ -357,7 +357,7 @@ def main():
     device = get_available_device()
     tqdm.tqdm.write(f"Using device: {device}")
 
-    total_frames = 100_000
+    total_frames = 200_000
     seeds = [42, 123, 456]
 
     dqn_all_metrics = []
