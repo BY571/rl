@@ -21,7 +21,8 @@ from tensordict.utils import NestedKey
 from torch import nn
 
 from torchrl.data.tensor_specs import Composite, TensorSpec
-from torchrl.data.utils import _find_action_space
+from torchrl.data.utils import _find_action_space, _process_action_space_spec
+from torchrl.modules.tensordict_module.common import SafeModule
 from torchrl.modules.tensordict_module.sequence import SafeSequential
 
 
@@ -74,8 +75,6 @@ class QRDQNModule(TensorDictModuleBase):
         spec: TensorSpec = None,
         safe: bool = False,
     ):
-        super().__init__()
-
         if action_value_key is None:
             action_value_key = "action_value"
         if out_keys is None:
@@ -88,7 +87,6 @@ class QRDQNModule(TensorDictModuleBase):
 
         self.action_mask_key = action_mask_key
         self.var_nums = var_nums
-        self.safe = safe
 
         if spec is not None and action_space is None:
             action_space, _ = _find_action_space(spec)
@@ -96,10 +94,21 @@ class QRDQNModule(TensorDictModuleBase):
             raise ValueError("Either action_space or spec must be provided.")
         self.action_space = _find_action_space(action_space)
 
+        # Handle spec like QValueModule does
+        action_key = out_keys[0]
         if spec is not None:
-            self._spec = Composite({out_keys[0]: spec})
+            if not isinstance(spec, Composite):
+                spec = Composite({action_key: spec})
+            elif action_key not in spec.keys():
+                spec = spec.clone()
+                spec[action_key] = None
         else:
-            self._spec = None
+            spec = Composite({action_key: None})
+        # Add action_value_key to spec
+        spec[action_value_key] = None
+
+        super().__init__()
+        self.register_spec(safe=safe, spec=spec)
 
         self.action_func_mapping = {
             "one_hot": self._one_hot,
@@ -108,6 +117,8 @@ class QRDQNModule(TensorDictModuleBase):
             "mult-one-hot": self._mult_one_hot,
             "categorical": self._categorical,
         }
+
+    register_spec = SafeModule.register_spec
 
     @property
     def spec(self) -> Composite:
@@ -257,7 +268,7 @@ class QRDQNActor(SafeSequential):
     ):
         if isinstance(action_space, TensorSpec):
             raise RuntimeError("Using specs in action_space is deprecated")
-        action_space, spec = self._process_action_space_spec(action_space, spec)
+        action_space, spec = _process_action_space_spec(action_space, spec)
         self.action_space = action_space
         self.action_value_key = action_value_key
 
@@ -291,18 +302,3 @@ class QRDQNActor(SafeSequential):
         )
 
         super().__init__(module, qrdqn_module)
-
-    @staticmethod
-    def _process_action_space_spec(action_space, spec):
-        """Process action_space and spec arguments."""
-        if action_space is None and spec is None:
-            raise ValueError("Either action_space or spec must be provided.")
-        if spec is not None:
-            if hasattr(spec, "space"):
-                if action_space is None:
-                    action_space = spec
-            elif isinstance(spec, Composite):
-                if "action" in spec.keys():
-                    if action_space is None:
-                        action_space = spec["action"]
-        return action_space, spec

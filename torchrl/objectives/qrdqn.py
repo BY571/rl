@@ -186,11 +186,13 @@ class QRDQNLoss(LossModule):
         self.value_network_in_keys = value_network.in_keys
 
         if action_space is None:
+            # Try action_space first (QRDQNActor exposes this as a string)
+            # Then try spec (but spec may have None values in SafeSequential)
             try:
-                action_space = value_network.spec
+                action_space = value_network.action_space
             except AttributeError:
                 try:
-                    action_space = value_network.action_space
+                    action_space = value_network.spec
                 except AttributeError:
                     raise ValueError(
                         "The action space could not be retrieved from the value_network. "
@@ -351,6 +353,8 @@ class QRDQNLoss(LossModule):
         if self.action_space == "categorical":
             if action.ndim < action_value.ndim - 1:
                 action = action.unsqueeze(-1)
+            # Ensure action is long dtype for gather
+            action = action.long()
             # action shape: [batch, 1] -> [batch, num_quantiles, 1]
             action_expanded = action.unsqueeze(-2).expand(
                 *action.shape[:-1], action_value.shape[-2], 1
