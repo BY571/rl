@@ -1,0 +1,45 @@
+# QR-DQN Configuration for CartPole
+# Reference: "Distributional Reinforcement Learning with Quantile Regression"
+# Hyperparameters tuned based on DQN CartPole settings
+
+device: null  # Auto-detect
+
+# Environment
+env:
+  env_name: CartPole-v1
+
+# Collector
+collector:
+  total_frames: 100_000
+  frames_per_batch: 128
+  eps_start: 1.0
+  eps_end: 0.05
+  annealing_frames: 50_000
+  init_random_frames: 5_000
+
+# Replay Buffer
+buffer:
+  buffer_size: 10_000
+  batch_size: 128
+
+# Logger
+logger:
+  backend: csv
+  exp_name: QR-DQN-CartPole
+  test_interval: 10_000
+  num_test_episodes: 10
+  video: False
+
+# Optimizer
+optim:
+  lr: 2.5e-4
+
+# Loss
+loss:
+  gamma: 0.99
+  hard_update_freq: 50
+  num_updates: 10
+  # QR-DQN specific
+  num_quantiles: 51
+  huber_kappa: 1.0
+  double_qrdqn: False
