@@ -1,0 +1,98 @@
+# Config for Stable Contrastive RL
+# Reference: "Stabilizing Contrastive RL: Techniques for Robotic Goal Reaching from Offline Data"
+# https://arxiv.org/abs/2306.03346
+
+defaults:
+  - _self_
+
+# Environment
+env:
+  # FetchReach-v3 or PointMaze_UMaze-v3
+  env_name: FetchReach-v3
+  # Number of parallel environments
+  num_envs: 8
+  # Maximum steps per episode
+  max_steps: 50
+  # Backend for Gym environments
+  backend: gymnasium
+
+# Model architecture
+model:
+  # Embedding dimension for encoders
+  embed_dim: 64
+  # Hidden layer dimension (paper recommends wide networks)
+  hidden_dim: 1024
+  # Number of MLP layers
+  num_layers: 4
+  # Whether to use layer normalization (recommended)
+  use_layer_norm: true
+  # Whether to use cold initialization (recommended)
+  cold_init: true
+
+# Training
+collector:
+  # Total number of environment steps
+  total_frames: 1_000_000
+  # Frames collected per batch
+  frames_per_batch: 2048
+  # Number of initial random frames before training
+  init_random_frames: 10000
+
+# Replay buffer
+buffer:
+  # Replay buffer size
+  size: 1_000_000
+  # Batch size for training (paper recommends large batch sizes)
+  batch_size: 2048
+
+# Loss configuration
+loss:
+  # Discount factor
+  gamma: 0.99
+  # Actor loss coefficient
+  actor_coeff: 1.0
+  # Entropy coefficient (optional entropy regularization)
+  entropy_coeff: 0.0
+  # Use InfoNCE (true) or binary cross-entropy (false)
+  use_log_softmax: true
+
+# Optimization
+optim:
+  # Learning rate for all networks
+  lr: 3e-4
+  # Weight decay
+  weight_decay: 0.0
+  # Adam epsilon
+  eps: 1e-8
+  # Target network update rate (for soft updates)
+  tau: 0.005
+  # Gradient clipping
+  max_grad_norm: 1.0
+  # Device (cuda or cpu)
+  device: ""
+
+# Logging
+logger:
+  # Logger backend: wandb, tensorboard, or ""
+  backend: ""
+  # Project name for wandb
+  project_name: stable_contrastive_rl
+  # Group name for wandb
+  group_name: ""
+  # Experiment name
+  exp_name: stable_contrastive_rl
+  # Test interval (in frames)
+  test_interval: 10000
+  # Number of test episodes
+  num_test_episodes: 10
+  # Record video
+  video: false
+
+# Compile options
+compile:
+  # Whether to compile modules
+  compile: false
+  # Compile mode
+  compile_mode: ""
+  # Use CUDA graphs
+  cudagraphs: false
