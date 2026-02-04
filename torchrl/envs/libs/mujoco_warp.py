@@ -59,7 +59,7 @@ class MjWarpEnvConfig:
 
 
 class _MjWarpMeta(_EnvPostInit):
-    """Metaclass for MjWarpEnv that returns a lazy ParallelEnv when num_workers > 1."""
+    """Metaclass for MjWarpEnv that returns a ParallelEnv when num_workers > 1."""
 
     def __call__(cls, *args, num_workers: int | None = None, **kwargs):
         if num_workers is None:
@@ -69,11 +69,15 @@ class _MjWarpMeta(_EnvPostInit):
 
         num_workers = int(num_workers)
         if cls.__name__ == "MjWarpEnv" and num_workers > 1:
-            xml_path = args[0] if len(args) >= 1 else kwargs.get("xml_path")
-            env_kwargs = {k: v for k, v in kwargs.items() if k != "xml_path"}
+            # Map positional args to keyword args so the factory captures them
+            _pos_names = ("xml_path", "obs_fn", "reward_fn", "done_fn")
+            for i, name in enumerate(_pos_names):
+                if i < len(args) and name not in kwargs:
+                    kwargs[name] = args[i]
+            env_kwargs = dict(kwargs)
 
-            def make_env(_xml_path=xml_path, _kwargs=env_kwargs):
-                return cls(_xml_path, num_workers=1, **_kwargs)
+            def make_env(_kwargs=env_kwargs):
+                return cls(num_workers=1, **_kwargs)
 
             return ParallelEnv(num_workers, make_env)
 
@@ -104,8 +108,8 @@ class MjWarpWrapper(_EnvWrapper):
             MuJoCo model, and user-defined obs/reward/done functions.
 
     Keyword Args:
-        device (torch.device, optional): The CUDA device for output tensors.
-            Must be a CUDA device. Defaults to ``"cuda:0"``.
+        device (torch.device): The CUDA device for output tensors.
+            Must be a CUDA device (e.g., ``"cuda:0"``).
         batch_size (torch.Size, optional): The number of parallel simulation
             worlds. MJWarp handles batching natively via ``nworld``.
             Defaults to ``torch.Size([])``.
@@ -259,6 +263,24 @@ class MjWarpWrapper(_EnvWrapper):
         else:
             self._torch_generator = None
 
+    def _reshape_obs(self, obs_dict: dict) -> dict:
+        """Reshape observation tensors from flat (nworld, ...) to batch_size."""
+        if self.batch_size:
+            return {
+                k: v.view(*self.batch_size, *v.shape[1:]) for k, v in obs_dict.items()
+            }
+        return obs_dict
+
+    def _reshape_done(self, done: torch.Tensor) -> torch.Tensor:
+        """Ensure done is a bool tensor with trailing dim, shaped for batch_size."""
+        if done.dtype != torch.bool:
+            done = done.bool()
+        if done.dim() == 1:
+            done = done.unsqueeze(-1)
+        if self.batch_size:
+            done = done.view(*self.batch_size, 1)
+        return done
+
     def _selective_reset(self, reset_mask: torch.Tensor) -> None:
         """Reset only the worlds indicated by reset_mask to template state."""
         import warp as wp
@@ -294,31 +316,22 @@ class MjWarpWrapper(_EnvWrapper):
         if reset_mask is not None and not reset_mask.all():
             # Partial reset: only reset selected worlds
             self._selective_reset(reset_mask)
-            mjw.forward(self._mjw_model, self._mjw_data)
         elif self._reset_fn is not None:
-            self._mjw_data = self._reset_fn(self._mjw_model, self._mjw_data)
-            mjw.forward(self._mjw_model, self._mjw_data)
+            result = self._reset_fn(self._mjw_model, self._mjw_data)
+            if result is None:
+                raise ValueError(
+                    "reset_fn returned None. Did you forget a 'return' statement? "
+                    "reset_fn(model, data) must return a mjw.Data object."
+                )
+            self._mjw_data = result
         else:
             # Full reset: recreate all worlds
             self._mjw_data = mjw.make_data(self._mj_model, nworld=nworld)
-            mjw.forward(self._mjw_model, self._mjw_data)
 
-        obs_dict = self._obs_fn(self._mjw_data)
-        done = self._done_fn(self._mjw_data)
+        mjw.forward(self._mjw_model, self._mjw_data)
 
-        if done.dtype != torch.bool:
-            done = done.bool()
-
-        # Ensure done has trailing dim
-        if done.dim() == 1:
-            done = done.unsqueeze(-1)
-
-        # Reshape for batch_size
-        if self.batch_size:
-            done = done.view(*self.batch_size, 1)
-            obs_dict = {
-                k: v.view(*self.batch_size, *v.shape[1:]) for k, v in obs_dict.items()
-            }
+        obs_dict = self._reshape_obs(self._obs_fn(self._mjw_data))
+        done = self._reshape_done(self._done_fn(self._mjw_data))
 
         source = dict(obs_dict)
         source["done"] = done
@@ -346,28 +359,15 @@ class MjWarpWrapper(_EnvWrapper):
         # Step all worlds in parallel
         mjw.step(self._mjw_model, self._mjw_data)
 
-        obs_dict = self._obs_fn(self._mjw_data)
+        obs_dict = self._reshape_obs(self._obs_fn(self._mjw_data))
         reward = self._reward_fn(self._mjw_data, action)
-        done = self._done_fn(self._mjw_data)
+        done = self._reshape_done(self._done_fn(self._mjw_data))
 
-        if done.dtype != torch.bool:
-            done = done.bool()
-
-        # Ensure reward has trailing dim
+        # Ensure reward has trailing dim and correct shape
         if reward.dim() == 1:
             reward = reward.unsqueeze(-1)
-
-        # Ensure done has trailing dim
-        if done.dim() == 1:
-            done = done.unsqueeze(-1)
-
-        # Reshape for batch_size
         if self.batch_size:
             reward = reward.view(*self.batch_size, 1)
-            done = done.view(*self.batch_size, 1)
-            obs_dict = {
-                k: v.view(*self.batch_size, *v.shape[1:]) for k, v in obs_dict.items()
-            }
 
         source = dict(obs_dict)
         source["reward"] = reward
@@ -382,14 +382,16 @@ class MjWarpWrapper(_EnvWrapper):
 
     def close(self, *, raise_if_closed: bool = True) -> None:
         """Closes the environment and frees GPU resources."""
-        if hasattr(self, "_mjw_data"):
-            del self._mjw_data
-        if hasattr(self, "_reset_qpos"):
-            del self._reset_qpos
-            del self._reset_qvel
-            del self._reset_ctrl
-            del self._reset_act
-        self.is_closed = True
+        for attr in (
+            "_mjw_data",
+            "_reset_qpos",
+            "_reset_qvel",
+            "_reset_ctrl",
+            "_reset_act",
+        ):
+            if hasattr(self, attr):
+                delattr(self, attr)
+        super().close(raise_if_closed=raise_if_closed)
 
     def __repr__(self) -> str:
         return (
@@ -416,8 +418,8 @@ class MjWarpEnv(MjWarpWrapper, metaclass=_MjWarpMeta):
         action_size (int, optional): Number of actuators. Defaults to ``mj_model.nu``.
         action_low (float, optional): Lower bound for actions. Defaults to ``-1.0``.
         action_high (float, optional): Upper bound for actions. Defaults to ``1.0``.
-        device (torch.device, optional): CUDA device for output tensors.
-            Defaults to ``"cuda:0"``.
+        device (torch.device): CUDA device for output tensors
+            (e.g., ``"cuda:0"``).
         batch_size (torch.Size, optional): Number of parallel worlds.
             Defaults to ``torch.Size([])``.
         num_workers (int, optional): If greater than 1, returns a
@@ -471,14 +473,9 @@ class MjWarpEnv(MjWarpWrapper, metaclass=_MjWarpMeta):
         super().__init__(**kwargs)
 
     def _check_kwargs(self, kwargs: dict):
-        if "xml_path" not in kwargs:
-            raise TypeError("Expected 'xml_path' to be part of kwargs")
-        if "obs_fn" not in kwargs:
-            raise TypeError("Expected 'obs_fn' to be part of kwargs")
-        if "reward_fn" not in kwargs:
-            raise TypeError("Expected 'reward_fn' to be part of kwargs")
-        if "done_fn" not in kwargs:
-            raise TypeError("Expected 'done_fn' to be part of kwargs")
+        for key in ("xml_path", "obs_fn", "reward_fn", "done_fn"):
+            if key not in kwargs:
+                raise TypeError(f"Expected '{key}' to be part of kwargs")
 
     def _build_env(
         self,

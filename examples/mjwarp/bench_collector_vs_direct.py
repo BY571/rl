@@ -8,7 +8,7 @@
 Compares two data-collection strategies for GPU-batched MuJoCo Warp envs:
 
   1. **Direct stepping** — call env.step() in a Python loop, keep everything
-     on the same GPU. This is what ppo_halfcheetah.py does.
+     on the same GPU. This is what ``ppo/train.py`` does.
 
   2. **SyncDataCollector** — use TorchRL's standard collector abstraction,
      which handles rollout collection, auto-reset, and step_mdp internally.
@@ -48,7 +48,7 @@ from torchrl.envs import RewardSum, StepCounter, TransformedEnv
 from torchrl.envs.libs.mujoco_warp import MjWarpEnv
 from torchrl.envs.utils import step_mdp
 
-# ── Minimal HalfCheetah XML (same as ppo_halfcheetah.py) ────────────
+# ── Minimal HalfCheetah XML (same as ppo/halfcheetah.py) ─────────────
 
 HALFCHEETAH_XML = """\
 <mujoco model="cheetah">

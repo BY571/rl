@@ -39,36 +39,24 @@ _MINIMAL_XML = """
 """
 
 
-def _make_obs_fn():
-    """Create a simple observation function."""
-
-    def obs_fn(data):
-        qpos = wp.to_torch(data.qpos)
-        qvel = wp.to_torch(data.qvel)
-        return {"observation": torch.cat([qpos, qvel], dim=-1)}
-
-    return obs_fn
+def _obs_fn(data):
+    """Simple observation function: concatenate qpos and qvel."""
+    qpos = wp.to_torch(data.qpos)
+    qvel = wp.to_torch(data.qvel)
+    return {"observation": torch.cat([qpos, qvel], dim=-1)}
 
 
-def _make_reward_fn():
-    """Create a simple reward function (forward velocity)."""
-
-    def reward_fn(data, action):
-        qvel = wp.to_torch(data.qvel)
-        return qvel[:, 0:1]
-
-    return reward_fn
+def _reward_fn(data, action):
+    """Simple reward function: forward velocity."""
+    qvel = wp.to_torch(data.qvel)
+    return qvel[:, 0:1]
 
 
-def _make_done_fn():
-    """Create a simple done function (pole angle exceeds threshold)."""
-
-    def done_fn(data):
-        qpos = wp.to_torch(data.qpos)
-        # Done if hinge angle (index 1) exceeds threshold
-        return qpos[:, 1].abs() > 100.0  # Very large so tests don't terminate early
-
-    return done_fn
+def _done_fn(data):
+    """Simple done function: pole angle exceeds threshold."""
+    qpos = wp.to_torch(data.qpos)
+    # Done if hinge angle (index 1) exceeds threshold
+    return qpos[:, 1].abs() > 100.0  # Very large so tests don't terminate early
 
 
 def _make_config():
@@ -78,9 +66,9 @@ def _make_config():
     return MjWarpEnvConfig(
         mjw_model=mjw_model,
         mj_model=mj_model,
-        obs_fn=_make_obs_fn(),
-        reward_fn=_make_reward_fn(),
-        done_fn=_make_done_fn(),
+        obs_fn=_obs_fn,
+        reward_fn=_reward_fn,
+        done_fn=_done_fn,
     )
 
 
@@ -88,9 +76,9 @@ def _make_env(batch_size=4):
     """Create a MjWarpEnv for testing."""
     return MjWarpEnv(
         _MINIMAL_XML,
-        obs_fn=_make_obs_fn(),
-        reward_fn=_make_reward_fn(),
-        done_fn=_make_done_fn(),
+        obs_fn=_obs_fn,
+        reward_fn=_reward_fn,
+        done_fn=_done_fn,
         batch_size=[batch_size],
         device="cuda:0",
     )
@@ -119,9 +107,9 @@ class TestMjWarp:
         """Test various batch sizes."""
         env = MjWarpEnv(
             _MINIMAL_XML,
-            obs_fn=_make_obs_fn(),
-            reward_fn=_make_reward_fn(),
-            done_fn=_make_done_fn(),
+            obs_fn=_obs_fn,
+            reward_fn=_reward_fn,
+            done_fn=_done_fn,
             batch_size=list(batch_size),
             device="cuda:0",
         )
@@ -203,9 +191,9 @@ class TestMjWarp:
 
         env = MjWarpEnv(
             _MINIMAL_XML,
-            obs_fn=_make_obs_fn(),
-            reward_fn=_make_reward_fn(),
-            done_fn=_make_done_fn(),
+            obs_fn=_obs_fn,
+            reward_fn=_reward_fn,
+            done_fn=_done_fn,
             reset_fn=custom_reset,
             batch_size=[4],
             device="cuda:0",
@@ -218,9 +206,9 @@ class TestMjWarp:
         """Test custom action bounds."""
         env = MjWarpEnv(
             _MINIMAL_XML,
-            obs_fn=_make_obs_fn(),
-            reward_fn=_make_reward_fn(),
-            done_fn=_make_done_fn(),
+            obs_fn=_obs_fn,
+            reward_fn=_reward_fn,
+            done_fn=_done_fn,
             action_low=-2.0,
             action_high=2.0,
             batch_size=[4],
@@ -241,8 +229,8 @@ class TestMjWarp:
         env = MjWarpEnv(
             _MINIMAL_XML,
             obs_fn=multi_obs_fn,
-            reward_fn=_make_reward_fn(),
-            done_fn=_make_done_fn(),
+            reward_fn=_reward_fn,
+            done_fn=_done_fn,
             batch_size=[4],
             device="cuda:0",
         )
@@ -283,9 +271,9 @@ class TestMjWarp:
         """Test that missing xml_path raises TypeError."""
         with pytest.raises(TypeError, match="xml_path"):
             MjWarpEnv(
-                obs_fn=_make_obs_fn(),
-                reward_fn=_make_reward_fn(),
-                done_fn=_make_done_fn(),
+                obs_fn=_obs_fn,
+                reward_fn=_reward_fn,
+                done_fn=_done_fn,
                 batch_size=[1],
                 device="cuda:0",
             )

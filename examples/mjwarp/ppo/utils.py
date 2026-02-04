@@ -49,6 +49,14 @@ def make_env(cfg, device, num_envs=None):
 # --------------------------------------------------------------------
 
 
+def _init_weights(module, gain=1.0):
+    """Apply orthogonal weight init and zero bias to all Linear layers."""
+    for layer in module.modules():
+        if isinstance(layer, torch.nn.Linear):
+            torch.nn.init.orthogonal_(layer.weight, gain)
+            layer.bias.data.zero_()
+
+
 def make_ppo_models(env, cfg, device):
     """Create actor and critic networks with configurable hidden sizes."""
     input_shape = env.observation_spec["observation"].shape
@@ -66,10 +74,7 @@ def make_ppo_models(env, cfg, device):
         device=device,
     )
 
-    for layer in policy_mlp.modules():
-        if isinstance(layer, torch.nn.Linear):
-            torch.nn.init.orthogonal_(layer.weight, 1.0)
-            layer.bias.data.zero_()
+    _init_weights(policy_mlp, gain=1.0)
 
     policy_mlp = torch.nn.Sequential(
         policy_mlp,
@@ -103,10 +108,7 @@ def make_ppo_models(env, cfg, device):
         device=device,
     )
 
-    for layer in value_mlp.modules():
-        if isinstance(layer, torch.nn.Linear):
-            torch.nn.init.orthogonal_(layer.weight, 0.01)
-            layer.bias.data.zero_()
+    _init_weights(value_mlp, gain=0.01)
 
     critic = ValueOperator(value_mlp, in_keys=["observation"])
 
