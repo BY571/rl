@@ -36,14 +36,14 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     "torch>=2.1.0",
     "pyvers",
     "numpy",
     "packaging",
     "cloudpickle",
-    "tensordict>=0.10.0,<0.11.0",
+    "tensordict>=0.11.0,<0.12.0",
 ]
 
 [project.optional-dependencies]
@@ -93,9 +93,9 @@ marl = ["vmas>=1.2.10", "pettingzoo>=1.24.1", "dm-meltingpot; python_version>='3
 open_spiel = ["open_spiel>=1.5"]
 brax = ["jax>=0.7.0; python_version>='3.11'", "brax; python_version>='3.11'"]
 procgen = ["procgen"]
+# Base LLM dependencies (no inference backend - use llm-vllm or llm-sglang)
 llm = [
     "transformers",
-    "vllm",
     "playwright",
     "datasets",
     "langdetect",
@@ -107,12 +107,27 @@ llm = [
     "einops",
     "safetensors",
 ]
+# LLM with vLLM backend
+llm-vllm = [
+    "torchrl[llm]",
+    "vllm",
+]
+# LLM with SGLang backend
+llm-sglang = [
+    "torchrl[llm]",
+    "sglang[all]",
+]
+# LLM with both backends
+llm-all = [
+    "torchrl[llm]",
+    "vllm",
+    "sglang[all]",
+]
 grpo = [
     # Core dependencies for GRPO training
-    "datasets",
+    "torchrl[llm-vllm]",
     "peft",
     "wandb",
-    "vllm",
     "transformers",
     "accelerate",
     "ray",
@@ -121,10 +136,6 @@ grpo = [
     "flash-attn",
     "bitsandbytes",
     "xformers",
-    # LLM-related dependencies that may be needed
-    "nltk",
-    "langdetect", 
-    "immutabledict",
 ]
 dev = [
     "pre-commit",
@@ -147,7 +158,7 @@ version_scheme = "post-release"
 # Local scheme is handled by setup.py (appends +g<sha> unless on release/v<version> branch)
 local_scheme = "no-local-version"
 version_file = "torchrl/_version.py"
-fallback_version = "0.10.0"
+fallback_version = "0.11.0"
 
 [tool.setuptools.packages.find]
 exclude = [

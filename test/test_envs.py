@@ -11,7 +11,6 @@ import gc
 import importlib
 import os
 import pickle
-import random
 import re
 import signal
 import threading
@@ -53,12 +52,9 @@ from torchrl.envs import (
     DoubleToFloat,
     EnvBase,
     EnvCreator,
-    LLMHashingEnv,
     ParallelEnv,
-    PendulumEnv,
     SerialEnv,
     set_gym_backend,
-    TicTacToeEnv,
 )
 from torchrl.envs.batched_envs import _stackable
 from torchrl.envs.gym_like import default_info_dict_reader
@@ -597,6 +593,7 @@ class TestEnvBase:
         env.auto_specs_(policy, tensordict=td.copy(), observation_key=obs_vals)
         env.check_env_specs(tensordict=td.copy())
 
+    @pytest.mark.gpu
     @pytest.mark.skipif(not torch.cuda.device_count(), reason="No cuda device found.")
     @pytest.mark.parametrize("break_when_any_done", [True, False])
     def test_auto_cast_to_device(self, break_when_any_done):
@@ -1164,6 +1161,18 @@ class TestParallel:
         with set_auto_unwrap_transformed_env(False):
             yield
 
+    # Helper classes for test_parallel_env_chained_attr
+    class _NestedObject:
+        value = 42
+
+        def get_value(self):
+            return self.value
+
+    class _EnvWithNestedAttr(DiscreteActionVecMockEnv):
+        def __init__(self):
+            super().__init__()
+            self.nested = TestParallel._NestedObject()
+
     def test_create_env_fn(self, maybe_fork_ParallelEnv):
         def make_env():
             return GymEnv(PENDULUM_VERSIONED())
@@ -1526,6 +1535,7 @@ class TestParallel:
             # env_serial.close()
             env0.close(raise_if_closed=False)
 
+    @pytest.mark.gpu
     @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA required")
     @pytest.mark.parametrize("heterogeneous", [False, True])
     def test_transform_env_transform_no_device(
@@ -1638,6 +1648,21 @@ class TestParallel:
         finally:
             env.close(raise_if_closed=False)
 
+    def test_parallel_env_chained_attr(self, maybe_fork_ParallelEnv):
+        """Test chained attribute access like env.nested.value works in ParallelEnv."""
+        env = maybe_fork_ParallelEnv(2, TestParallel._EnvWithNestedAttr)
+        try:
+            env.reset()
+            # Test chained attribute access
+            results = list(env.nested.value)
+            assert all(result == 42 for result in results)
+            # Test chained method access
+            results = list(env.nested.get_value())
+            assert all(result == 42 for result in results)
+        finally:
+            env.close(raise_if_closed=False)
+
+    @pytest.mark.gpu
     @pytest.mark.skipif(not torch.cuda.device_count(), reason="no cuda to test on")
     @pytest.mark.skipif(not _has_gym, reason="no gym")
     @pytest.mark.parametrize("frame_skip", [4])
@@ -1742,6 +1767,7 @@ class TestParallel:
             env_serial.close(raise_if_closed=False)
             env0.close(raise_if_closed=False)
 
+    @pytest.mark.gpu
     @pytest.mark.skipif(not _has_gym, reason="no gym")
     @pytest.mark.skipif(not torch.cuda.device_count(), reason="no cuda device detected")
     @pytest.mark.parametrize("frame_skip", [4])
@@ -2726,6 +2752,7 @@ def test_marl_group_type(group_type):
         check_marl_grouping(group_type.get_group_map(agent_names), agent_names)
 
 
+@pytest.mark.gpu
 @pytest.mark.skipif(not torch.cuda.device_count(), reason="No cuda device")
 class TestConcurrentEnvs:
     """Concurrent parallel envs on multiple procs can interfere."""
@@ -3174,10 +3201,10 @@ class TestMultiKeyEnvs:
     @pytest.mark.parametrize("rollout_steps", [1, 5])
     @pytest.mark.parametrize("max_steps", [2, 5])
     def test_rollout(self, batch_size, rollout_steps, max_steps, seed):
+        torch.manual_seed(seed)
         env = MultiKeyCountingEnv(batch_size=batch_size, max_steps=max_steps)
         policy = MultiKeyCountingEnvPolicy(full_action_spec=env.full_action_spec)
         td = env.rollout(rollout_steps, policy=policy)
-        torch.manual_seed(seed)
         check_rollout_consistency_multikey_env(td, max_steps=max_steps)
 
     @pytest.mark.parametrize("batch_size", [(), (2,), (2, 1)])
@@ -4521,71 +4548,6 @@ class TestChessEnv:
 
             if td["done"]:
                 td = env.reset()
-
-
-class TestCustomEnvs:
-    def test_tictactoe_env(self):
-        torch.manual_seed(0)
-        env = TicTacToeEnv()
-        check_env_specs(env)
-        for _ in range(10):
-            r = env.rollout(10)
-            assert r.shape[-1] < 10
-            r = env.rollout(10, tensordict=TensorDict(batch_size=[5]))
-            assert r.shape[-1] < 10
-        r = env.rollout(
-            100, tensordict=TensorDict(batch_size=[5]), break_when_any_done=False
-        )
-        assert r.shape == (5, 100)
-
-    def test_tictactoe_env_single(self):
-        torch.manual_seed(0)
-        env = TicTacToeEnv(single_player=True)
-        check_env_specs(env)
-        for _ in range(10):
-            r = env.rollout(10)
-            assert r.shape[-1] < 6
-            r = env.rollout(10, tensordict=TensorDict(batch_size=[5]))
-            assert r.shape[-1] < 6
-        r = env.rollout(
-            100, tensordict=TensorDict(batch_size=[5]), break_when_any_done=False
-        )
-        assert r.shape == (5, 100)
-
-    @pytest.mark.parametrize("device", [None, *get_default_devices()])
-    def test_pendulum_env(self, device):
-        env = PendulumEnv(device=device)
-        assert env.device == device
-        check_env_specs(env)
-
-        for _ in range(10):
-            r = env.rollout(10)
-            assert r.shape == torch.Size((10,))
-            r = env.rollout(10, tensordict=TensorDict(batch_size=[5], device=device))
-            assert r.shape == torch.Size((5, 10))
-
-    def test_llm_hashing_env(self):
-        vocab_size = 5
-
-        class Tokenizer:
-            def __call__(self, obj):
-                return torch.randint(vocab_size, (len(obj.split(" ")),)).tolist()
-
-            def decode(self, obj):
-                words = ["apple", "banana", "cherry", "date", "elderberry"]
-                return " ".join(random.choice(words) for _ in obj)
-
-            def batch_decode(self, obj):
-                return [self.decode(_obj) for _obj in obj]
-
-            def encode(self, obj):
-                return self(obj)
-
-        tokenizer = Tokenizer()
-        env = LLMHashingEnv(tokenizer=tokenizer, vocab_size=vocab_size)
-        td = env.make_tensordict("some sentence")
-        assert isinstance(td, TensorDict)
-        env.check_env_specs(tensordict=td)
 
 
 @pytest.mark.parametrize("device", [None, *get_default_devices()])

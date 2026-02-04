@@ -12,6 +12,7 @@ dependencies:
     - pytest-mock
     - pytest-instafail
     - pytest-rerunfailures
+    - pytest-json-report
     - pytest-error-for-skips
     - pytest-asyncio
     - pytest-timeout
@@ -22,7 +23,10 @@ dependencies:
     - scipy
     - hydra-core
     - transformers
+    - accelerate
     - datasets
     - vllm
+    # Note: SGLang is installed in a separate workflow (test-linux-llm-sglang.yml)
+    # due to Triton version conflicts with vLLM
     - mcp
     - langdetect
