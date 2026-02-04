@@ -1,0 +1,47 @@
+# task and env
+env:
+  task: halfcheetah
+  num_envs: 4096
+  max_episode_steps: 1000
+
+# collector
+collector:
+  frames_per_batch: 65536     # num_envs * 16
+  total_frames: 50_000_000
+
+# logger
+logger:
+  backend:                    # empty = no logging. Set to "wandb", "tensorboard", or "csv"
+  project_name: torchrl_mjwarp_ppo
+  group_name: null
+  exp_name: MjWarp_HalfCheetah
+  test_interval: 5_000_000
+  num_test_episodes: 3
+
+# Optim
+optim:
+  lr: 3e-4
+  anneal_lr: True
+  device:                     # empty = auto-detect
+
+# loss
+loss:
+  gamma: 0.99
+  mini_batch_size: 4096
+  ppo_epochs: 4
+  gae_lambda: 0.95
+  clip_epsilon: 0.2
+  critic_coef: 0.5
+  entropy_coef: 0.0
+  max_grad_norm: 0.5
+
+# network
+network:
+  hidden_sizes: [256, 256]
+  activation: Tanh
+
+# compile
+compile:
+  compile: False
+  compile_mode:
+  cudagraphs: False
