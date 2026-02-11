@@ -22,6 +22,7 @@ from torchrl.objectives.ppo import ClipPPOLoss, KLPENPPOLoss, PPOLoss
 from torchrl.objectives.redq import REDQLoss
 from torchrl.objectives.reinforce import ReinforceLoss
 from torchrl.objectives.sac import DiscreteSACLoss, SACLoss
+from torchrl.objectives.spo import SPOLoss
 from torchrl.objectives.td3 import TD3Loss
 from torchrl.objectives.td3_bc import TD3BCLoss
 from torchrl.objectives.utils import (
@@ -64,6 +65,7 @@ __all__ = [
     "ReinforceLoss",
     "SACLoss",
     "SoftUpdate",
+    "SPOLoss",
     "TD3BCLoss",
     "TD3Loss",
     "TargetNetUpdater",

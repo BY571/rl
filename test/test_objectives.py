@@ -112,6 +112,7 @@ from torchrl.objectives import (
     PPOLoss,
     QMixerLoss,
     SACLoss,
+    SPOLoss,
     TD3BCLoss,
     TD3Loss,
 )
@@ -9444,14 +9445,18 @@ class TestPPO(LossModuleTestBase):
 
         return td
 
-    @pytest.mark.parametrize("loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss))
+    @pytest.mark.parametrize(
+        "loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss, SPOLoss)
+    )
     def test_reset_parameters_recursive(self, loss_class):
         actor = self._create_mock_actor()
         value = self._create_mock_value()
         loss_fn = loss_class(actor, value)
         self.reset_parameters_recursive_test(loss_fn)
 
-    @pytest.mark.parametrize("loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss))
+    @pytest.mark.parametrize(
+        "loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss, SPOLoss)
+    )
     @pytest.mark.parametrize("gradient_mode", (True, False))
     @pytest.mark.parametrize("advantage", ("gae", "vtrace", "td", "td_lambda", None))
     @pytest.mark.parametrize("device", get_default_devices())
@@ -9561,7 +9566,9 @@ class TestPPO(LossModuleTestBase):
         assert counter == 2
         actor.zero_grad()
 
-    @pytest.mark.parametrize("loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss))
+    @pytest.mark.parametrize(
+        "loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss, SPOLoss)
+    )
     @pytest.mark.parametrize("gradient_mode", (True, False))
     @pytest.mark.parametrize("advantage", ("gae", "vtrace", "td", "td_lambda", None))
     @pytest.mark.parametrize("device", get_default_devices())
@@ -9655,7 +9662,9 @@ class TestPPO(LossModuleTestBase):
         assert counter == 2
         actor.zero_grad()
 
-    @pytest.mark.parametrize("loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss))
+    @pytest.mark.parametrize(
+        "loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss, SPOLoss)
+    )
     @pytest.mark.parametrize("gradient_mode", (True,))
     @pytest.mark.parametrize("device", get_default_devices())
     @pytest.mark.parametrize("composite_action_dist", [True, False])
@@ -9683,7 +9692,9 @@ class TestPPO(LossModuleTestBase):
         )
         loss_fn2.load_state_dict(sd)
 
-    @pytest.mark.parametrize("loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss))
+    @pytest.mark.parametrize(
+        "loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss, SPOLoss)
+    )
     @pytest.mark.parametrize("advantage", ("gae", "vtrace", "td", "td_lambda", None))
     @pytest.mark.parametrize("device", get_default_devices())
     @pytest.mark.parametrize("composite_action_dist", [True, False])
@@ -9774,7 +9785,9 @@ class TestPPO(LossModuleTestBase):
         actor.zero_grad()
         assert counter == 4
 
-    @pytest.mark.parametrize("loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss))
+    @pytest.mark.parametrize(
+        "loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss, SPOLoss)
+    )
     @pytest.mark.parametrize(
         "advantage",
         (
@@ -9899,7 +9912,9 @@ class TestPPO(LossModuleTestBase):
     @pytest.mark.skipif(
         not _has_functorch, reason=f"functorch not found, {FUNCTORCH_ERR}"
     )
-    @pytest.mark.parametrize("loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss))
+    @pytest.mark.parametrize(
+        "loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss, SPOLoss)
+    )
     @pytest.mark.parametrize("gradient_mode", (True, False))
     @pytest.mark.parametrize("advantage", ("gae", "vtrace", "td", "td_lambda", None))
     @pytest.mark.parametrize("device", get_default_devices())
@@ -10004,7 +10019,9 @@ class TestPPO(LossModuleTestBase):
         for param in params.values(True, True):
             param.grad = None
 
-    @pytest.mark.parametrize("loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss))
+    @pytest.mark.parametrize(
+        "loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss, SPOLoss)
+    )
     @pytest.mark.parametrize(
         "td_est",
         [
@@ -10056,7 +10073,9 @@ class TestPPO(LossModuleTestBase):
         }
         self.set_advantage_keys_through_loss_test(loss_fn, td_est, key_mapping)
 
-    @pytest.mark.parametrize("loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss))
+    @pytest.mark.parametrize(
+        "loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss, SPOLoss)
+    )
     @pytest.mark.parametrize("advantage", ("gae", "vtrace", "td", "td_lambda", None))
     @pytest.mark.parametrize("td_est", list(ValueEstimators) + [None])
     def test_ppo_tensordict_keys_run(self, loss_class, advantage, td_est):
@@ -10161,7 +10180,9 @@ class TestPPO(LossModuleTestBase):
         assert counter == 2
         actor.zero_grad()
 
-    @pytest.mark.parametrize("loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss))
+    @pytest.mark.parametrize(
+        "loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss, SPOLoss)
+    )
     @pytest.mark.parametrize("action_key", ["action", "action2"])
     @pytest.mark.parametrize("sample_log_prob_key", ["samplelogprob", "samplelogprob2"])
     @pytest.mark.parametrize("observation_key", ["observation", "observation2"])
@@ -10262,7 +10283,9 @@ class TestPPO(LossModuleTestBase):
         assert loss_obj == loss_val_td.get("loss_objective")
         assert loss_crit == loss_val_td.get("loss_critic")
 
-    @pytest.mark.parametrize("loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss))
+    @pytest.mark.parametrize(
+        "loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss, SPOLoss)
+    )
     @pytest.mark.parametrize("reduction", [None, "none", "mean", "sum"])
     @pytest.mark.parametrize("composite_action_dist", [True, False])
     def test_ppo_reduction(self, reduction, loss_class, composite_action_dist):
@@ -10308,7 +10331,9 @@ class TestPPO(LossModuleTestBase):
                 assert loss[key].shape == torch.Size([])
 
     @pytest.mark.parametrize("device", get_default_devices())
-    @pytest.mark.parametrize("loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss))
+    @pytest.mark.parametrize(
+        "loss_class", (PPOLoss, ClipPPOLoss, KLPENPPOLoss, SPOLoss)
+    )
     @pytest.mark.parametrize("clip_value", [True, False, None, 0.5, torch.tensor(0.5)])
     @pytest.mark.parametrize("composite_action_dist", [True, False])
     def test_ppo_value_clipping(
