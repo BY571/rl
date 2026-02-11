@@ -35,6 +35,7 @@ from torchrl.modules.tensordict_module.probabilistic import (
     SafeProbabilisticModule,
     SafeProbabilisticTensorDictSequential,
 )
+from torchrl.modules.tensordict_module.qrdqn import QRDQNActor, QRDQNModule
 from torchrl.modules.tensordict_module.rnn import (
     GRU,
     GRUCell,
@@ -63,6 +64,8 @@ __all__ = [
     "QValueActor",
     "QValueHook",
     "QValueModule",
+    "QRDQNActor",
+    "QRDQNModule",
     "TanhModule",
     "ValueOperator",
     "SafeModule",
