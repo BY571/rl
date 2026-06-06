@@ -46,8 +46,14 @@ def main(cfg: DictConfig):  # noqa: F821
     mini_batch_size = cfg.loss.mini_batch_size
     test_interval = cfg.logger.test_interval
 
-    # Create proof environment and models
-    proof_env = make_env(cfg.env.env_name, 1, device, cfg.env.backend)
+    # Create proof environment and models. The environments run on CPU (cheap MiniGrid
+    # steps); only the networks and training live on ``device``. The collector casts the
+    # collected batch to ``device`` for the policy.
+    serial = cfg.env.serial
+    env_device = cfg.env.device
+    proof_env = make_env(
+        cfg.env.env_name, 1, env_device, cfg.env.backend, serial=serial
+    )
     actor, critic = make_ppo_models(proof_env, device=device)
 
     intrinsic_enabled = cfg.intrinsic.enabled
@@ -78,12 +84,18 @@ def main(cfg: DictConfig):  # noqa: F821
 
     collector = SyncDataCollector(
         create_env_fn=make_env(
-            cfg.env.env_name, cfg.env.num_envs, device, cfg.env.backend
+            cfg.env.env_name,
+            cfg.env.num_envs,
+            env_device,
+            cfg.env.backend,
+            serial=serial,
         ),
         policy=actor,
+        policy_device=device,
+        env_device=env_device,
+        storing_device=env_device,
         frames_per_batch=frames_per_batch,
         total_frames=total_frames,
-        device=device,
         max_frames_per_traj=-1,
     )
 
@@ -132,8 +144,15 @@ def main(cfg: DictConfig):  # noqa: F821
             },
         )
 
-    test_env = make_env(cfg.env.env_name, 1, device, cfg.env.backend, is_test=True)
+    test_env = make_env(
+        cfg.env.env_name, 1, env_device, cfg.env.backend, is_test=True, serial=serial
+    )
     test_env.eval()
+    # Evaluation runs on the env device with a matching copy of the policy (the training
+    # policy may live on a different device, e.g. GPU, than the CPU environments).
+    from copy import deepcopy
+
+    eval_actor = deepcopy(actor).to(env_device)
 
     # Main loop
     collected_frames = 0
@@ -148,6 +167,8 @@ def main(cfg: DictConfig):  # noqa: F821
         timeit.printevery(1000, total_iter, erase=True)
         with timeit("collecting"):
             data = next(collector_iter)
+        # Move the whole batch to the compute device once (envs collect on CPU).
+        data = data.to(device)
 
         metrics_to_log = {}
         frames_in_batch = data.numel()
@@ -224,12 +245,12 @@ def main(cfg: DictConfig):  # noqa: F821
         ):
             prev = (i - 1) * frames_in_batch
             if prev // test_interval < (i * frames_in_batch) // test_interval:
-                actor.eval()
+                eval_actor.load_state_dict(actor.state_dict())
+                eval_actor.eval()
                 test_reward = eval_model(
-                    actor, test_env, num_episodes=cfg.logger.num_test_episodes
+                    eval_actor, test_env, num_episodes=cfg.logger.num_test_episodes
                 )
                 metrics_to_log["eval/reward"] = test_reward.item()
-                actor.train()
 
         if logger:
             metrics_to_log.update(timeit.todict(prefix="time"))

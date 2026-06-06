@@ -3,6 +3,8 @@ env:
   env_name: MiniGrid-DoorKey-8x8-v0
   num_envs: 8
   backend: gymnasium
+  serial: false  # set true to avoid ParallelEnv multiprocessing (e.g. on Jetson)
+  device: cpu  # environments run on CPU; only the networks/training use optim.device
 
 # Collector
 collector:

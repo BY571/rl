@@ -11,11 +11,12 @@ from torchrl.data.tensor_specs import CategoricalBox
 from torchrl.envs import (
     DoubleToFloat,
     EnvCreator,
-    ExcludeTransform,
     ExplorationType,
-    GymEnv,
+    GymWrapper,
     ParallelEnv,
+    RenameTransform,
     RewardSum,
+    SerialEnv,
     set_gym_backend,
     StepCounter,
     ToTensorImage,
@@ -30,9 +31,11 @@ from torchrl.modules import (
 )
 from torchrl.record import VideoRecorder
 
-# MiniGrid observation entries. The egocentric ``image`` (H x W x 3 symbolic, uint8) is the
-# observation fed to the networks; ``mission`` is a string we drop so it does not end up in
-# storage.
+# MiniGrid observations are a dict (image, direction, mission). We use ``ImgObsWrapper``
+# to keep only the egocentric symbolic image (H x W x 3, uint8), which avoids the
+# (unsupported) ``MissionSpace``. ``GymWrapper`` names this image ``pixels``; we rename the
+# raw integer copy to ``IMAGE_KEY`` (used for the episodic count) and produce a normalised
+# float copy (``pixels``, C x H x W) for the networks.
 IMAGE_KEY = "image"
 PIXELS_KEY = "pixels"
 
@@ -43,27 +46,31 @@ PIXELS_KEY = "pixels"
 
 
 def make_base_env(env_name="MiniGrid-DoorKey-8x8-v0", gym_backend="gymnasium"):
+    import minigrid  # noqa: F401  # registers the MiniGrid environments
+    from minigrid.wrappers import ImgObsWrapper
+
     with set_gym_backend(gym_backend):
-        env = GymEnv(
-            env_name,
-            device="cpu",
-            categorical_action_encoding=True,
-        )
+        import gymnasium
+
+        base = ImgObsWrapper(gymnasium.make(env_name))
+        env = GymWrapper(base, categorical_action_encoding=True, device="cpu")
     return env
 
 
-def make_env(env_name, num_envs, device, gym_backend, is_test=False):
-    env = ParallelEnv(
+def make_env(env_name, num_envs, device, gym_backend, is_test=False, serial=False):
+    # ``SerialEnv`` runs all sub-environments in a single process; it is slower but avoids
+    # the multiprocessing fragility of ``ParallelEnv`` on some platforms (e.g. Jetson).
+    env_cls = SerialEnv if serial else ParallelEnv
+    env = env_cls(
         num_envs,
         EnvCreator(lambda: make_base_env(env_name, gym_backend=gym_backend)),
         serial_for_single=True,
         device=device,
     )
     env = TransformedEnv(env)
-    # Drop the string ``mission`` entry (not needed and not storable as a tensor).
-    env.append_transform(ExcludeTransform("mission"))
-    # Keep the raw integer ``image`` (used for the episodic count) and additionally
+    # Rename the raw uint8 image to ``IMAGE_KEY`` (kept for the episodic count), then
     # produce a normalised float ``pixels`` (C x H x W) for the networks.
+    env.append_transform(RenameTransform(in_keys=[PIXELS_KEY], out_keys=[IMAGE_KEY]))
     env.append_transform(
         ToTensorImage(in_keys=[IMAGE_KEY], out_keys=[PIXELS_KEY], from_int=True)
     )
@@ -152,7 +159,7 @@ def make_ppo_models(proof_environment, device):
         value_operator=value_module,
     )
     with torch.no_grad():
-        td = proof_environment.fake_tensordict().expand(10)
+        td = proof_environment.fake_tensordict().expand(10).to(device)
         actor_critic(td)
         del td
     return actor_critic.get_policy_operator(), actor_critic.get_value_operator()
