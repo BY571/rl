@@ -62,6 +62,27 @@ python ride.py env.serial=true logger.backend=csv optim.device=cuda:0  # robust 
 Per the paper, hard-exploration MiniGrid tasks need on the order of 10–20M frames to
 converge; expect RIDE to separate from the baseline well before that.
 
+## Results
+
+PPO + RIDE vs vanilla PPO on `MiniGrid-MultiRoom-N6-v0` (single seed, identical PPO
+hyperparameters, run on a Jetson Orin via `env.serial=true`):
+
+![RIDE vs PPO on MultiRoom-N6](ride_vs_ppo_multiroom.png)
+
+| metric @ ~0.6M frames | PPO (vanilla) | PPO + RIDE |
+|-----------------------|--------------:|-----------:|
+| unique states / batch | ~130          | ~630       |
+| extrinsic return      | 0.0           | 0.0        |
+
+The headline panel is **exploration coverage** (distinct states visited per batch). RIDE
+sustains broad exploration (~600–700 states) while vanilla PPO collapses to a narrow,
+repetitive policy (~130 states) — a ≈5× difference, reproducing RIDE's central claim that
+impact-driven intrinsic reward keeps the agent exploring. The intrinsic reward rises as the
+embedding `φ` becomes discriminative, then tapers as coverage saturates. Neither method
+reaches the goal at this scale: MultiRoom-N6 is a very hard exploration task (the paper
+reports 10–20M frames to solve the related MultiRoom-N7-S4 with IMPALA), well beyond a short
+single-GPU budget — but the coverage signal already isolates RIDE's exploration benefit.
+
 ## Key hyperparameters (`config.yaml`)
 
 | Group | Field | Meaning |
