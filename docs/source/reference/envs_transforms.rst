@@ -285,6 +285,7 @@ Available Transforms
     RemoveEmptySpecs
     RenameTransform
     Resize
+    RIDEReward
     Reward2GoTransform
     RewardClipping
     RewardScaling

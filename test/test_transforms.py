@@ -100,6 +100,7 @@ from torchrl.envs import (
     RewardClipping,
     RewardScaling,
     RewardSum,
+    RIDEReward,
     SelectTransform,
     SerialEnv,
     SignTransform,
@@ -136,7 +137,7 @@ from torchrl.envs.transforms.transforms import (
 from torchrl.envs.transforms.vc1 import _has_vc
 from torchrl.envs.transforms.vip import _VIPNet, VIPRewardTransform
 from torchrl.envs.utils import check_env_specs, MarlGroupMapType, step_mdp
-from torchrl.modules import GRUModule, LSTMModule, RandomPolicy
+from torchrl.modules import GRUModule, LSTMModule, MLP, RandomPolicy
 from torchrl.modules.utils import get_primers_from_module
 from torchrl.record.recorder import VideoRecorder
 
@@ -7044,6 +7045,233 @@ class TestReward2Go(TransformBase):
 
     def test_transform_model(self):
         raise pytest.skip("No model transform for Reward2Go")
+
+
+class TestRIDEReward(TransformBase):
+    @staticmethod
+    def _feature_network(identity=True, in_features=None, emb_dim=4):
+        module = (
+            nn.Identity()
+            if identity
+            else MLP(in_features=in_features, out_features=emb_dim, num_cells=[8])
+        )
+        return TensorDictModule(module, in_keys=["observation"], out_keys=["embedding"])
+
+    @staticmethod
+    def _make_data(n_envs=2, t=5, obs_dim=4, device="cpu"):
+        return TensorDict(
+            {
+                "observation": torch.randn(n_envs, t, obs_dim, device=device),
+                "next": TensorDict(
+                    {
+                        "observation": torch.randn(n_envs, t, obs_dim, device=device),
+                        "reward": torch.zeros(n_envs, t, 1, device=device),
+                        "done": torch.zeros(
+                            n_envs, t, 1, dtype=torch.bool, device=device
+                        ),
+                    },
+                    [n_envs, t],
+                    device=device,
+                ),
+            },
+            [n_envs, t],
+            device=device,
+        )
+
+    # --- RIDEReward is an offline/post-collection transform: it raises in an env ---
+    def test_single_trans_env_check(self):
+        with pytest.raises(ValueError, match="cannot be used as an in-environment"):
+            TransformedEnv(
+                ContinuousActionVecMockEnv(),
+                RIDEReward(self._feature_network(identity=False)),
+            )
+
+    def test_serial_trans_env_check(self):
+        def make_env():
+            return TransformedEnv(
+                ContinuousActionVecMockEnv(),
+                RIDEReward(self._feature_network(identity=False)),
+            )
+
+        with pytest.raises(ValueError, match="cannot be used as an in-environment"):
+            SerialEnv(2, make_env)
+
+    def test_parallel_trans_env_check(self):
+        def make_env():
+            return TransformedEnv(
+                ContinuousActionVecMockEnv(),
+                RIDEReward(self._feature_network(identity=False)),
+            )
+
+        with pytest.raises(ValueError, match="cannot be used as an in-environment"):
+            env = ParallelEnv(2, make_env)
+            try:
+                env.close()
+            except Exception:
+                pass
+
+    def test_trans_serial_env_check(self):
+        with pytest.raises(ValueError, match="cannot be used as an in-environment"):
+            TransformedEnv(
+                SerialEnv(2, ContinuousActionVecMockEnv),
+                RIDEReward(self._feature_network(identity=False)),
+            )
+
+    def test_trans_parallel_env_check(self):
+        with pytest.raises(ValueError, match="cannot be used as an in-environment"):
+            TransformedEnv(
+                ParallelEnv(2, ContinuousActionVecMockEnv),
+                RIDEReward(self._feature_network(identity=False)),
+            )
+
+    def test_transform_env(self):
+        t = RIDEReward(self._feature_network(identity=False))
+        with pytest.raises(ValueError, match="cannot be used as an in-environment"):
+            TransformedEnv(ContinuousActionVecMockEnv(), t)
+
+    def test_transform_no_env(self):
+        # With phi = identity, intrinsic = coef * ||next_obs - obs|| (no count).
+        t = RIDEReward(self._feature_network(identity=True), coef=2.0, episodic=False)
+        data = self._make_data(n_envs=3, t=4, obs_dim=5)
+        obs = data["observation"]
+        nobs = data["next", "observation"]
+        out = t(data.clone())
+        expected = 2.0 * (nobs - obs).pow(2).sum(-1, keepdim=True).sqrt()
+        torch.testing.assert_close(out["next", "intrinsic_reward"], expected)
+        # reward augmented in place
+        torch.testing.assert_close(out["next", "reward"], expected)
+
+    def test_episodic_count_discount(self):
+        # next-obs visits A,A,B,A within one episode -> counts 1,2,1,3
+        t = RIDEReward(self._feature_network(identity=True), coef=1.0, episodic=True)
+        A = [1.0, 0.0]
+        B = [0.0, 1.0]
+        obs = torch.tensor([[0.0, 0.0], A, A, B]).unsqueeze(0)
+        nobs = torch.tensor([A, A, B, A]).unsqueeze(0)
+        data = TensorDict(
+            {
+                "observation": obs,
+                "next": TensorDict(
+                    {
+                        "observation": nobs,
+                        "reward": torch.zeros(1, 4, 1),
+                        "done": torch.zeros(1, 4, 1, dtype=torch.bool),
+                    },
+                    [1, 4],
+                ),
+            },
+            [1, 4],
+        )
+        out = t(data)
+        intr = out["next", "intrinsic_reward"][0].squeeze(-1)
+        impacts = (nobs[0] - obs[0]).pow(2).sum(-1).sqrt()
+        counts = torch.tensor([1.0, 2.0, 1.0, 3.0])
+        torch.testing.assert_close(intr, impacts / counts.sqrt())
+
+    def test_episodic_count_resets_on_done(self):
+        t = RIDEReward(self._feature_network(identity=True), coef=1.0, episodic=True)
+        A = [1.0, 0.0]
+        nobs = torch.tensor([A, A, A, A]).unsqueeze(0)
+        done = torch.zeros(1, 4, 1, dtype=torch.bool)
+        done[0, 2, 0] = True
+        data = TensorDict(
+            {
+                "observation": torch.zeros(1, 4, 2),
+                "next": TensorDict(
+                    {"observation": nobs, "reward": torch.zeros(1, 4, 1), "done": done},
+                    [1, 4],
+                ),
+            },
+            [1, 4],
+        )
+        out = t(data)
+        counts_used = (1.0 / out["next", "intrinsic_reward"][0].squeeze(-1)) ** 2
+        torch.testing.assert_close(
+            counts_used, torch.tensor([1.0, 2.0, 3.0, 1.0]), atol=1e-4, rtol=1e-4
+        )
+
+    def test_shared_feature_network_with_icm(self):
+        """Training phi via ICMLoss changes the reward RIDEReward produces."""
+        from torchrl.objectives import ICMLoss
+
+        torch.manual_seed(0)
+        obs_dim, emb_dim, n = 6, 8, 4
+        feature = TensorDictModule(
+            MLP(in_features=obs_dim, out_features=emb_dim, num_cells=[16]),
+            in_keys=["observation"],
+            out_keys=["embedding"],
+        )
+        fwd = TensorDictModule(
+            MLP(in_features=emb_dim + n, out_features=emb_dim, num_cells=[16]),
+            in_keys=["embedding", "action"],
+            out_keys=["predicted_embedding"],
+        )
+        inv = TensorDictModule(
+            MLP(in_features=2 * emb_dim, out_features=n, num_cells=[16]),
+            in_keys=["embedding", "embedding_next"],
+            out_keys=["predicted_action"],
+        )
+        loss = ICMLoss(feature, fwd, inv, action_space="one-hot")
+        ride = RIDEReward(feature, coef=1.0, episodic=False)
+        opt = torch.optim.Adam(loss.parameters(), lr=1e-1)
+
+        def make():
+            idx = torch.randint(n, (8,))
+            return TensorDict(
+                {
+                    "observation": torch.randn(8, obs_dim),
+                    "action": torch.eye(n)[idx],
+                    "next": TensorDict(
+                        {
+                            "observation": torch.randn(8, obs_dim),
+                            "reward": torch.zeros(8, 1),
+                            "done": torch.zeros(8, 1, dtype=torch.bool),
+                        },
+                        [8],
+                    ),
+                },
+                [8],
+            )
+
+        data = make()
+        before = ride(data.clone())["next", "intrinsic_reward"].clone()
+        for _ in range(10):
+            out = loss(make())
+            opt.zero_grad()
+            (out["loss_forward"] + out["loss_inverse"]).backward()
+            opt.step()
+        after = ride(data.clone())["next", "intrinsic_reward"]
+        assert not torch.allclose(before, after)
+
+    def test_transform_compose(self):
+        t = RIDEReward(self._feature_network(identity=True), coef=1.0, episodic=False)
+        compose = Compose(t)
+        data = self._make_data(n_envs=2, t=5, obs_dim=4)
+        out = compose(data.clone())
+        assert ("next", "intrinsic_reward") in out.keys(True)
+
+    def test_transform_rb(self):
+        t = RIDEReward(self._feature_network(identity=True), coef=1.0, episodic=True)
+        rb = TensorDictReplayBuffer(storage=LazyTensorStorage(10), transform=t)
+        data = self._make_data(n_envs=10, t=6, obs_dim=4)
+        rb.extend(data)
+        sample = rb.sample(4)
+        assert ("next", "intrinsic_reward") in sample.keys(True)
+        assert sample["next", "intrinsic_reward"].shape == (4, 6, 1)
+
+    def test_transform_model(self):
+        # the augmented reward should be readable by a downstream module
+        t = RIDEReward(self._feature_network(identity=True), coef=1.0, episodic=False)
+        data = self._make_data(n_envs=2, t=5, obs_dim=4)
+        out = t(data.clone())
+        model = TensorDictModule(
+            nn.Linear(1, 1), in_keys=[("next", "reward")], out_keys=["scaled"]
+        )
+        model(out)
+        assert "scaled" in out.keys()
+
+    def test_transform_inverse(self):
+        raise pytest.skip("RIDEReward has no inverse transform")
 
 
 class TestUnsqueezeTransform(TransformBase):

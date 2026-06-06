@@ -8,6 +8,7 @@ from .module import ModuleTransform
 from .r3m import R3MTransform
 from .ray_service import RayTransform
 from .rb_transforms import MultiStepTransform
+from .ride import RIDEReward
 from .transforms import (
     ActionDiscretizer,
     ActionMask,
@@ -112,6 +113,7 @@ __all__ = [
     "PermuteTransform",
     "PinMemoryTransform",
     "R3MTransform",
+    "RIDEReward",
     "RandomCropTensorDict",
     "RayTransform",
     "RemoveEmptySpecs",

@@ -1,0 +1,47 @@
+# Environment
+env:
+  env_name: MiniGrid-DoorKey-8x8-v0
+  num_envs: 8
+  backend: gymnasium
+
+# Collector
+collector:
+  frames_per_batch: 4096
+  total_frames: 5_000_000
+
+# Intrinsic motivation (RIDE). Set enabled=false for the vanilla PPO baseline.
+intrinsic:
+  enabled: true
+  coef: 0.1                 # intrinsic reward coefficient (omega)
+  episodic: true           # apply the 1/sqrt(N_ep) episodic count discount
+  embedding_dim: 128
+  lr: 1.0e-4
+  forward_loss_weight: 0.2  # beta
+  inverse_loss_weight: 0.8  # 1 - beta
+
+# Logger
+logger:
+  backend: wandb
+  project_name: torchrl_example_ride
+  group_name: null
+  exp_name: RIDE
+  test_interval: 500_000
+  num_test_episodes: 5
+
+# Optimizer
+optim:
+  lr: 1.0e-4
+  eps: 1.0e-5
+  max_grad_norm: 0.5
+  device: cuda:0
+
+# Loss (PPO + advantage)
+loss:
+  gamma: 0.99
+  mini_batch_size: 1024
+  ppo_epochs: 4
+  gae_lambda: 0.95
+  clip_epsilon: 0.2
+  critic_coeff: 0.5
+  entropy_coeff: 0.0005
+  loss_critic_type: l2
