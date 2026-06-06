@@ -175,6 +175,12 @@ def main(cfg: DictConfig):  # noqa: F821
         collected_frames += frames_in_batch
         pbar.update(frames_in_batch)
 
+        # Exploration coverage: number of distinct states visited in this batch. This is
+        # RIDE's core objective (visit more states) and, unlike the sparse extrinsic
+        # return, is informative on hard-exploration tasks before the goal is ever reached.
+        next_img = data["next", "image"].reshape(frames_in_batch, -1)
+        metrics_to_log["train/unique_states"] = torch.unique(next_img, dim=0).shape[0]
+
         # Log *extrinsic* training reward (before augmentation)
         episode_rewards = data["next", "episode_reward"][data["next", "done"]]
         if len(episode_rewards) > 0:

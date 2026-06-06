@@ -50,12 +50,17 @@ Vanilla PPO baseline (no intrinsic reward):
 python ride.py intrinsic.enabled=false logger.exp_name=PPO
 ```
 
-Other useful overrides:
+The default task is the paper's hard-exploration benchmark `MiniGrid-MultiRoom-N6-v0`,
+where vanilla PPO stays near zero while RIDE explores room-to-room. Other useful overrides:
 
 ```bash
+python ride.py env.env_name=MiniGrid-DoorKey-8x8-v0   # easier task both methods solve
 python ride.py env.env_name=MiniGrid-MultiRoom-N7-S4-v0 intrinsic.coef=0.5
-python ride.py logger.backend=csv optim.device=cuda:0
+python ride.py env.serial=true logger.backend=csv optim.device=cuda:0  # robust on Jetson
 ```
+
+Per the paper, hard-exploration MiniGrid tasks need on the order of 10–20M frames to
+converge; expect RIDE to separate from the baseline well before that.
 
 ## Key hyperparameters (`config.yaml`)
 
@@ -69,7 +74,11 @@ python ride.py logger.backend=csv optim.device=cuda:0
 
 ## Notes
 
-- The benchmark uses MiniGrid's egocentric `7x7x3` symbolic image. The raw integer image is
-  used for the episodic count while a normalised float copy feeds the networks.
+- The benchmark uses MiniGrid's egocentric `7x7x3` symbolic image. Following the paper, the
+  raw integer encodings are fed to the CNN as-is (no `/255`); a channel-first float copy is
+  used by the networks while the raw integer image is hashed for the episodic count.
+- The intrinsic reward is used in raw form (`r = r_e + omega_ir * r_i`), with no running
+  normalization, matching the paper. `omega_ir = 0.1` and `entropy_coeff = 0.0001` follow
+  the paper's MiniGrid settings.
 - The original paper uses an IMPALA backbone; here RIDE — which is backbone-agnostic
   reward augmentation — is plugged into PPO, TorchRL's reference on-policy algorithm.

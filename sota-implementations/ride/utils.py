@@ -32,10 +32,12 @@ from torchrl.modules import (
 from torchrl.record import VideoRecorder
 
 # MiniGrid observations are a dict (image, direction, mission). We use ``ImgObsWrapper``
-# to keep only the egocentric symbolic image (H x W x 3, uint8), which avoids the
-# (unsupported) ``MissionSpace``. ``GymWrapper`` names this image ``pixels``; we rename the
-# raw integer copy to ``IMAGE_KEY`` (used for the episodic count) and produce a normalised
-# float copy (``pixels``, C x H x W) for the networks.
+# to keep only the egocentric symbolic image (H x W x 3 integer encodings of object type,
+# colour and door state), which avoids the (unsupported) ``MissionSpace``. ``GymWrapper``
+# names this image ``pixels``; we rename the raw integer copy to ``IMAGE_KEY`` (used for the
+# episodic count) and produce a channel-first float copy (``pixels``, C x H x W) for the
+# networks. Following the paper, the symbolic integers are fed to the CNN as-is (no /255
+# scaling), so the learned embedding -- and hence the RIDE impact signal -- is informative.
 IMAGE_KEY = "image"
 PIXELS_KEY = "pixels"
 
@@ -69,10 +71,11 @@ def make_env(env_name, num_envs, device, gym_backend, is_test=False, serial=Fals
     )
     env = TransformedEnv(env)
     # Rename the raw uint8 image to ``IMAGE_KEY`` (kept for the episodic count), then
-    # produce a normalised float ``pixels`` (C x H x W) for the networks.
+    # produce a channel-first float ``pixels`` (C x H x W) for the networks. ``from_int=False``
+    # keeps the raw symbolic integer values (no /255), matching the paper.
     env.append_transform(RenameTransform(in_keys=[PIXELS_KEY], out_keys=[IMAGE_KEY]))
     env.append_transform(
-        ToTensorImage(in_keys=[IMAGE_KEY], out_keys=[PIXELS_KEY], from_int=True)
+        ToTensorImage(in_keys=[IMAGE_KEY], out_keys=[PIXELS_KEY], from_int=False)
     )
     env.append_transform(DoubleToFloat())
     env.append_transform(RewardSum())  # logs the *extrinsic* episode return
