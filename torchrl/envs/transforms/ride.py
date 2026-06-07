@@ -54,6 +54,17 @@ class RIDEReward(Transform):
             to ``0.1``.
         episodic (bool, optional): whether to apply the episodic count discount
             :math:`1/\sqrt{N_{ep}}`. Defaults to ``True``.
+        normalize (bool, optional): if ``True``, divide the intrinsic reward by a running
+            estimate of the standard deviation of the discounted intrinsic return (as in
+            the RND / RIDE reference implementations). This makes the intrinsic *return*
+            unit-scale so that ``coef`` controls its weight relative to the extrinsic
+            return; without it the per-step bonus, summed over long episodes, can dwarf a
+            sparse terminal reward and discourage the agent from ever terminating. The
+            paper does not dwell on this, but it is essential for sparse-reward tasks.
+            Defaults to ``False``.
+        gamma (float, optional): discount factor used by the intrinsic-return forward
+            filter when ``normalize=True``. Should match the RL discount. Defaults to
+            ``0.99``.
         in_keys (list of NestedKey, optional): the observation key(s) fed to
             ``feature_network``. Defaults to ``feature_network.in_keys``.
         reward_key (NestedKey, optional): the (extrinsic) reward key to augment. Defaults
@@ -109,6 +120,8 @@ class RIDEReward(Transform):
         *,
         coef: float = 0.1,
         episodic: bool = True,
+        normalize: bool = False,
+        gamma: float = 0.99,
         in_keys: list[NestedKey] | None = None,
         reward_key: NestedKey = ("next", "reward"),
         done_key: NestedKey = ("next", "done"),
@@ -132,6 +145,16 @@ class RIDEReward(Transform):
         self.count_key = unravel_key(count_key)
         self.coef = float(coef)
         self.episodic = episodic
+        self.normalize = normalize
+        self.gamma = float(gamma)
+        # Running estimate of the std of the discounted intrinsic return, used to
+        # normalise the intrinsic reward (as in the RND / RIDE reference code) so that the
+        # intrinsic *return* is unit-scale and ``coef`` controls its weight relative to the
+        # extrinsic return. Without this the per-step bonus, summed over long episodes, can
+        # dwarf a sparse terminal reward and discourage the agent from ever terminating.
+        self.register_buffer("_ret_mean", torch.zeros(()))
+        self.register_buffer("_ret_var", torch.ones(()))
+        self.register_buffer("_ret_count", torch.zeros(()))
 
     def _embed(self, tensordict: TensorDictBase) -> torch.Tensor:
         td_in = tensordict.select(*self.feature_network.in_keys, strict=True)
@@ -145,21 +168,61 @@ class RIDEReward(Transform):
             phi = self._embed(tensordict)
             phi_next = self._embed(next_td)
 
-        # impact = coef * ||phi(s') - phi(s)||_2, keep a trailing reward dim
-        impact = (
-            self.coef
-            * (phi_next - phi).pow(2).sum(-1, keepdim=True).clamp_min(0).sqrt()
-        )
+        # impact = ||phi(s') - phi(s)||_2, keep a trailing reward dim
+        signal = (phi_next - phi).pow(2).sum(-1, keepdim=True).clamp_min(0).sqrt()
 
         if self.episodic:
-            discount = self._episodic_count_discount(tensordict)
-            impact = impact * discount
+            signal = signal * self._episodic_count_discount(tensordict)
 
-        intrinsic = impact
+        if self.normalize:
+            signal = signal / self._return_std(signal, tensordict)
+
+        intrinsic = self.coef * signal
         reward = tensordict.get(self.reward_key)
         tensordict.set(self.reward_key, reward + intrinsic.to(reward.dtype))
         tensordict.set(self.intrinsic_reward_key, intrinsic)
         return tensordict
+
+    def _return_std(
+        self, signal: torch.Tensor, tensordict: TensorDictBase
+    ) -> torch.Tensor:
+        """Update and return the running std of the discounted intrinsic return.
+
+        Computes the discounted return of the (pre-coefficient) intrinsic signal with a
+        per-episode forward filter, updates a running mean/variance over those returns
+        (Chan et al. parallel update), and returns the current standard deviation.
+        """
+        batch_size = tensordict.batch_size
+        if len(batch_size) == 1:
+            n_envs, time = 1, batch_size[0]
+        else:
+            n_envs = int(torch.tensor(batch_size[:-1]).prod())
+            time = batch_size[-1]
+        sig = signal.reshape(n_envs, time)
+        done = tensordict.get(self.done_key).reshape(n_envs, time).to(torch.bool)
+
+        # discounted forward filter, reset at episode boundaries
+        returns = torch.empty_like(sig)
+        running = torch.zeros(n_envs, device=sig.device, dtype=sig.dtype)
+        for t in range(time):
+            running = sig[:, t] + self.gamma * running
+            returns[:, t] = running
+            running = running * (~done[:, t]).to(sig.dtype)
+
+        batch = returns.reshape(-1)
+        batch_count = batch.numel()
+        batch_mean = batch.mean()
+        batch_var = batch.var(unbiased=False)
+        count = self._ret_count
+        delta = batch_mean - self._ret_mean
+        tot = count + batch_count
+        self._ret_mean += delta * batch_count / tot
+        m_a = self._ret_var * count
+        m_b = batch_var * batch_count
+        m2 = m_a + m_b + delta.pow(2) * count * batch_count / tot
+        self._ret_var.copy_(m2 / tot)
+        self._ret_count.copy_(tot)
+        return (self._ret_var + 1e-8).sqrt()
 
     def _call(self, next_tensordict: TensorDictBase) -> TensorDictBase:
         raise ValueError(self.ENV_ERR)

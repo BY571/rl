@@ -77,6 +77,8 @@ def main(cfg: DictConfig):  # noqa: F821
             feature_network,
             coef=cfg.intrinsic.coef,
             episodic=cfg.intrinsic.episodic,
+            normalize=cfg.intrinsic.normalize,
+            gamma=cfg.loss.gamma,
             in_keys=["pixels"],
             count_key="image",
         )

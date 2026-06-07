@@ -18,6 +18,7 @@ intrinsic:
   enabled: true
   coef: 0.1                 # intrinsic reward coefficient omega_ir (paper: 0.1 for these tasks)
   episodic: true           # apply the 1/sqrt(N_ep) episodic count discount
+  normalize: true          # normalize intrinsic reward by running std of its return (RND/RIDE-style)
   embedding_dim: 128
   lr: 1.0e-4
   forward_loss_weight: 0.2  # beta

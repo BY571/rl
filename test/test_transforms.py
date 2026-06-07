@@ -7190,6 +7190,43 @@ class TestRIDEReward(TransformBase):
             counts_used, torch.tensor([1.0, 2.0, 3.0, 1.0]), atol=1e-4, rtol=1e-4
         )
 
+    def test_normalize_controls_scale(self):
+        """Return-normalization keeps the intrinsic reward at a controlled scale even
+        when the embedding produces large differences."""
+        torch.manual_seed(0)
+        phi = TensorDictModule(
+            MLP(in_features=6, out_features=64, num_cells=[32]),
+            in_keys=["observation"],
+            out_keys=["embedding"],
+        )
+
+        def make():
+            E, T = 8, 64
+            return TensorDict(
+                {
+                    "observation": torch.randn(E, T, 6),
+                    "next": TensorDict(
+                        {
+                            "observation": torch.randn(E, T, 6),
+                            "reward": torch.zeros(E, T, 1),
+                            "done": (torch.rand(E, T, 1) < 0.05),
+                        },
+                        [E, T],
+                    ),
+                },
+                [E, T],
+            )
+
+        raw = RIDEReward(phi, coef=0.1, episodic=True, normalize=False)
+        norm = RIDEReward(phi, coef=0.1, episodic=True, normalize=True, gamma=0.99)
+        last_raw = last_norm = None
+        for _ in range(15):
+            last_raw = raw(make())["next", "intrinsic_reward"].mean().item()
+            last_norm = norm(make())["next", "intrinsic_reward"].mean().item()
+        # normalization brings the intrinsic reward down by at least an order of magnitude
+        assert last_norm < last_raw / 5, (last_norm, last_raw)
+        assert norm._ret_count > 0  # running stats were updated
+
     def test_shared_feature_network_with_icm(self):
         """Training phi via ICMLoss changes the reward RIDEReward produces."""
         from torchrl.objectives import ICMLoss
