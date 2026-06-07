@@ -24,12 +24,10 @@ def main(cfg: DictConfig):  # noqa: F821
     import torch.optim
     import tqdm
 
-    from tensordict import TensorDict
     from torchrl._utils import timeit
     from torchrl.collectors import SyncDataCollector
-    from torchrl.data import LazyTensorStorage, TensorDictReplayBuffer
-    from torchrl.data.replay_buffers.samplers import SamplerWithoutReplacement
     from torchrl.envs import ExplorationType, RIDEReward, set_exploration_type
+    from torchrl.modules import set_recurrent_mode
     from torchrl.objectives import ClipPPOLoss, ICMLoss
     from torchrl.objectives.value.advantages import GAE
     from torchrl.record.loggers import generate_exp_name, get_logger
@@ -54,7 +52,7 @@ def main(cfg: DictConfig):  # noqa: F821
     proof_env = make_env(
         cfg.env.env_name, 1, env_device, cfg.env.backend, serial=serial
     )
-    actor, critic = make_ppo_models(proof_env, device=device)
+    actor, critic, lstm = make_ppo_models(proof_env, device=device)
 
     intrinsic_enabled = cfg.intrinsic.enabled
     ride_transform = icm_loss = icm_optim = None
@@ -91,6 +89,7 @@ def main(cfg: DictConfig):  # noqa: F821
             env_device,
             cfg.env.backend,
             serial=serial,
+            primer=lstm.make_tensordict_primer(),
         ),
         policy=actor,
         policy_device=device,
@@ -101,13 +100,6 @@ def main(cfg: DictConfig):  # noqa: F821
         max_frames_per_traj=-1,
     )
 
-    # On-policy data buffer
-    data_buffer = TensorDictReplayBuffer(
-        storage=LazyTensorStorage(frames_per_batch, device=device),
-        sampler=SamplerWithoutReplacement(),
-        batch_size=mini_batch_size,
-    )
-
     # Advantage and PPO loss (operate on the augmented reward)
     adv_module = GAE(
         gamma=cfg.loss.gamma,
@@ -115,6 +107,10 @@ def main(cfg: DictConfig):  # noqa: F821
         value_network=critic,
         average_gae=False,
         device=device,
+        # shifted=True uses the RNN-aware single-call path (one value-net call over the
+        # whole sequence) instead of vmapping current+next, which the LSTM does not support.
+        shifted=True,
+        vectorized=False,
     )
     loss_module = ClipPPOLoss(
         actor_network=actor,
@@ -147,7 +143,13 @@ def main(cfg: DictConfig):  # noqa: F821
         )
 
     test_env = make_env(
-        cfg.env.env_name, 1, env_device, cfg.env.backend, is_test=True, serial=serial
+        cfg.env.env_name,
+        1,
+        env_device,
+        cfg.env.backend,
+        is_test=True,
+        serial=serial,
+        primer=lstm.make_tensordict_primer(),
     )
     test_env.eval()
     # Evaluation runs on the env device with a matching copy of the policy (the training
@@ -159,9 +161,7 @@ def main(cfg: DictConfig):  # noqa: F821
     # Main loop
     collected_frames = 0
     pbar = tqdm.tqdm(total=total_frames)
-    num_mini_batches = frames_per_batch // mini_batch_size
     cfg_loss_ppo_epochs = cfg.loss.ppo_epochs
-    losses = TensorDict(batch_size=[cfg_loss_ppo_epochs, num_mini_batches])
 
     collector_iter = iter(collector)
     total_iter = len(collector)
@@ -204,19 +204,24 @@ def main(cfg: DictConfig):  # noqa: F821
                     data["next", "intrinsic_reward"].mean().item()
                 )
 
+        # Recurrent PPO: keep the [envs, time] structure and mini-batch over whole
+        # env-trajectories so the LSTM sees full sequences (hidden state stays consistent
+        # within each env). GAE and the loss run in recurrent mode.
+        num_envs, seq_len = data.shape[0], data.shape[1]
+        envs_per_mb = max(1, mini_batch_size // seq_len)
+        losses = []
         with timeit("training"):
-            for j in range(cfg_loss_ppo_epochs):
-                with torch.no_grad(), timeit("adv"):
+            for _ in range(cfg_loss_ppo_epochs):
+                with torch.no_grad(), set_recurrent_mode("recurrent"), timeit("adv"):
                     data = adv_module(data)
-                data_reshape = data.reshape(-1)
-                data_buffer.extend(data_reshape)
-
-                for k, batch in enumerate(data_buffer):
-                    batch = batch.to(device)
+                perm = torch.randperm(num_envs, device=data.device)
+                for start in range(0, num_envs, envs_per_mb):
+                    batch = data[perm[start : start + envs_per_mb]]
 
                     # PPO update (uses the RIDE-augmented reward through the advantage)
                     optim.zero_grad(set_to_none=True)
-                    loss = loss_module(batch)
+                    with set_recurrent_mode("recurrent"):
+                        loss = loss_module(batch)
                     loss_sum = (
                         loss["loss_critic"]
                         + loss["loss_objective"]
@@ -227,18 +232,23 @@ def main(cfg: DictConfig):  # noqa: F821
                         loss_module.parameters(), max_norm=cfg.optim.max_grad_norm
                     )
                     optim.step()
-                    losses[j, k] = loss.select(
-                        "loss_critic", "loss_entropy", "loss_objective"
-                    ).detach()
+                    losses.append(
+                        loss.select(
+                            "loss_critic", "loss_entropy", "loss_objective"
+                        ).detach()
+                    )
 
-                    # ICM update: train embedding / forward / inverse dynamics models
+                    # ICM update: train embedding / forward / inverse dynamics models.
+                    # These are feed-forward (per-transition), so the sequence is flattened.
                     if intrinsic_enabled:
                         icm_optim.zero_grad(set_to_none=True)
-                        icm_out = icm_loss(batch)
+                        icm_out = icm_loss(batch.reshape(-1))
                         (icm_out["loss_forward"] + icm_out["loss_inverse"]).backward()
                         icm_optim.step()
 
-        losses_mean = losses.apply(lambda x: x.float().mean(), batch_size=[])
+        losses_mean = torch.stack(losses).apply(
+            lambda x: x.float().mean(), batch_size=[]
+        )
         for key, value in losses_mean.items():
             metrics_to_log[f"train/{key}"] = value.item()
         if intrinsic_enabled:

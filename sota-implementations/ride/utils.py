@@ -6,13 +6,14 @@ from __future__ import annotations
 
 import torch.nn
 import torch.optim
-from tensordict.nn import TensorDictModule
+from tensordict.nn import TensorDictModule, TensorDictSequential
 from torchrl.data.tensor_specs import CategoricalBox
 from torchrl.envs import (
     DoubleToFloat,
     EnvCreator,
     ExplorationType,
     GymWrapper,
+    InitTracker,
     ParallelEnv,
     RenameTransform,
     RewardSum,
@@ -25,6 +26,7 @@ from torchrl.envs import (
 from torchrl.modules import (
     ActorValueOperator,
     ConvNet,
+    LSTMModule,
     MLP,
     ProbabilisticActor,
     ValueOperator,
@@ -59,7 +61,9 @@ def make_base_env(env_name="MiniGrid-DoorKey-8x8-v0", gym_backend="gymnasium"):
     return env
 
 
-def make_env(env_name, num_envs, device, gym_backend, is_test=False, serial=False):
+def make_env(
+    env_name, num_envs, device, gym_backend, is_test=False, serial=False, primer=None
+):
     # ``SerialEnv`` runs all sub-environments in a single process; it is slower but avoids
     # the multiprocessing fragility of ``ParallelEnv`` on some platforms (e.g. Jetson).
     env_cls = SerialEnv if serial else ParallelEnv
@@ -80,6 +84,9 @@ def make_env(env_name, num_envs, device, gym_backend, is_test=False, serial=Fals
     env.append_transform(DoubleToFloat())
     env.append_transform(RewardSum())  # logs the *extrinsic* episode return
     env.append_transform(StepCounter())
+    env.append_transform(InitTracker())  # is_init, needed to reset the LSTM per episode
+    if primer is not None:
+        env.append_transform(primer)  # adds the LSTM recurrent-state keys to rollouts
     return env
 
 
@@ -88,84 +95,79 @@ def make_env(env_name, num_envs, device, gym_backend, is_test=False, serial=Fals
 # --------------------------------------------------------------------
 
 
-def _minigrid_cnn(input_shape, device, out_features=256):
-    """A small CNN + MLP backbone suited to MiniGrid's 7x7x3 egocentric image."""
+def _minigrid_cnn(input_shape, device):
+    """Paper CNN: 3 conv layers, 32 filters, 3x3 kernel, stride 2, padding 1, ELU."""
     cnn = ConvNet(
-        activation_class=torch.nn.ReLU,
-        num_cells=[16, 32, 64],
-        kernel_sizes=[2, 2, 2],
-        strides=[1, 1, 1],
-        paddings=[0, 0, 0],
+        activation_class=torch.nn.ELU,
+        num_cells=[32, 32, 32],
+        kernel_sizes=[3, 3, 3],
+        strides=[2, 2, 2],
+        paddings=[1, 1, 1],
         device=device,
     )
     cnn_out = cnn(torch.ones(input_shape, device=device))
-    mlp = MLP(
-        in_features=cnn_out.shape[-1],
-        activation_class=torch.nn.ReLU,
-        activate_last_layer=True,
-        out_features=out_features,
-        num_cells=[],
-        device=device,
-    )
-    return torch.nn.Sequential(cnn, mlp), out_features
+    return cnn, cnn_out.shape[-1]
 
 
-def make_ppo_models(proof_environment, device):
+def make_ppo_models(proof_environment, device, lstm_hidden=256):
+    """Recurrent actor-critic per the RIDE paper: CNN -> LSTM-256 -> policy/value heads.
+
+    Returns ``(actor, critic, lstm)``; the caller must append ``lstm.make_tensordict_primer()``
+    to the data-collection environments so the recurrent state flows through rollouts.
+    """
     input_shape = proof_environment.observation_spec[PIXELS_KEY].shape
-
-    if isinstance(proof_environment.action_spec_unbatched.space, CategoricalBox):
-        num_outputs = proof_environment.action_spec_unbatched.space.n
-        distribution_class = torch.distributions.Categorical
-        distribution_kwargs = {}
-    else:
+    if not isinstance(proof_environment.action_spec_unbatched.space, CategoricalBox):
         raise NotImplementedError(
             "The RIDE example is configured for discrete (MiniGrid) action spaces."
         )
+    num_outputs = proof_environment.action_spec_unbatched.space.n
 
-    backbone, feat_dim = _minigrid_cnn(input_shape, device, out_features=256)
-    common_module = TensorDictModule(
-        module=backbone, in_keys=[PIXELS_KEY], out_keys=["common_features"]
-    )
-
-    policy_net = MLP(
-        in_features=feat_dim,
-        out_features=num_outputs,
-        activation_class=torch.nn.ReLU,
-        num_cells=[],
+    cnn, cnn_out = _minigrid_cnn(input_shape, device)
+    feature = TensorDictModule(cnn, in_keys=[PIXELS_KEY], out_keys=["embed"])
+    lstm = LSTMModule(
+        input_size=cnn_out,
+        hidden_size=lstm_hidden,
         device=device,
+        in_key="embed",
+        out_key="embed",
     )
+    common_module = TensorDictSequential(feature, lstm)
+
     policy_module = TensorDictModule(
-        module=policy_net, in_keys=["common_features"], out_keys=["logits"]
+        MLP(
+            in_features=lstm_hidden,
+            out_features=num_outputs,
+            num_cells=[],
+            device=device,
+        ),
+        in_keys=["embed"],
+        out_keys=["logits"],
     )
     policy_module = ProbabilisticActor(
         policy_module,
         in_keys=["logits"],
         spec=proof_environment.full_action_spec_unbatched.to(device),
-        distribution_class=distribution_class,
-        distribution_kwargs=distribution_kwargs,
+        distribution_class=torch.distributions.Categorical,
         return_log_prob=True,
         default_interaction_type=ExplorationType.RANDOM,
     )
-
-    value_net = MLP(
-        activation_class=torch.nn.ReLU,
-        in_features=feat_dim,
-        out_features=1,
-        num_cells=[],
-        device=device,
+    value_module = ValueOperator(
+        MLP(in_features=lstm_hidden, out_features=1, num_cells=[], device=device),
+        in_keys=["embed"],
     )
-    value_module = ValueOperator(value_net, in_keys=["common_features"])
 
     actor_critic = ActorValueOperator(
         common_operator=common_module,
         policy_operator=policy_module,
         value_operator=value_module,
     )
-    with torch.no_grad():
-        td = proof_environment.fake_tensordict().expand(10).to(device)
-        actor_critic(td)
-        del td
-    return actor_critic.get_policy_operator(), actor_critic.get_value_operator()
+    # No lazy params remain: the CNN was initialised in ``_minigrid_cnn`` and the
+    # LSTM/MLP heads have explicit input sizes.
+    return (
+        actor_critic.get_policy_operator(),
+        actor_critic.get_value_operator(),
+        lstm,
+    )
 
 
 def make_curiosity_models(proof_environment, device, embedding_dim=128):
@@ -177,9 +179,19 @@ def make_curiosity_models(proof_environment, device, embedding_dim=128):
     input_shape = proof_environment.observation_spec[PIXELS_KEY].shape
     num_actions = proof_environment.action_spec_unbatched.space.n
 
-    backbone, feat_dim = _minigrid_cnn(input_shape, device, out_features=embedding_dim)
+    # Feed-forward embedding of a single state (the RIDE paper's embedding is not recurrent).
+    cnn, cnn_out = _minigrid_cnn(input_shape, device)
+    mlp = MLP(
+        in_features=cnn_out,
+        out_features=embedding_dim,
+        num_cells=[],
+        activation_class=torch.nn.ELU,
+        device=device,
+    )
     feature_network = TensorDictModule(
-        module=backbone, in_keys=[PIXELS_KEY], out_keys=["embedding"]
+        module=torch.nn.Sequential(cnn, mlp),
+        in_keys=[PIXELS_KEY],
+        out_keys=["embedding"],
     )
 
     forward_model = TensorDictModule(

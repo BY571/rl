@@ -101,5 +101,9 @@ single-GPU budget — but the coverage signal already isolates RIDE's exploratio
 - The intrinsic reward is used in raw form (`r = r_e + omega_ir * r_i`), with no running
   normalization, matching the paper. `omega_ir = 0.1` and `entropy_coeff = 0.0001` follow
   the paper's MiniGrid settings.
+- The policy is **recurrent** (CNN -> LSTM-256 -> policy/value heads), matching the paper's
+  architecture (Appendix A.1). MiniGrid is partially observable (a 7x7 egocentric view), so
+  memory is needed to remember where keys/doors are. The RIDE embedding network stays
+  feed-forward (it embeds a single state for the impact reward).
 - The original paper uses an IMPALA backbone; here RIDE — which is backbone-agnostic
   reward augmentation — is plugged into PPO, TorchRL's reference on-policy algorithm.
