@@ -198,16 +198,19 @@ class RIDEReward(Transform):
         else:
             n_envs = int(torch.tensor(batch_size[:-1]).prod())
             time = batch_size[-1]
-        sig = signal.reshape(n_envs, time)
-        done = tensordict.get(self.done_key).reshape(n_envs, time).to(torch.bool)
+        # The forward filter is a sequential recurrence; run it on CPU with small tensors
+        # to avoid one CUDA kernel launch per timestep. The running stats live on CPU too.
+        sig = signal.detach().reshape(n_envs, time).to("cpu")
+        done = tensordict.get(self.done_key).reshape(n_envs, time).to("cpu", torch.bool)
 
         # discounted forward filter, reset at episode boundaries
         returns = torch.empty_like(sig)
-        running = torch.zeros(n_envs, device=sig.device, dtype=sig.dtype)
+        running = torch.zeros(n_envs, dtype=sig.dtype)
+        keep = (~done).to(sig.dtype)
         for t in range(time):
             running = sig[:, t] + self.gamma * running
             returns[:, t] = running
-            running = running * (~done[:, t]).to(sig.dtype)
+            running = running * keep[:, t]
 
         batch = returns.reshape(-1)
         batch_count = batch.numel()
@@ -217,12 +220,14 @@ class RIDEReward(Transform):
         delta = batch_mean - self._ret_mean
         tot = count + batch_count
         self._ret_mean += delta * batch_count / tot
-        m_a = self._ret_var * count
-        m_b = batch_var * batch_count
-        m2 = m_a + m_b + delta.pow(2) * count * batch_count / tot
+        m2 = (
+            self._ret_var * count
+            + batch_var * batch_count
+            + delta.pow(2) * count * batch_count / tot
+        )
         self._ret_var.copy_(m2 / tot)
         self._ret_count.copy_(tot)
-        return (self._ret_var + 1e-8).sqrt()
+        return (self._ret_var + 1e-8).sqrt().to(signal.device)
 
     def _call(self, next_tensordict: TensorDictBase) -> TensorDictBase:
         raise ValueError(self.ENV_ERR)
