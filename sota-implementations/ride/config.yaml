@@ -1,0 +1,52 @@
+# Environment
+env:
+  # MultiRoom is the paper's hard-exploration benchmark: vanilla PPO stays near zero while
+  # RIDE explores room-to-room. DoorKey-8x8 is an easier alternative both methods solve.
+  env_name: MiniGrid-MultiRoom-N6-v0
+  num_envs: 8
+  backend: gymnasium
+  serial: false  # set true to avoid ParallelEnv multiprocessing (e.g. on Jetson)
+  device: cpu  # environments run on CPU; only the networks/training use optim.device
+
+# Collector
+collector:
+  frames_per_batch: 4096
+  total_frames: 5_000_000
+
+# Intrinsic motivation (RIDE). Set enabled=false for the vanilla PPO baseline.
+intrinsic:
+  enabled: true
+  coef: 0.1                 # intrinsic reward coefficient omega_ir (paper: 0.1 for these tasks)
+  episodic: true           # apply the 1/sqrt(N_ep) episodic count discount
+  normalize: true          # normalize intrinsic reward by running std of its return (RND/RIDE-style)
+  embedding_dim: 128
+  lr: 1.0e-4
+  forward_loss_weight: 0.2  # beta
+  inverse_loss_weight: 0.8  # 1 - beta
+
+# Logger
+logger:
+  backend: wandb
+  project_name: torchrl_example_ride
+  group_name: null
+  exp_name: RIDE
+  test_interval: 500_000
+  num_test_episodes: 5
+
+# Optimizer
+optim:
+  lr: 1.0e-4
+  eps: 1.0e-5
+  max_grad_norm: 0.5
+  device: cuda:0
+
+# Loss (PPO + advantage)
+loss:
+  gamma: 0.99
+  mini_batch_size: 1024
+  ppo_epochs: 4
+  gae_lambda: 0.95
+  clip_epsilon: 0.2
+  critic_coeff: 0.5
+  entropy_coeff: 0.0001  # paper value for MultiRoom-N7-S4 / easier MiniGrid tasks
+  loss_critic_type: l2

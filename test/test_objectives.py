@@ -106,6 +106,7 @@ from torchrl.objectives import (
     DreamerValueLoss,
     DTLoss,
     GAILLoss,
+    ICMLoss,
     IQLLoss,
     KLPENPPOLoss,
     OnlineDTLoss,
@@ -13111,6 +13112,149 @@ class TestGAIL(LossModuleTestBase):
             assert loss["loss"].shape == (td["observation"].shape[0], 1)
         else:
             assert loss["loss"].shape == torch.Size([])
+
+
+class TestICM(LossModuleTestBase):
+    seed = 0
+
+    def _create_models(
+        self, obs_dim=6, emb_dim=8, action_dim=4, action_space="one-hot", device="cpu"
+    ):
+        feature = TensorDictModule(
+            MLP(in_features=obs_dim, out_features=emb_dim, depth=1, num_cells=16),
+            in_keys=["observation"],
+            out_keys=["embedding"],
+        )
+        forward_model = TensorDictModule(
+            MLP(
+                in_features=emb_dim + action_dim,
+                out_features=emb_dim,
+                depth=1,
+                num_cells=16,
+            ),
+            in_keys=["embedding", "action"],
+            out_keys=["predicted_embedding"],
+        )
+        inverse_model = TensorDictModule(
+            MLP(
+                in_features=2 * emb_dim, out_features=action_dim, depth=1, num_cells=16
+            ),
+            in_keys=["embedding", "embedding_next"],
+            out_keys=["predicted_action"],
+        )
+        return (
+            feature.to(device),
+            forward_model.to(device),
+            inverse_model.to(device),
+        )
+
+    def _create_mock_data(
+        self, batch=7, obs_dim=6, action_dim=4, action_space="one-hot", device="cpu"
+    ):
+        idx = torch.randint(action_dim, (batch,), device=device)
+        if action_space == "one-hot":
+            action = torch.eye(action_dim, device=device)[idx]
+        elif action_space == "categorical":
+            action = idx
+        else:
+            action = torch.randn(batch, action_dim, device=device)
+        return TensorDict(
+            {
+                "observation": torch.randn(batch, obs_dim, device=device),
+                "action": action,
+                "next": TensorDict(
+                    {"observation": torch.randn(batch, obs_dim, device=device)},
+                    [batch],
+                    device=device,
+                ),
+            },
+            [batch],
+            device=device,
+        )
+
+    def test_reset_parameters_recursive(self):
+        feature, forward_model, inverse_model = self._create_models()
+        loss_fn = ICMLoss(feature, forward_model, inverse_model)
+        self.reset_parameters_recursive_test(loss_fn)
+
+    @pytest.mark.parametrize("action_space", ["one-hot", "categorical", "continuous"])
+    def test_icm(self, action_space):
+        torch.manual_seed(self.seed)
+        feature, forward_model, inverse_model = self._create_models(
+            action_space=action_space
+        )
+        loss_fn = ICMLoss(
+            feature, forward_model, inverse_model, action_space=action_space
+        )
+        td = self._create_mock_data(action_space=action_space)
+        out = loss_fn(td)
+        assert set(out.keys()) == {"loss_forward", "loss_inverse"}
+        for key in ("loss_forward", "loss_inverse"):
+            assert out[key].shape == torch.Size([])
+            assert torch.isfinite(out[key])
+        # gradients reach all three networks
+        sum(out.values()).backward()
+        for name in ("feature_network", "forward_model", "inverse_model"):
+            params = getattr(loss_fn, name + "_params")
+            assert any(
+                p.grad is not None and p.grad.abs().sum() > 0
+                for p in params.values(True, True)
+            ), f"no gradient flowed to {name}"
+
+    @pytest.mark.parametrize("reduction", ["none", "mean", "sum"])
+    def test_icm_reduction(self, reduction):
+        torch.manual_seed(self.seed)
+        feature, forward_model, inverse_model = self._create_models()
+        loss_fn = ICMLoss(feature, forward_model, inverse_model, reduction=reduction)
+        td = self._create_mock_data(batch=7)
+        out = loss_fn(td)
+        if reduction == "none":
+            assert out["loss_forward"].shape == torch.Size([7])
+        else:
+            assert out["loss_forward"].shape == torch.Size([])
+
+    def test_icm_seq_data(self):
+        """Time-batched [B, T] data (as produced by an on-policy collector)."""
+        torch.manual_seed(self.seed)
+        feature, forward_model, inverse_model = self._create_models()
+        loss_fn = ICMLoss(feature, forward_model, inverse_model)
+        batch, T, obs_dim, action_dim = 3, 5, 6, 4
+        idx = torch.randint(action_dim, (batch, T))
+        td = TensorDict(
+            {
+                "observation": torch.randn(batch, T, obs_dim),
+                "action": torch.eye(action_dim)[idx],
+                "next": TensorDict(
+                    {"observation": torch.randn(batch, T, obs_dim)}, [batch, T]
+                ),
+            },
+            [batch, T],
+        )
+        out = loss_fn(td)
+        assert out["loss_forward"].shape == torch.Size([])
+
+    def test_icm_invalid_action_space(self):
+        feature, forward_model, inverse_model = self._create_models()
+        with pytest.raises(ValueError, match="action_space"):
+            ICMLoss(feature, forward_model, inverse_model, action_space="invalid")
+
+    def test_icm_stop_gradient(self):
+        """With stop_gradient=False the forward loss also trains the feature net."""
+        torch.manual_seed(self.seed)
+        feature, forward_model, inverse_model = self._create_models()
+        loss_fn = ICMLoss(
+            feature,
+            forward_model,
+            inverse_model,
+            stop_gradient=False,
+            inverse_loss_weight=0.0,
+            forward_loss_weight=1.0,
+        )
+        td = self._create_mock_data()
+        out = loss_fn(td)
+        out["loss_forward"].backward()
+        feat_params = list(loss_fn.feature_network_params.values(True, True))
+        assert any(p.grad is not None and p.grad.abs().sum() > 0 for p in feat_params)
 
 
 @pytest.mark.skipif(
